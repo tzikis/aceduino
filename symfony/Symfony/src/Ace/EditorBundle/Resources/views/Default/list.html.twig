@@ -1,0 +1,13 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+Hello {{ name }}!<br />
+{% if files%}
+Please select one of your projects from the list:<br />
+<ul id="navigation">
+    {% for file in files %}
+        <li><a href="{{ path('AceEditorBundle_editor', { 'filename': file.getFilename() }) }}">{{ file.getName() }}</a></li>
+    {% endfor %}
+{% endif %}
+</ul>
+<a href=''>Add New</a>
+{% endblock %}

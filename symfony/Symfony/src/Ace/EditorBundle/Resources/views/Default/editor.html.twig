@@ -1,0 +1,39 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}
+  <style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+    
+    #editor { 
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 800px;
+/*        height: 400px;*/
+    }
+  </style>
+{% endblock %}
+{% block body %}
+	<pre id="editor">{{ code }}</pre>
+	<!-- <div id="editor"> -->
+	<!-- </div> -->
+	<script src={{ asset("src/ace.js") }} type="text/javascript" charset="utf-8"></script>
+	<script src={{ asset("src/theme-textmate.js") }} type="text/javascript" charset="utf-8"></script>
+	<script src={{ asset("src/mode-c_cpp.js") }} type="text/javascript" charset="utf-8"></script>
+	<script>
+	window.onload = function() {
+	    var editor = ace.edit("editor");
+	    editor.setTheme("ace/theme/textmate");
+
+	    var JavaScriptMode = require("ace/mode/c_cpp").Mode;
+	    editor.getSession().setMode(new JavaScriptMode());
+
+		editor.getSession().setUseSoftTabs(false);
+	};
+	</script>
+
+{% endblock %}

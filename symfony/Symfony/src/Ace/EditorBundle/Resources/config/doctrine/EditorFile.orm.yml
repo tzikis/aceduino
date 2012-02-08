@@ -1,0 +1,18 @@
+# src/Acme/StoreBundle/Resources/config/doctrine/Product.orm.yml
+Ace\EditorBundle\Entity\EditorFile:
+  type: entity
+  table: EditorFile
+  id:
+      id:
+          type: integer
+          generator: { strategy: AUTO }
+  actAs: { Timestampable: ~ }
+  fields:
+      name:      { type: string(255), notnull: true }
+      filename:      { type: string(255), notnull: true }
+      owner:  { type: integer, primary: true }
+      is_public:    { type: boolean, notnull: true, default: 1 }
+      schematic:      { type: string(255), notnull: true }
+      image:      { type: string(255), notnull: true }
+  relations:
+      Editor: { onDelete: CASCADE, local: owner, foreign: id, foreignAlias: EditorFile } 

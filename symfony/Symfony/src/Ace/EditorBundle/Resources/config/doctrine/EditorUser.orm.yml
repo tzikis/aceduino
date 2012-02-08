@@ -1,0 +1,24 @@
+# src/Acme/StoreBundle/Resources/config/doctrine/Product.orm.yml
+Ace\EditorBundle\Entity\EditorUser:
+  type: entity
+  table: EditorUser
+  id:
+      id:
+          type: integer
+          generator: { strategy: AUTO }
+  actAs: { Timestampable: ~ }
+  fields:
+    firstname:       { type: string(255), notnull: true }
+    lastname:       { type: string(255), notnull: true }
+    username:       { type: string(255), notnull: true }
+    email:     { type: string(255), notnull: true, unique: true }
+    password:     { type: string(255), notnull: true, unique: true }
+    twitter:     { type: string(255), notnull: true, unique: true }
+    is_active: { type: boolean, notnull: true, default: 0 }    
+  relations:
+    EditorFileUsers:
+      class: EditorFile
+      refClass: EditorFileUser
+      local: user_id
+      foreign: file_id
+      foreignAlias: EditorUsers

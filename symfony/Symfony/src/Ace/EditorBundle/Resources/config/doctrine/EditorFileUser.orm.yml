@@ -1,0 +1,15 @@
+# config/doctrine/schema.yml
+Ace\EditorBundle\Entity\EditorFileUser:
+  type: entity
+  table: EditorFileUser
+  id:
+      id:
+          type: integer
+          generator: { strategy: AUTO }
+  fields:
+      user_id:  { type: integer, primary: true }
+      file_id: { type: integer, primary: true }
+      type: {type: integer}
+  relations:
+      EditorUser:  { onDelete: CASCADE, local: user_id, foreign: id }
+      EditorFile: { onDelete: CASCADE, local: file_id, foreign: id }

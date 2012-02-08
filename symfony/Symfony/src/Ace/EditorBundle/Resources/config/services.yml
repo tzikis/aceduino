@@ -1,0 +1,7 @@
+parameters:
+#    ace_editor.example.class: Ace\EditorBundle\Example
+
+services:
+#    ace_editor.example:
+#        class: %ace_editor.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
