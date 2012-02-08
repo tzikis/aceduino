@@ -1,0 +1,7 @@
+parameters:
+#    ace_user.example.class: Ace\UserBundle\Example
+
+services:
+#    ace_user.example:
+#        class: %ace_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
