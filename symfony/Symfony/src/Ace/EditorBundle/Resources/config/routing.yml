@@ -1,5 +1,5 @@
 AceEditorBundle_homepage:
-    pattern:  /hello/{name}
+    pattern:  /home
     defaults: { _controller: AceEditorBundle:Default:index }
 
 AceEditorBundle_list:
@@ -9,3 +9,7 @@ AceEditorBundle_list:
 AceEditorBundle_editor:
     pattern:  /edit/{filename}
     defaults: { _controller: AceEditorBundle:Default:edit, filename: default_text.txt }
+
+AceEditorBundle_save:
+    pattern:  /save/{filename}
+    defaults: { _controller: AceEditorBundle:Default:save }

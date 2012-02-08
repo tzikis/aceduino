@@ -85,8 +85,8 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         // AceEditorBundle_homepage
-        if (0 === strpos($pathinfo, '/hello') && preg_match('#^/hello/(?P<name>[^/]+?)$#xs', $pathinfo, $matches)) {
-            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',)), array('_route' => 'AceEditorBundle_homepage'));
+        if ($pathinfo === '/home') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',  '_route' => 'AceEditorBundle_homepage',);
         }
 
         // AceEditorBundle_list
@@ -97,6 +97,11 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         // AceEditorBundle_editor
         if (0 === strpos($pathinfo, '/edit') && preg_match('#^/edit(?:/(?P<filename>[^/]+?))?$#xs', $pathinfo, $matches)) {
             return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',  'filename' => 'default_text.txt',)), array('_route' => 'AceEditorBundle_editor'));
+        }
+
+        // AceEditorBundle_save
+        if (0 === strpos($pathinfo, '/save') && preg_match('#^/save/(?P<filename>[^/]+?)$#xs', $pathinfo, $matches)) {
+            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',)), array('_route' => 'AceEditorBundle_save'));
         }
 
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();

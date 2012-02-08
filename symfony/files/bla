@@ -1,4 +1,11 @@
 void setup()
 {
-
+	pinMode(9, HIGH);
 }
+
+int hello()
+{
+	
+}
+
+bla bla

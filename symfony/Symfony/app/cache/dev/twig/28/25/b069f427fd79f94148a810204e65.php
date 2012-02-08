@@ -10,8 +10,8 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
         $this->blocks = array(
             'title' => array($this, 'block_title'),
             'stylesheets' => array($this, 'block_stylesheets'),
-            'body' => array($this, 'block_body'),
             'javascripts' => array($this, 'block_javascripts'),
+            'body' => array($this, 'block_body'),
         );
     }
 
@@ -34,14 +34,19 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("favicon.ico"), "html", null, true);
         echo "\" />
     </head>
-    <body>
-        ";
+\t<script src=";
+        // line 9
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery/jquery-1.7.1.js"), "html", null, true);
+        echo " type=\"text/javascript\"></script>
+    ";
         // line 10
-        $this->displayBlock('body', $context, $blocks);
-        // line 11
-        echo "        ";
         $this->displayBlock('javascripts', $context, $blocks);
+        // line 11
+        echo "    <body>
+        ";
         // line 12
+        $this->displayBlock('body', $context, $blocks);
+        // line 13
         echo "    </body>
 </html>
 ";
@@ -59,12 +64,12 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
     }
 
     // line 10
-    public function block_body($context, array $blocks = array())
+    public function block_javascripts($context, array $blocks = array())
     {
     }
 
-    // line 11
-    public function block_javascripts($context, array $blocks = array())
+    // line 12
+    public function block_body($context, array $blocks = array())
     {
     }
 

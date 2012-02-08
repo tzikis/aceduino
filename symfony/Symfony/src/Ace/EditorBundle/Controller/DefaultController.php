@@ -3,17 +3,18 @@
 namespace Ace\EditorBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class DefaultController extends Controller
 {
     public $default_file = "default_text.txt";
-    public function indexAction($name)
+    public function indexAction()
     {
-		if($name == "tzikis")
-			return $this->redirect($this->generateUrl('AceEditorBundle_list', array('name' => $name)));
-			
-        return $this->render('AceEditorBundle:Default:index.html.twig', array('name' => $name));
+		// if($name == "tzikis")
+		// 	return $this->redirect($this->generateUrl('AceEditorBundle_list', array('name' => $name)));
+		// 	
+		        return $this->render('AceEditorBundle:Default:index.html.twig');
     }
 
     public function listAction($name)
@@ -44,6 +45,31 @@ class DefaultController extends Controller
 		$file = fopen($directory.$filename, 'r');
 		$value = fread($file, filesize($directory.$filename));
 		fclose($file);		
-        return $this->render('AceEditorBundle:Default:editor.html.twig', array('code' => $value));
+        return $this->render('AceEditorBundle:Default:editor.html.twig', array('code' => $value, 'filename' => $filename));
     }
+
+    public function saveAction($filename)
+    {
+		$response = new Response('404 Not Found!', 404, array('content-type' => 'text/plain'));
+	    if ($this->getRequest()->getMethod() === 'POST')
+		{
+			$mydata = $this->getRequest()->request->get('data');
+			if($mydata)
+			{
+				$directory = "/var/www/aceduino/symfony/files/";
+				if(file_exists($directory.$filename))
+				{
+					$file = fopen($directory.$filename, 'w');
+					fwrite($file, $mydata);
+					fclose($file);
+				}
+				// return new Response($mydata);
+				$response->setContent("OK");
+				$response->setStatusCode(200);
+				$response->headers->set('Content-Type', 'text/html');
+			}
+		}
+		return $response;
+    }
+
 }

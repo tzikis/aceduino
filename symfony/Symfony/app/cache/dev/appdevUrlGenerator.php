@@ -26,6 +26,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceEditorBundle_homepage' => true,
        'AceEditorBundle_list' => true,
        'AceEditorBundle_editor' => true,
+       'AceEditorBundle_save' => true,
     );
 
     /**
@@ -101,7 +102,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
 
     private function getAceEditorBundle_homepageRouteInfo()
     {
-        return array(array (  0 => 'name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'name',  ),  1 =>   array (    0 => 'text',    1 => '/hello',  ),));
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/home',  ),));
     }
 
     private function getAceEditorBundle_listRouteInfo()
@@ -112,5 +113,10 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getAceEditorBundle_editorRouteInfo()
     {
         return array(array (  0 => 'filename',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',  'filename' => 'default_text.txt',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'filename',  ),  1 =>   array (    0 => 'text',    1 => '/edit',  ),));
+    }
+
+    private function getAceEditorBundle_saveRouteInfo()
+    {
+        return array(array (  0 => 'filename',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'filename',  ),  1 =>   array (    0 => 'text',    1 => '/save',  ),));
     }
 }
