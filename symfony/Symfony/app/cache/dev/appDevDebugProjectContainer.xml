@@ -18,6 +18,8 @@
       <parameter key="SensioFrameworkExtraBundle">Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle</parameter>
       <parameter key="JMSSecurityExtraBundle">JMS\SecurityExtraBundle\JMSSecurityExtraBundle</parameter>
       <parameter key="AceEditorBundle">Ace\EditorBundle\AceEditorBundle</parameter>
+      <parameter key="AceUserBundle">Ace\UserBundle\AceUserBundle</parameter>
+      <parameter key="AceSecurityBundle">Ace\SecurityBundle\AceSecurityBundle</parameter>
       <parameter key="WebProfilerBundle">Symfony\Bundle\WebProfilerBundle\WebProfilerBundle</parameter>
       <parameter key="SensioDistributionBundle">Sensio\Bundle\DistributionBundle\SensioDistributionBundle</parameter>
       <parameter key="SensioGeneratorBundle">Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle</parameter>
@@ -1180,6 +1182,11 @@
             <argument>true</argument>
           </service>
         </argument>
+        <argument type="service">
+          <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
+            <argument>4f35dae38dcc5</argument>
+          </service>
+        </argument>
       </argument>
     </service>
     <service id="security.authentication.trust_resolver" class="Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolver" public="false">
@@ -1236,7 +1243,7 @@
             </argument>
             <argument key="security.firewall.map.context.secured_area" type="service">
               <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-                <argument>^/demo/secured/</argument>
+                <argument>^/*</argument>
               </service>
             </argument>
           </argument>
@@ -1257,6 +1264,17 @@
           <service class="Symfony\Component\Security\Core\User\User" public="false">
             <argument>user</argument>
             <argument>userpass</argument>
+            <argument type="collection">
+              <argument>ROLE_USER</argument>
+            </argument>
+          </service>
+        </argument>
+      </call>
+      <call method="createUser">
+        <argument type="service">
+          <service class="Symfony\Component\Security\Core\User\User" public="false">
+            <argument>tzikis</argument>
+            <argument>qwerty</argument>
             <argument type="collection">
               <argument>ROLE_USER</argument>
             </argument>
@@ -1289,7 +1307,19 @@
           <service class="Symfony\Component\Security\Http\Firewall\ChannelListener" public="false">
             <tag name="monolog.logger" channel="security"/>
             <argument type="service">
-              <service class="Symfony\Component\Security\Http\AccessMap" public="false"/>
+              <service class="Symfony\Component\Security\Http\AccessMap" public="false">
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/list/*</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_USER</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+              </service>
             </argument>
             <argument type="service">
               <service class="Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint" public="false"/>
@@ -1316,8 +1346,8 @@
                 <argument type="service" id="router"/>
               </service>
             </argument>
-            <argument>/demo/secured/logout</argument>
-            <argument>/demo/</argument>
+            <argument>/logout</argument>
+            <argument>/home</argument>
             <argument>null</argument>
             <call method="addHandler">
               <argument type="service">
@@ -1343,8 +1373,8 @@
             </argument>
             <argument>secured_area</argument>
             <argument type="collection">
-              <argument key="check_path">/demo/secured/login_check</argument>
-              <argument key="login_path">/demo/secured/login</argument>
+              <argument key="check_path">/login_check</argument>
+              <argument key="login_path">/login</argument>
               <argument key="use_forward">false</argument>
               <argument key="always_use_default_target_path">false</argument>
               <argument key="default_target_path">/</argument>
@@ -1365,12 +1395,31 @@
           </service>
         </argument>
         <argument type="service">
+          <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
+            <argument type="service" id="security.context"/>
+            <argument>4f35dae38dcc5</argument>
+            <argument type="service" id="monolog.logger.security"/>
+          </service>
+        </argument>
+        <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AccessListener" public="false">
             <tag name="monolog.logger" channel="security"/>
             <argument type="service" id="security.context"/>
             <argument type="service" id="security.access.decision_manager"/>
             <argument type="service">
-              <service class="Symfony\Component\Security\Http\AccessMap" public="false"/>
+              <service class="Symfony\Component\Security\Http\AccessMap" public="false">
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/list/*</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>ROLE_USER</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+              </service>
             </argument>
             <argument type="service" id="security.authentication.manager"/>
             <argument type="service" id="monolog.logger.security"/>
@@ -1394,7 +1443,7 @@
                   <argument type="service" id="router"/>
                 </service>
               </argument>
-              <argument>/demo/secured/login</argument>
+              <argument>/login</argument>
               <argument>false</argument>
             </service>
           </argument>
@@ -1946,6 +1995,60 @@
                   <argument type="service" id="templating.loader"/>
                   <argument>AceEditorBundle</argument>
                   <argument>/var/www/aceduino/symfony/Symfony/src/Ace/EditorBundle/Resources/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+            </argument>
+          </service>
+        </argument>
+        <argument>twig</argument>
+      </call>
+      <call method="addResource">
+        <argument type="service">
+          <service class="Symfony\Bundle\AsseticBundle\Factory\Resource\CoalescingDirectoryResource" public="false">
+            <tag name="assetic.templating.twig"/>
+            <tag name="assetic.formula_resource" loader="twig"/>
+            <argument type="collection">
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>AceUserBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/app/Resources/AceUserBundle/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>AceUserBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/src/Ace/UserBundle/Resources/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+            </argument>
+          </service>
+        </argument>
+        <argument>twig</argument>
+      </call>
+      <call method="addResource">
+        <argument type="service">
+          <service class="Symfony\Bundle\AsseticBundle\Factory\Resource\CoalescingDirectoryResource" public="false">
+            <tag name="assetic.templating.twig"/>
+            <tag name="assetic.formula_resource" loader="twig"/>
+            <argument type="collection">
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>AceSecurityBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/app/Resources/AceSecurityBundle/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>AceSecurityBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/src/Ace/SecurityBundle/Resources/views</argument>
                   <argument>/^[^.]+\.[^.]+\.twig$/</argument>
                 </service>
               </argument>

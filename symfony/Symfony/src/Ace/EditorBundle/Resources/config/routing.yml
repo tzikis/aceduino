@@ -3,7 +3,7 @@ AceEditorBundle_homepage:
     defaults: { _controller: AceEditorBundle:Default:index }
 
 AceEditorBundle_list:
-    pattern:  /list/{name}
+    pattern:  /list
     defaults: { _controller: AceEditorBundle:Default:list }
 
 AceEditorBundle_editor:

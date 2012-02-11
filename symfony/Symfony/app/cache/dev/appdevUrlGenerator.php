@@ -23,10 +23,13 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        '_configurator_home' => true,
        '_configurator_step' => true,
        '_configurator_final' => true,
+       'AceUserBundle_homepage' => true,
        'AceEditorBundle_homepage' => true,
        'AceEditorBundle_list' => true,
        'AceEditorBundle_editor' => true,
        'AceEditorBundle_save' => true,
+       'login' => true,
+       'login_check' => true,
     );
 
     /**
@@ -100,6 +103,11 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
         return array(array (), array (  '_controller' => 'Sensio\\Bundle\\DistributionBundle\\Controller\\ConfiguratorController::finalAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/_configurator/final',  ),));
     }
 
+    private function getAceUserBundle_homepageRouteInfo()
+    {
+        return array(array (  0 => 'name',), array (  '_controller' => 'Ace\\UserBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'name',  ),  1 =>   array (    0 => 'text',    1 => '/hello',  ),));
+    }
+
     private function getAceEditorBundle_homepageRouteInfo()
     {
         return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/home',  ),));
@@ -107,7 +115,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
 
     private function getAceEditorBundle_listRouteInfo()
     {
-        return array(array (  0 => 'name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::listAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'name',  ),  1 =>   array (    0 => 'text',    1 => '/list',  ),));
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::listAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/list',  ),));
     }
 
     private function getAceEditorBundle_editorRouteInfo()
@@ -118,5 +126,15 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getAceEditorBundle_saveRouteInfo()
     {
         return array(array (  0 => 'filename',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'filename',  ),  1 =>   array (    0 => 'text',    1 => '/save',  ),));
+    }
+
+    private function getloginRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'Ace\\SecurityBundle\\Controller\\SecurityController::loginAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/login',  ),));
+    }
+
+    private function getlogin_checkRouteInfo()
+    {
+        return array(array (), array (), array (), array (  0 =>   array (    0 => 'text',    1 => '/login_check',  ),));
     }
 }

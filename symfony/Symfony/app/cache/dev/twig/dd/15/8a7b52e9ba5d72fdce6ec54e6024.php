@@ -51,10 +51,12 @@ class __TwigTemplate_dd158a7b52e9ba5d72fdce6ec54e6024 extends Twig_Template
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
             $context = array_merge($_parent, array_intersect_key($context, $_parent));
+            // line 10
+            echo "</ul>
+";
         }
-        // line 11
-        echo "</ul>
-<a href=''>Add New</a>
+        // line 12
+        echo "<a href=''>Add New</a><br />
 ";
     }
 

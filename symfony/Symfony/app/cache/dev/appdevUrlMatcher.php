@@ -84,14 +84,19 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        // AceUserBundle_homepage
+        if (0 === strpos($pathinfo, '/hello') && preg_match('#^/hello/(?P<name>[^/]+?)$#xs', $pathinfo, $matches)) {
+            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\UserBundle\\Controller\\DefaultController::indexAction',)), array('_route' => 'AceUserBundle_homepage'));
+        }
+
         // AceEditorBundle_homepage
         if ($pathinfo === '/home') {
             return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',  '_route' => 'AceEditorBundle_homepage',);
         }
 
         // AceEditorBundle_list
-        if (0 === strpos($pathinfo, '/list') && preg_match('#^/list/(?P<name>[^/]+?)$#xs', $pathinfo, $matches)) {
-            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::listAction',)), array('_route' => 'AceEditorBundle_list'));
+        if ($pathinfo === '/list') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::listAction',  '_route' => 'AceEditorBundle_list',);
         }
 
         // AceEditorBundle_editor
@@ -102,6 +107,16 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         // AceEditorBundle_save
         if (0 === strpos($pathinfo, '/save') && preg_match('#^/save/(?P<filename>[^/]+?)$#xs', $pathinfo, $matches)) {
             return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',)), array('_route' => 'AceEditorBundle_save'));
+        }
+
+        // login
+        if ($pathinfo === '/login') {
+            return array (  '_controller' => 'Ace\\SecurityBundle\\Controller\\SecurityController::loginAction',  '_route' => 'login',);
+        }
+
+        // login_check
+        if ($pathinfo === '/login_check') {
+            return array('_route' => 'login_check');
         }
 
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();

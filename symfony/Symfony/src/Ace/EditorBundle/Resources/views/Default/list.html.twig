@@ -7,7 +7,7 @@ Please select one of your projects from the list:<br />
     {% for file in files %}
         <li><a href="{{ path('AceEditorBundle_editor', { 'filename': file.getFilename() }) }}">{{ file.getName() }}</a></li>
     {% endfor %}
-{% endif %}
 </ul>
-<a href=''>Add New</a>
+{% endif %}
+<a href=''>Add New</a><br />
 {% endblock %}

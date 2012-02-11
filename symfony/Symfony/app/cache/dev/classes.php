@@ -4973,6 +4973,39 @@ class HttpKernel extends BaseHttpKernel
 namespace Symfony\Component\Security\Http
 {
 
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+
+class AccessMap
+{
+    private $map = array();
+
+    
+    public function add(RequestMatcherInterface $requestMatcher, array $roles = array(), $channel = null)
+    {
+        $this->map[] = array($requestMatcher, $roles, $channel);
+    }
+
+    public function getPatterns(Request $request)
+    {
+        foreach ($this->map as $elements) {
+            if (null === $elements[0] || $elements[0]->matches($request)) {
+                return array($elements[1], $elements[2]);
+            }
+        }
+
+        return array(null, null);
+    }
+}
+}
+ 
+
+
+
+namespace Symfony\Component\Security\Http
+{
+
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

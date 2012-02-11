@@ -1,0 +1,7 @@
+parameters:
+#    ace_security.example.class: Ace\SecurityBundle\Example
+
+services:
+#    ace_security.example:
+#        class: %ace_security.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

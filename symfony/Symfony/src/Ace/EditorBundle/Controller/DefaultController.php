@@ -4,6 +4,7 @@ namespace Ace\EditorBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\SecurityContext;
 
 
 class DefaultController extends Controller
@@ -17,8 +18,10 @@ class DefaultController extends Controller
 		        return $this->render('AceEditorBundle:Default:index.html.twig');
     }
 
-    public function listAction($name)
+    public function listAction()
     {
+		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+		$session  = $this->get("session");
 	    $product = $this->getDoctrine()
 	        ->getRepository('AceEditorBundle:EditorUser')
 	        ->findOneByUsername($name);
@@ -29,9 +32,8 @@ class DefaultController extends Controller
 		$files = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findByOwner($product->getId());
 	    // do something, like pass the $product object into a template
 		$fullname= $product->getFirstname()." (".$product->getUsername().") ".$product->getLastname();
-	
-		
-        return $this->render('AceEditorBundle:Default:list.html.twig', array('name' =>$fullname, 'files' => $files));
+		        
+		return $this->render('AceEditorBundle:Default:list.html.twig', array('name' =>$fullname, 'files' => $files));
     }
 
     public function editAction($filename)
