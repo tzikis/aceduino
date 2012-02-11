@@ -109,6 +109,11 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',)), array('_route' => 'AceEditorBundle_save'));
         }
 
+        // AceEditorBundle_options
+        if ($pathinfo === '/options') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::optionsAction',  '_route' => 'AceEditorBundle_options',);
+        }
+
         // login
         if ($pathinfo === '/login') {
             return array (  '_controller' => 'Ace\\SecurityBundle\\Controller\\SecurityController::loginAction',  '_route' => 'login',);

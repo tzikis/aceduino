@@ -13,3 +13,7 @@ AceEditorBundle_editor:
 AceEditorBundle_save:
     pattern:  /save/{filename}
     defaults: { _controller: AceEditorBundle:Default:save }
+    
+AceEditorBundle_options:
+    pattern:  /options
+    defaults: { _controller: AceEditorBundle:Default:options }

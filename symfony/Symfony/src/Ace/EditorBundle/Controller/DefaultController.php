@@ -39,6 +39,25 @@ class DefaultController extends Controller
     public function editAction($filename)
     {
 		$directory = "/var/www/aceduino/symfony/files/";
+		
+		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+		$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneByFilename($filename);
+		
+		if(!$user)
+		{
+	        throw $this->createNotFoundException('No user found for username '.$name);
+		}
+		else if(!$file)
+		{
+	        throw $this->createNotFoundException('No file found for filename '.$filename);			
+		}
+		
+		if($user->getId() != $file->getOwner())
+		{
+			return $this->redirect($this->generateUrl('AceEditorBundle_list'));
+		}
+			
 		if(!file_exists($directory.$filename))
 			$filename = $this->default_file;
 			
