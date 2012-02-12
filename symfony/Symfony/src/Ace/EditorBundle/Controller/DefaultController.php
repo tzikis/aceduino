@@ -2,10 +2,11 @@
 
 namespace Ace\EditorBundle\Controller;
 
+require_once 'File/Find.php';
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\SecurityContext;
-
+use PEAR2\File;
 
 class DefaultController extends Controller
 {
@@ -21,7 +22,6 @@ class DefaultController extends Controller
     public function listAction()
     {
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-		$session  = $this->get("session");
 	    $product = $this->getDoctrine()
 	        ->getRepository('AceEditorBundle:EditorUser')
 	        ->findOneByUsername($name);
@@ -39,6 +39,7 @@ class DefaultController extends Controller
     public function editAction($filename)
     {
 		$directory = "/var/www/aceduino/symfony/files/";
+		$examples_directory = "/var/www/aceduino/symfony/examples/";
 		
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
 		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
@@ -62,11 +63,17 @@ class DefaultController extends Controller
 			$filename = $this->default_file;
 			
 		// $filename = getcwd();
-		
+		$examples = $this->iterate_dir($examples_directory);
+		for($i = 0; $i < count($examples); $i++ )
+		{
+			$array = $this->iterate_dir($examples_directory.$examples[$i]);
+			$examples[$i] = array($examples[$i], $array);
+		}
+				
 		$file = fopen($directory.$filename, 'r');
 		$value = fread($file, filesize($directory.$filename));
-		fclose($file);		
-        return $this->render('AceEditorBundle:Default:editor.html.twig', array('code' => $value, 'filename' => $filename));
+		fclose($file);
+        return $this->render('AceEditorBundle:Default:editor.html.twig', array('code' => $value, 'filename' => $filename, 'examples' => $examples));
     }
 
     public function saveAction($filename)
@@ -91,6 +98,42 @@ class DefaultController extends Controller
 			}
 		}
 		return $response;
-    }
+    }	
 
+	private function iterate_dir($directory)
+	{
+		$dir = opendir($directory);
+		$iter = readdir();
+		$array = array();
+		while(!($iter === FALSE))
+		{
+			$array[] = $iter;
+			// echo $dir."<br />";
+			$iter = readdir();
+		}
+		for($i = 0; $i <= count($array); $i++ )
+		{
+			if($array[$i] == "." || $array[$i] == "..")
+				unset($array[$i]);
+		}
+
+		sort($array);
+		closedir($dir);
+		return $array;
+	}
+	
+	public function optionsAction()
+    {
+		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+	    $product = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+
+	    if (!$product) {
+	        throw $this->createNotFoundException('No product found for id '.$name);
+	    }
+		//$files = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findByOwner($product->getId());
+	    // do something, like pass the $product object into a template
+		//$fullname= $product->getFirstname()." (".$product->getUsername().") ".$product->getLastname();
+		        
+		return $this->render('AceEditorBundle:Default:options.html.twig');//, array('name' =>$fullname, 'files' => $files));
+    }
 }

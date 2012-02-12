@@ -33,20 +33,28 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
         echo "        <link rel=\"shortcut icon\" href=\"";
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("favicon.ico"), "html", null, true);
         echo "\" />
-    </head>
-\t<script src=";
+\t\t<link type=\"text/css\" href=";
+        // line 8
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css"), "html", null, true);
+        echo " rel=\"stylesheet\" />\t
+\t\t<script src=";
         // line 9
-        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery/jquery-1.7.1.js"), "html", null, true);
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/js/jquery-1.7.1.min.js"), "html", null, true);
         echo " type=\"text/javascript\"></script>
-    ";
+\t\t<script src=";
         // line 10
-        $this->displayBlock('javascripts', $context, $blocks);
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/js/jquery-ui-1.8.17.custom.min.js"), "html", null, true);
+        echo " type=\"text/javascript\"></script>
+\t    ";
         // line 11
-        echo "    <body>
-        ";
+        $this->displayBlock('javascripts', $context, $blocks);
         // line 12
+        echo "    </head>
+    <body>
+        ";
+        // line 14
         $this->displayBlock('body', $context, $blocks);
-        // line 13
+        // line 15
         echo "    </body>
 </html>
 ";
@@ -63,12 +71,12 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
     {
     }
 
-    // line 10
+    // line 11
     public function block_javascripts($context, array $blocks = array())
     {
     }
 
-    // line 12
+    // line 14
     public function block_body($context, array $blocks = array())
     {
     }

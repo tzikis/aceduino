@@ -28,6 +28,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceEditorBundle_list' => true,
        'AceEditorBundle_editor' => true,
        'AceEditorBundle_save' => true,
+       'AceEditorBundle_options' => true,
        'login' => true,
        'login_check' => true,
     );
@@ -126,6 +127,11 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getAceEditorBundle_saveRouteInfo()
     {
         return array(array (  0 => 'filename',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'filename',  ),  1 =>   array (    0 => 'text',    1 => '/save',  ),));
+    }
+
+    private function getAceEditorBundle_optionsRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::optionsAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/options',  ),));
     }
 
     private function getloginRouteInfo()

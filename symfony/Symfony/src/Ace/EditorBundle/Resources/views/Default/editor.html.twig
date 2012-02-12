@@ -1,11 +1,13 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
   <style type="text/css" media="screen">
-    body {
+    body
+	{
         overflow: hidden;
     }
     
-    #editor { 
+    #editor
+	{ 
         margin: 0;
         position: absolute;
         top: 0;
@@ -15,23 +17,77 @@
         width: 800px;
 /*        height: 400px;*/
     }
+	#selection
+	{
+		width: 400px;
+/*		height: 200px;*/
+	}
   </style>
 {% endblock %}
+{% block javascripts %}
+<script src={{ asset("src/ace.js") }} type="text/javascript" charset="utf-8"></script>
+<script src={{ asset("src/theme-textmate.js") }} type="text/javascript" charset="utf-8"></script>
+<script src={{ asset("src/mode-c_cpp.js") }} type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+// function editFile()
+// {
+// 	alert('editting file');
+// 	// $.get('/examples/1.Basics/Blink/Blink.ino', function(data)
+// 	// {
+// 	// 	$('.result').html(data);
+// 	// 	editor.getSession().setValue(data);
+// 	// 	alert('Load was performed.');
+// 	// });
+// }
+	
+	// editFile('/examples/1.Basics/Blink/Blink.ino');
+</script>
+<script type="text/javascript">
+function alertMe(filename){
+	// alert('editting file');
+	$.get(filename, function(data)
+	{
+		$('.result').html(data);
+		editor.getSession().setValue(data);
+		// alert('Load was performed.');
+	});
+}
+function editFile(){
+alert('WTF!');
+}
+</script>
+{% endblock %}
 {% block body %}
-	<div>
-	<!--- <form action="{{ path('AceEditorBundle_save', { 'filename': filename }) }}" method="post"> --->
+	<div id="selection">
+		<div id="accordion">
+			{% for section in examples %}
+		    <h3><a href="#">{{section[0]}}</a></h3>
+			<div>
+			<ul>
+		    	{% for file in section[1] %}
+		    	    <li onclick="alertMe('/examples/{{section[0]}}/{{file}}/{{file}}.ino')">{{file}}</li>
+		    	{% endfor %}
+			</ul>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	<script>
+	$(function() {
+		$( "#accordion" ).accordion({ header: "h3", autoHeight: false, navigation: true });
+	});
+	</script>
+
+	<!--- <form action="{{ path('AceEditorBundle_save', { 'filename': filename }) }}" method="post"> -->
     <input type="submit" value="Save Document" id = "save" />
-	<form action="{{ path('AceEditorBundle_save', { 'filename': filename }) }}" method="post">
+	<!-- <form action="{{ path('AceEditorBundle_save', { 'filename': filename }) }}" method="post">
 	<input type="hidden" value = "bla" name="data"/>
     <input type="submit" value="Save Document"/>
-	</form>
+	</form> -->
 	</div><br />
 	<pre id="editor">{{ code }}</pre>	
 	<!-- <div id="editor"> -->
 	<!-- </div> -->
-	<script src={{ asset("src/ace.js") }} type="text/javascript" charset="utf-8"></script>
-	<script src={{ asset("src/theme-textmate.js") }} type="text/javascript" charset="utf-8"></script>
-	<script src={{ asset("src/mode-c_cpp.js") }} type="text/javascript" charset="utf-8"></script>
 	<script>
     var editor = ace.edit("editor");
 	window.onload = function() {
@@ -52,7 +108,18 @@
 			});
 		});
 	});
-
+	
+	function editFile(filename)
+	{
+		$.get('ajax/test.html', function(data)
+		{
+			// $('.result').html(data);
+			editor.getSession().setValue(data);
+			// alert('Load was performed.');
+		});
+		
+	}
+	
 	</script>
 	
 
