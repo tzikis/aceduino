@@ -1,6 +1,62 @@
 {% extends '::base.html.twig' %}
 {% block title "Account Options" %}
 {% block body %}
-<h2>Account Options</h2>
-Change your details, then click 'save' to save your changes:<br />
+<h2>User Account Options</h2>
+<hr />
+Change your details, then click 'save' to save your changes.<br /><br />
+<form>
+<table>
+<tr>
+	<td align="right"><strong>Username:</strong></td>
+	<td>&nbsp{{ username }}</td>
+</tr>
+<tr>
+	<td align="right"><strong>Firstname:</strong></td>
+	<td><input type="text" name="firstname" id="fname" value="{{ settings.getFirstname() }}" /></td>
+</tr>
+<tr>
+	<td align="right"><strong>Lastname:</strong></td>
+	<td><input type="text" name="lastname" id="lname" value="{{ settings.getLastname() }}" /></td>
+</tr>
+<tr>
+	<td align="right"><strong>E-mail:</strong></td>
+	<td><input type="text" name="email" id="email" value="{{ settings.getEmail() }}" /></td>
+</tr>
+<tr>
+	<td align="right"><strong>Twitter:</strong></td>
+	<td><input type="text" name="tweet" id="tweet" value="{{ settings.getTwitter() }}" /></td>
+</tr>
+<tr>
+	<td align="right"><strong>Old Password:</strong></td>
+	<td><input type="password" name="old_pass" id="old_pass" value="" /></td>
+</tr>
+<tr>
+	<td align="right"><strong>New Password:</strong></td>
+	<td><input type="password" name="new_pass" id="new_pass" value="" /></td>
+</tr>
+<tr>
+	<td align="right"><strong>Confirm New Password:</strong></td>
+	<td><input type="password" name="confirm_new_pass" id="confirm_new_pass" value="" /></td>
+</tr>
+</table>
+<hr />
+<input type="button" id="modify" value="Save Changes" />
+</form>
+<form action = "{{ path('AceEditorBundle_homepage') }}"><input type="submit" id="cancel" value="Cancel" /></form>
+
+<script>
+$(document).ready(function()
+	{	
+		$("#modify").click(function() 
+		{
+			var str =  $("form").serialize();
+			var items = $("#results").text(str);
+			$.post("{{ path('AceEditorBundle_setoptions') }}", {data: items },
+			function(data)
+			{
+				alert("Profile Updated: " + data);
+			});
+		});
+	});
+</script>
 {% endblock %}

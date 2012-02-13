@@ -26,9 +26,13 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceUserBundle_homepage' => true,
        'AceEditorBundle_homepage' => true,
        'AceEditorBundle_list' => true,
+       'AceEditorBundle_create' => true,
        'AceEditorBundle_editor' => true,
        'AceEditorBundle_save' => true,
+       'AceEditorBundle_compile' => true,
+       'AceEditorBundle_download' => true,
        'AceEditorBundle_options' => true,
+       'AceEditorBundle_setoptions' => true,
        'login' => true,
        'login_check' => true,
     );
@@ -119,19 +123,39 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
         return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::listAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/list',  ),));
     }
 
+    private function getAceEditorBundle_createRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::createAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/create',  ),));
+    }
+
     private function getAceEditorBundle_editorRouteInfo()
     {
-        return array(array (  0 => 'filename',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',  'filename' => 'default_text.txt',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'filename',  ),  1 =>   array (    0 => 'text',    1 => '/edit',  ),));
+        return array(array (  0 => 'project_name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'project_name',  ),  1 =>   array (    0 => 'text',    1 => '/edit',  ),));
     }
 
     private function getAceEditorBundle_saveRouteInfo()
     {
-        return array(array (  0 => 'filename',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'filename',  ),  1 =>   array (    0 => 'text',    1 => '/save',  ),));
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/save',  ),));
+    }
+
+    private function getAceEditorBundle_compileRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::compileAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/compile',  ),));
+    }
+
+    private function getAceEditorBundle_downloadRouteInfo()
+    {
+        return array(array (  0 => 'project_name',  1 => 'type',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::downloadAction',  'type' => 'file',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'type',  ),  1 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'project_name',  ),  2 =>   array (    0 => 'text',    1 => '/download',  ),));
     }
 
     private function getAceEditorBundle_optionsRouteInfo()
     {
         return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::optionsAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/options',  ),));
+    }
+
+    private function getAceEditorBundle_setoptionsRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::setoptionsAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/setoptions',  ),));
     }
 
     private function getloginRouteInfo()

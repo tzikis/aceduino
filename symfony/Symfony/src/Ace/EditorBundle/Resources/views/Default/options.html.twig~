@@ -1,0 +1,7 @@
+{% extends '::base.html.twig' %}
+{% block title "Account Options" %}
+{% block body %}
+<h1>Account Options</h1>
+{{ name }}, welcome to the Options page<br /><br />
+Here you can customize the look and feel of your editor:<br />
+{% endblock %}

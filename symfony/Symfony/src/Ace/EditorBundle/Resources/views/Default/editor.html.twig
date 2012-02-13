@@ -58,6 +58,9 @@ alert('WTF!');
 </script>
 {% endblock %}
 {% block body %}
+	<div id="menu">
+		<a href="{{ path('AceEditorBundle_list') }}">My Projects</a>
+	</div>
 	<div id="selection">
 		<div id="accordion">
 			{% for section in examples %}
@@ -78,11 +81,23 @@ alert('WTF!');
 	});
 	</script>
 
-	<!--- <form action="{{ path('AceEditorBundle_save', { 'filename': filename }) }}" method="post"> -->
-    <input type="submit" value="Save Document" id = "save" />
-	<!-- <form action="{{ path('AceEditorBundle_save', { 'filename': filename }) }}" method="post">
+    <input type="submit" value="Save Changes" id = "save" /><span id='save_done'></span>
+	<input type="submit" value="Compile" id = "compile" /><span id='compile_done'></span>
+	<div id="saves">
+		<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name }) }}">Download File</a>
+		<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name, 'type' : "hex"}) }}">Download Hex</a>
+	</div>
+	<div id="compile_output">
+		
+	</div>
+	<!-- <form action="{{ path('AceEditorBundle_save') }}" method="post">
 	<input type="hidden" value = "bla" name="data"/>
+	<input type="hidden" value = "{{project_name}}" name="project_name">
     <input type="submit" value="Save Document"/>
+	</form> -->
+	<!-- <form action="{{ path('AceEditorBundle_compile') }}" method="post">
+	<input type="hidden" value = "{{project_name}}" name="project_name">
+    <input type="submit" value="Compile"/>
 	</form> -->
 	</div><br />
 	<pre id="editor">{{ code }}</pre>	
@@ -102,11 +117,47 @@ alert('WTF!');
 	{	
 		$("#save").click(function() 
 		{
-			$.post("{{ path('AceEditorBundle_save', { 'filename': filename }) }}", {data: editor.getSession().getValue()}, function(data)
+			$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
 			{
-				alert("Data received: " + data);
+				$("#save_done").html("√");
+				window.setTimeout(function () {
+				    $("#save_done").html("");
+				}, 5000);
+				// alert("Data received: " + data);
 			});
 		});
+		$("#compile").click(function() 
+		{
+			$.post("{{ path('AceEditorBundle_compile') }}", { project_name:"{{project_name}}"}, function(data)
+			{
+				$("#compile_done").html("√");
+				var obj = jQuery.parseJSON(data);
+				if(obj.success == 0)
+				{
+					$("#compile_output").css('color', 'red');
+					for (var i=0; i<obj.lines.length; i++)
+					{
+						$(".ace_gutter-cell").filter(function(index) {
+						  return $(this).html() == obj.lines[i];
+						}).css("text-decoration","underline").css("color","red");
+					}
+					 
+				}
+				else
+				{
+					$("#compile_output").css('color', '');
+					$(".ace_gutter-cell").css("text-decoration", "").css("color","");
+				}
+				
+				
+				$("#compile_output").html(obj.text);
+				window.setTimeout(function () {
+				    $("#compile_done").html("");
+				}, 5000);
+				// alert("Data received: " + data);
+			});
+		});
+		
 	});
 	
 	function editFile(filename)

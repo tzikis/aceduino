@@ -99,19 +99,39 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::listAction',  '_route' => 'AceEditorBundle_list',);
         }
 
+        // AceEditorBundle_create
+        if ($pathinfo === '/create') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::createAction',  '_route' => 'AceEditorBundle_create',);
+        }
+
         // AceEditorBundle_editor
-        if (0 === strpos($pathinfo, '/edit') && preg_match('#^/edit(?:/(?P<filename>[^/]+?))?$#xs', $pathinfo, $matches)) {
-            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',  'filename' => 'default_text.txt',)), array('_route' => 'AceEditorBundle_editor'));
+        if (0 === strpos($pathinfo, '/edit') && preg_match('#^/edit/(?P<project_name>[^/]+?)$#xs', $pathinfo, $matches)) {
+            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',)), array('_route' => 'AceEditorBundle_editor'));
         }
 
         // AceEditorBundle_save
-        if (0 === strpos($pathinfo, '/save') && preg_match('#^/save/(?P<filename>[^/]+?)$#xs', $pathinfo, $matches)) {
-            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',)), array('_route' => 'AceEditorBundle_save'));
+        if ($pathinfo === '/save') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::saveAction',  '_route' => 'AceEditorBundle_save',);
+        }
+
+        // AceEditorBundle_compile
+        if ($pathinfo === '/compile') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::compileAction',  '_route' => 'AceEditorBundle_compile',);
+        }
+
+        // AceEditorBundle_download
+        if (0 === strpos($pathinfo, '/download') && preg_match('#^/download/(?P<project_name>[^/]+?)(?:/(?P<type>[^/]+?))?$#xs', $pathinfo, $matches)) {
+            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::downloadAction',  'type' => 'file',)), array('_route' => 'AceEditorBundle_download'));
         }
 
         // AceEditorBundle_options
         if ($pathinfo === '/options') {
             return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::optionsAction',  '_route' => 'AceEditorBundle_options',);
+        }
+
+        // AceEditorBundle_setoptions
+        if ($pathinfo === '/setoptions') {
+            return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::setoptionsAction',  '_route' => 'AceEditorBundle_setoptions',);
         }
 
         // login

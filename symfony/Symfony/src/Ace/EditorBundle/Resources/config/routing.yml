@@ -6,14 +6,30 @@ AceEditorBundle_list:
     pattern:  /list
     defaults: { _controller: AceEditorBundle:Default:list }
 
+AceEditorBundle_create:
+    pattern:  /create
+    defaults: { _controller: AceEditorBundle:Default:create }
+
 AceEditorBundle_editor:
-    pattern:  /edit/{filename}
-    defaults: { _controller: AceEditorBundle:Default:edit, filename: default_text.txt }
+    pattern:  /edit/{project_name}
+    defaults: { _controller: AceEditorBundle:Default:edit}
 
 AceEditorBundle_save:
-    pattern:  /save/{filename}
+    pattern:  /save
     defaults: { _controller: AceEditorBundle:Default:save }
+
+AceEditorBundle_compile:
+    pattern:  /compile
+    defaults: { _controller: AceEditorBundle:Default:compile }
+
+AceEditorBundle_download:
+    pattern:  /download/{project_name}/{type}
+    defaults: { _controller: AceEditorBundle:Default:download, type: file }
     
 AceEditorBundle_options:
     pattern:  /options
     defaults: { _controller: AceEditorBundle:Default:options }
+    
+AceEditorBundle_setoptions:
+    pattern:  /setoptions
+    defaults: { _controller: AceEditorBundle:Default:setoptions }

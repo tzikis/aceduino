@@ -10,6 +10,7 @@ security:
         - { path: ^/list/*, roles: ROLE_USER }
         - { path: ^/edit/*, roles: ROLE_USER }
         - { path: ^/options/*, roles: ROLE_USER }
+        - { path: ^/create/*, roles: ROLE_USER }
 
     providers:
         in_memory:

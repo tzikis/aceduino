@@ -1,13 +1,17 @@
 {% extends '::base.html.twig' %}
 {% block body %}
+<p>Username: {{ app.user.username }}</p>
 Hello {{ name }}!<br />
 {% if files%}
 Please select one of your projects from the list:<br />
 <ul id="navigation">
     {% for file in files %}
-        <li><a href="{{ path('AceEditorBundle_editor', { 'filename': file.getFilename() }) }}">{{ file.getName() }}</a></li>
+        <li><a href="{{ path('AceEditorBundle_editor', { 'project_name': file.Name() }) }}">{{ file.getName() }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
-<a href=''>Add New</a><br />
+<form method='post' action='{{ path('AceEditorBundle_create')}}'>
+	<input type='text' name='project_name' value='new'/>
+	<input type='submit' value='Add New' />
+</form>
 {% endblock %}
