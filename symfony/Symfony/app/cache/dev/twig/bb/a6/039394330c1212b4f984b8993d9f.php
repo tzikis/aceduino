@@ -104,31 +104,25 @@ alert('WTF!');
     public function block_body($context, array $blocks = array())
     {
         // line 61
-        echo "\t<div id=\"menu\">
-\t\t<a href=\"";
-        // line 62
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_list"), "html", null, true);
-        echo "\">My Projects</a>
-\t</div>
-\t<div id=\"selection\">
+        echo "\t<div id=\"selection\">
 \t\t<div id=\"accordion\">
 \t\t\t";
-        // line 66
+        // line 63
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable($this->getContext($context, "examples"));
         foreach ($context['_seq'] as $context["_key"] => $context["section"]) {
-            // line 67
+            // line 64
             echo "\t\t    <h3><a href=\"#\">";
             echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
             echo "</a></h3>
 \t\t\t<div>
 \t\t\t<ul>
 \t\t    \t";
-            // line 70
+            // line 67
             $context['_parent'] = (array) $context;
             $context['_seq'] = twig_ensure_traversable($this->getAttribute($this->getContext($context, "section"), 1, array(), "array"));
             foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-                // line 71
+                // line 68
                 echo "\t\t    \t    <li onclick=\"alertMe('/examples/";
                 echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
                 echo "/";
@@ -143,7 +137,7 @@ alert('WTF!');
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
             $context = array_merge($_parent, array_intersect_key($context, $_parent));
-            // line 73
+            // line 70
             echo "\t\t\t</ul>
 \t\t\t</div>
 \t\t\t";
@@ -151,7 +145,7 @@ alert('WTF!');
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['section'], $context['_parent'], $context['loop']);
         $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 76
+        // line 73
         echo "\t\t</div>
 \t</div>
 \t<script>
@@ -164,11 +158,11 @@ alert('WTF!');
 \t<input type=\"submit\" value=\"Compile\" id = \"compile\" /><span id='compile_done'></span>
 \t<div id=\"saves\">
 \t\t<a href=\"";
-        // line 87
+        // line 84
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
         echo "\">Download File</a>
 \t\t<a href=\"";
-        // line 88
+        // line 85
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"), "type" => "hex")), "html", null, true);
         echo "\">Download Hex</a>
 \t</div>
@@ -176,29 +170,29 @@ alert('WTF!');
 \t\t
 \t</div>
 \t<!-- <form action=\"";
-        // line 93
+        // line 90
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_save"), "html", null, true);
         echo "\" method=\"post\">
 \t<input type=\"hidden\" value = \"bla\" name=\"data\"/>
 \t<input type=\"hidden\" value = \"";
-        // line 95
+        // line 92
         echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
         echo "\" name=\"project_name\">
     <input type=\"submit\" value=\"Save Document\"/>
 \t</form> -->
-\t<form action=\"";
-        // line 98
+\t<!-- <form action=\"";
+        // line 95
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_compile"), "html", null, true);
         echo "\" method=\"post\">
 \t<input type=\"hidden\" value = \"";
-        // line 99
+        // line 96
         echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
         echo "\" name=\"project_name\">
     <input type=\"submit\" value=\"Compile\"/>
-\t</form>
+\t</form> -->
 \t</div><br />
 \t<pre id=\"editor\">";
-        // line 103
+        // line 100
         echo twig_escape_filter($this->env, $this->getContext($context, "code"), "html", null, true);
         echo "</pre>\t
 \t<!-- <div id=\"editor\"> -->
@@ -218,7 +212,7 @@ alert('WTF!');
 \t\t\$(\"#save\").click(function() 
 \t\t{
 \t\t\t\$.post(\"";
-        // line 120
+        // line 117
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_save"), "html", null, true);
         echo "\", {data: editor.getSession().getValue(), project_name:\"";
         echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
@@ -234,7 +228,7 @@ alert('WTF!');
 \t\t\$(\"#compile\").click(function() 
 \t\t{
 \t\t\t\$.post(\"";
-        // line 131
+        // line 128
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_compile"), "html", null, true);
         echo "\", { project_name:\"";
         echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);

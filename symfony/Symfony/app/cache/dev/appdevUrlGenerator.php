@@ -35,6 +35,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceEditorBundle_setoptions' => true,
        'login' => true,
        'login_check' => true,
+       '_security_logout' => true,
     );
 
     /**
@@ -166,5 +167,10 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getlogin_checkRouteInfo()
     {
         return array(array (), array (), array (), array (  0 =>   array (    0 => 'text',    1 => '/login_check',  ),));
+    }
+
+    private function get_security_logoutRouteInfo()
+    {
+        return array(array (), array (), array (), array (  0 =>   array (    0 => 'text',    1 => '/logout',  ),));
     }
 }

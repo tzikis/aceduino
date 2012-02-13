@@ -144,6 +144,11 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array('_route' => 'login_check');
         }
 
+        // _security_logout
+        if ($pathinfo === '/logout') {
+            return array('_route' => '_security_logout');
+        }
+
         throw 0 < count($allow) ? new MethodNotAllowedException(array_unique($allow)) : new ResourceNotFoundException();
     }
 }
