@@ -8,13 +8,14 @@ class __TwigTemplate_dd158a7b52e9ba5d72fdce6ec54e6024 extends Twig_Template
         parent::__construct($env);
 
         $this->blocks = array(
-            'body' => array($this, 'block_body'),
+            'alert' => array($this, 'block_alert'),
+            'mainspan' => array($this, 'block_mainspan'),
         );
     }
 
     protected function doGetParent(array $context)
     {
-        return "::base.html.twig";
+        return "AceEditorBundle:Default:container.html.twig";
     }
 
     protected function doDisplay(array $context, array $blocks = array())
@@ -23,45 +24,62 @@ class __TwigTemplate_dd158a7b52e9ba5d72fdce6ec54e6024 extends Twig_Template
     }
 
     // line 2
-    public function block_body($context, array $blocks = array())
+    public function block_alert($context, array $blocks = array())
     {
         // line 3
-        echo "Hello ";
-        echo twig_escape_filter($this->env, $this->getContext($context, "name"), "html", null, true);
-        echo "!<br />
-";
+        echo "<div class=\"alert alert-info\">
+\t<h1 id=\"\">Hello ";
         // line 4
-        if ($this->getContext($context, "files")) {
-            // line 5
-            echo "Please select one of your projects from the list:<br />
-<ul id=\"navigation\">
-    ";
-            // line 7
-            $context['_parent'] = (array) $context;
-            $context['_seq'] = twig_ensure_traversable($this->getContext($context, "files"));
-            foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-                // line 8
-                echo "        <li><a href=\"";
-                echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_editor", array("project_name" => $this->getAttribute($this->getContext($context, "file"), "Name", array(), "method"))), "html", null, true);
-                echo "\">";
-                echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "file"), "getName", array(), "method"), "html", null, true);
-                echo "</a></li>
-    ";
-            }
-            $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
-            $context = array_merge($_parent, array_intersect_key($context, $_parent));
-            // line 10
-            echo "</ul>
+        echo twig_escape_filter($this->env, $this->getContext($context, "name"), "html", null, true);
+        echo "!<br /></h1>
+</div>
 ";
-        }
-        // line 12
-        echo "<form method='post' action='";
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_create"), "html", null, true);
-        echo "'>
-\t<input type='text' name='project_name' value='new'/>
-\t<input type='submit' value='Add New' />
-</form>
+    }
+
+    // line 8
+    public function block_mainspan($context, array $blocks = array())
+    {
+        // line 9
+        echo "<div class=\"hero-unit\">
+  <h1>Hello, world!</h1>
+  <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+  <p><a class=\"btn btn-primary btn-large\">Learn more &raquo;</a></p>
+</div>
+<div class=\"row-fluid\">
+  <div class=\"span4\">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class=\"span4\">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class=\"span4\">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
+  </div><!--/span-->
+</div><!--/row-->
+<div class=\"row-fluid\">
+  <div class=\"span4\">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class=\"span4\">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class=\"span4\">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
+  </div><!--/span-->
+</div><!--/row-->
+
 ";
     }
 

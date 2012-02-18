@@ -1,0 +1,26 @@
+<div class="span3">
+  <div class="well sidebar-nav">
+    <ul class="nav nav-list">
+		<li class="nav-header">New Project</li>
+		<li>
+		<form class="form-search" method='post' action='{{ path('AceEditorBundle_create')}}'>
+			<input type="text" name='project_name' class="input-medium search-query">
+			<button type="submit" class="btn">Create new project</button>
+		</form>
+		</li>
+      <li class="nav-header">Projects</li>
+	   	{% if files%}
+		    {% for file in files %}
+		        <li>
+					<a href="{{ path('AceEditorBundle_editor', { 'project_name': file.Name() }) }}">
+						{{ file.getName() }}
+					</a>
+				</li>
+		    {% endfor %}
+		{% endif %}	
+      <!-- <li class="active"><a href="#">Link</a></li> -->
+		<li class="nav-header">Links</li>
+		<li><a href="{{ path('AceEditorBundle_options') }}"><i class="icon-cog"></i>Options</a></li>
+	</ul>
+  </div>
+</div>

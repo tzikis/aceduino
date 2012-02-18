@@ -28,6 +28,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceEditorBundle_list' => true,
        'AceEditorBundle_create' => true,
        'AceEditorBundle_editor' => true,
+       'AceEditorBundle_getdata' => true,
        'AceEditorBundle_save' => true,
        'AceEditorBundle_compile' => true,
        'AceEditorBundle_download' => true,
@@ -132,6 +133,11 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getAceEditorBundle_editorRouteInfo()
     {
         return array(array (  0 => 'project_name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::editAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'project_name',  ),  1 =>   array (    0 => 'text',    1 => '/edit',  ),));
+    }
+
+    private function getAceEditorBundle_getdataRouteInfo()
+    {
+        return array(array (  0 => 'project_name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::getDataAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'project_name',  ),  1 =>   array (    0 => 'text',    1 => '/get_data',  ),));
     }
 
     private function getAceEditorBundle_saveRouteInfo()

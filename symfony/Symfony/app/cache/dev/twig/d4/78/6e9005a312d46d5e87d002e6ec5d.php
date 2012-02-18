@@ -24,13 +24,9 @@ class __TwigTemplate_d4786e9005a312d46d5e87d002e6ec5d extends Twig_Template
         // line 8
         echo twig_escape_filter($this->env, $this->getContext($context, "last_username"), "html", null, true);
         echo "\" />
-
     <label for=\"password\">Password:</label>
     <input type=\"password\" id=\"password\" name=\"_password\" />
-
-    ";
-        // line 17
-        echo "
+    <input type=\"hidden\" name=\"_target_path\" value=\"/home\" />
     <input type=\"submit\" name=\"login\" />
 </form>
 ";

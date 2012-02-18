@@ -7,64 +7,105 @@
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
 		<link type="text/css" href={{ asset("jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css") }} rel="stylesheet" />	
 		<!-- GH STUFF! has to be removed!-->
-		<link href="https://a248.e.akamai.net/assets.github.com/stylesheets/bundles/github-92243db0daab07aa944d353c1ba062b9581bd321.css" media="screen" rel="stylesheet" type="text/css" />
-	    <link href="https://a248.e.akamai.net/assets.github.com/stylesheets/bundles/github2-87ee95a5f2db56a1f4a7182cbe29182e4b9eeccd.css" media="screen" rel="stylesheet" type="text/css" />
-	    
+		<link href="{{ asset("gh/css-1.css") }}" media="screen" rel="stylesheet" type="text/css" />
+	    <link href="{{ asset("gh/css-2.css") }}" media="screen" rel="stylesheet" type="text/css" />
+		<link href="{{ asset("bootstrap/css/bootstrap.css") }}" media="screen" rel="stylesheet" type="text/css" />
+		<!-- <link href="{{ asset("santiquiss/css/bootstrap.css") }}" media="screen" rel="stylesheet" type="text/css" /> -->
 		
+		<style type="text/css" media="screen">
+			body
+			{
+				padding-top: 40px;
+			}
+			
+		</style>
+	    <link href="{{ asset("bootstrap/css/bootstrap-responsive.css") }}" media="screen" rel="stylesheet" type="text/css" />
 		<script src={{ asset("jquery-ui/js/jquery-1.7.1.min.js") }} type="text/javascript"></script>
 		<script src={{ asset("jquery-ui/js/jquery-ui-1.8.17.custom.min.js") }} type="text/javascript"></script>
 	    {% block javascripts %}{% endblock %}
     </head>
     <body>
-		      <div id="header" class="true clearfix">
-		        <div class="container clearfix">
-		          <!-- <a class="site-logo" href="https://github.com/">
-		            <img alt="GitHub" class="github-logo-4x" height="30" src="https://a248.e.akamai.net/assets.github.com/images/modules/header/logov7@4x.png?1323882799" />
-		            <img alt="GitHub" class="github-logo-4x-hover" height="30" src="https://a248.e.akamai.net/assets.github.com/images/modules/header/logov7@4x-hover.png?1324325436" />
-		          </a> -->
+		<div class="navbar navbar-fixed-top">
+		  <div class="navbar-inner">
+		    <div class="container-fluid">
+		      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </a>
+		      <a class="brand" href="#">clouduino</a>
+		      <div class="nav-collapse">
+		        <ul class="nav">
+			<!--
+			 					{% if is_granted('ROLE_USER') %}
+									<li><a href="https://github.com/tzikis">
+										<img id="avatar" height="20" src="https://secure.gravatar.com/avatar/4db71795ff05d3b53432fe27cd8b00b8?s=140&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="20" />
+									</a>
+									</li>
+								{% endif %}
+						 -->
+		          <li class="active"><a href="{{ path('AceEditorBundle_homepage')}}">Home</a></li>
 
-
-		    <div class="topsearch ">
-		<!-- <form action="/search" id="top_search_form" method="get">        <a href="/search" class="advanced-search tooltipped downwards" title="Advanced Search">Advanced Search</a>
-		        <div class="search placeholder-field js-placeholder-field">
-		          <label class="placeholder" for="global-search-field">Search…</label>
-		          <input type="text" class="search my_repos_autocompleter" id="global-search-field" name="q" results="5" spellcheck="false" autocomplete="off" data-autocomplete="my-repos-autocomplete">
-		          <div id="my-repos-autocomplete" class="autocomplete-results">
-		            <ul class="js-navigation-container"></ul>
-		          </div>
-		          <input type="submit" value="Search" class="button">
-		        </div>
-		        <input type="hidden" name="type" value="Everything" />
-		        <input type="hidden" name="repo" value="" />
-		        <input type="hidden" name="langOverride" value="" />
-		        <input type="hidden" name="start_value" value="1" />
-		</form>-->
-		      <ul class="top-nav"> 
-		          <li class="homepage"><a href="{{ path('AceEditorBundle_homepage')}}">Homepage</a></li>
-		          <li><a href="{{ path('AceEditorBundle_list')}}">My Projects</a></li>
-		          <li><a href="{{ path('AceEditorBundle_options')}}">Options</a></li>
-		        <li><a href="http://help">Help</a></li>
-		      	<li><a href="{{ path('login')}}" id="login">Log In</a></li>
-		
-		      </ul>
+					{% if is_granted('ROLE_USER') %}		      
+			          <li><a href="{{ path('AceEditorBundle_list')}}">My Projects</a></li>
+			          <li><a href="{{ path('AceEditorBundle_options')}}">Options</a></li>
+				      <!-- <li><a href="{{ path('_security_logout')}}" id="logout">Log Out</a></li> -->
+					{% endif %}
+					<li><form class="navbar-search pull-left" action="{{ path('AceEditorBundle_homepage')}}">
+					  <input type="text" class="search-query" placeholder="Search">
+					</form>
+					</li>
+		        </ul>
+				{% block examples %}
+				{% endblock %}
+				
+				{% if not is_granted('ROLE_USER') %}
+		        <ul class="nav pull-right">
+					<li>
+				      	<a href="{{ path('login')}}">Log In</a>
+					</li>
+				</ul>
+				{% endif %}		
+				{% if is_granted('ROLE_USER') %}
+				<ul class="nav pull-right">
+				    <li><a href="{{ path('_security_logout')}}" id="logout">Log Out</a></li>
+				</ul>
+				<p class="navbar-text pull-right">
+					Logged in as <a href="#">{{ app.user.username }}</a>
+				</p>
+				{% endif %}
+		      </div><!--/.nav-collapse -->
 		    </div>
-		{% if is_granted('ROLE_USER') %}
-		  <div id="userbox">
-		    <div id="user">
-		      <a href="https://github.com/tzikis"><img height="20" src="https://secure.gravatar.com/avatar/4db71795ff05d3b53432fe27cd8b00b8?s=140&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="20" /></a>
-		      <a href="https://github.com/tzikis" class="name">{{ app.user.username }}</a>
-		    </div>
-		    <ul id="user-links">
-		      <a href="{{ path('_security_logout')}}" id="logout"><span class="icon">Log Out</span></a>
-		    </ul>
 		  </div>
-		{% endif %}
+		</div>		
+		<!-- Le javascript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		
+		<script src="{{ asset("bootstrap/js/bootstrap.js") }}"></script>
+		<!-- <script src="../assets/js/bootstrap-transition.js"></script>
+		<script src="../assets/js/bootstrap-alert.js"></script>
+		<script src="../assets/js/bootstrap-modal.js"></script>
+		<script src="../assets/js/bootstrap-dropdown.js"></script>
+		<script src="../assets/js/bootstrap-scrollspy.js"></script>
+		<script src="../assets/js/bootstrap-tab.js"></script>
+		<script src="../assets/js/bootstrap-tooltip.js"></script>
+		<script src="../assets/js/bootstrap-popover.js"></script>
+		<script src="../assets/js/bootstrap-button.js"></script>
+		<script src="../assets/js/bootstrap-collapse.js"></script>
+		<script src="../assets/js/bootstrap-carousel.js"></script>
+		<script src="../assets/js/bootstrap-typeahead.js"></script> -->
+	
+	<!-- 		      <div id="header" class="true clearfix">
+			        <div class="container clearfix">
+			  <div id="userbox">
+			    <div id="user">
+			      <a id="help" href="http://help">Help</a>
+			    </div>
+			  </div>
 
-
-
-
-		        </div>
-		      </div>
+	        </div>
+	      </div> -->
 	
         {% block body %}{% endblock %}
     </body>

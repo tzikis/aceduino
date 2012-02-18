@@ -1,16 +1,49 @@
-{% extends '::base.html.twig' %}
-{% block body %}
-Hello {{ name }}!<br />
-{% if files%}
-Please select one of your projects from the list:<br />
-<ul id="navigation">
-    {% for file in files %}
-        <li><a href="{{ path('AceEditorBundle_editor', { 'project_name': file.Name() }) }}">{{ file.getName() }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-<form method='post' action='{{ path('AceEditorBundle_create')}}'>
-	<input type='text' name='project_name' value='new'/>
-	<input type='submit' value='Add New' />
-</form>
+{% extends 'AceEditorBundle:Default:container.html.twig' %}
+{% block alert %}
+<div class="alert alert-info">
+	<h1 id="">Hello {{ name }}!<br /></h1>
+</div>
+{% endblock %}
+
+{% block mainspan %}
+<div class="hero-unit">
+  <h1>Hello, world!</h1>
+  <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+  <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+</div>
+<div class="row-fluid">
+  <div class="span4">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class="span4">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class="span4">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div><!--/span-->
+</div><!--/row-->
+<div class="row-fluid">
+  <div class="span4">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class="span4">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div><!--/span-->
+  <div class="span4">
+    <h2>Heading</h2>
+    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+    <p><a class="btn" href="#">View details &raquo;</a></p>
+  </div><!--/span-->
+</div><!--/row-->
+
 {% endblock %}

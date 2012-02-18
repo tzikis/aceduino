@@ -1,0 +1,52 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+
+<script>
+$(document).ready(function()
+{	
+	$(".new-repo").click(function() 
+	{
+		$('[name=project_name]').val($("#your-repos-filter").val());
+		$("#create").submit();
+	});
+});
+</script>
+
+<style type="text/css" media="screen">
+.input-medium.search-query
+{
+	width: 85%;
+	margin-right: 10px;	
+}
+button.btn
+{
+	width:100%;
+	margin-top: 5px;
+}
+</style>
+
+<div class="container">
+	<br />
+	{% block alert %}
+	{% endblock %}
+
+	<div class="container-fluid">
+	  <div class="row-fluid">
+	    {% render "AceEditorBundle:Default:sidebar" %}
+        	
+	    <div class="span9">
+		{% block mainspan %}
+		
+		{% endblock %}
+	    </div><!--/span-->
+	
+	  </div><!--/row-->
+	  <hr>
+
+	  <footer>
+	    <p>&copy; clouduino 2012</p>
+	  </footer>
+
+	</div><!--/.fluid-container-->	
+</div>
+{% endblock %}

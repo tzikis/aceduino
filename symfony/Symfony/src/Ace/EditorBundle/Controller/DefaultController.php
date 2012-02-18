@@ -11,6 +11,7 @@ class DefaultController extends Controller
 {
     public $default_file = "default_text.txt";
 	public $directory = "/var/www/aceduino/symfony/files/";
+	public $examples_directory = "/var/www/aceduino/symfony/examples/";
     public function indexAction()
     {
 		// if($name == "tzikis")
@@ -33,17 +34,28 @@ class DefaultController extends Controller
 	    if (!$user) {
 	        throw $this->createNotFoundException('No user found with id '.$name);
 	    }
+		$fullname= $user->getFirstname()." (".$user->getUsername().") ".$user->getLastname();
+		        
+		return $this->render('AceEditorBundle:Default:list.html.twig', array('name' =>$fullname));
+    }
+
+    public function sidebarAction()
+    {
+		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+	    $user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+
+	    if (!$user) {
+	        throw $this->createNotFoundException('No user found with id '.$name);
+	    }
 		$files = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findByOwner($user->getId());
 	    // do something, like pass the $user object into a template
 		$fullname= $user->getFirstname()." (".$user->getUsername().") ".$user->getLastname();
 		        
-		return $this->render('AceEditorBundle:Default:list.html.twig', array('name' =>$fullname, 'files' => $files));
+		return $this->render('AceEditorBundle:Default:sidebar.html.twig', array('files' => $files));
     }
 
     public function editAction($project_name)
-    {
-		$examples_directory = "/var/www/aceduino/symfony/examples/";
-		
+    {		
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
 		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
 		$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneByName($project_name);
@@ -68,18 +80,44 @@ class DefaultController extends Controller
 			return $this->redirect($this->generateUrl('AceEditorBundle_list'));
 
 		// $filename = getcwd();
-		$examples = $this->iterate_dir($examples_directory);
+		$examples = $this->getExamplesAction();
+				
+        return $this->render('AceEditorBundle:Default:editor.html.twig', array('project_name' => $project_name, 'filename' => $filename, 'examples' => $examples));
+    }
+
+	public function getDataAction($project_name)
+	{
+		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+		$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneByName($project_name);
+		
+		if(!$user || !$file || ($user->getId() != $file->getOwner()))
+		{
+			return new Response("");
+		}
+		else
+		{
+			$filename=$file->getFilename();
+			if(!file_exists($this->directory.$filename))
+					return new Response("");
+				
+				$file = fopen($this->directory.$filename, 'r');
+				$value = fread($file, filesize($this->directory.$filename));
+				fclose($file);
+				return new Response($value);
+		}		
+	}
+	
+	public function getExamplesAction()
+	{
+		$examples = $this->iterate_dir($this->examples_directory);
 		for($i = 0; $i < count($examples); $i++ )
 		{
-			$array = $this->iterate_dir($examples_directory.$examples[$i]);
+			$array = $this->iterate_dir($this->examples_directory.$examples[$i]);
 			$examples[$i] = array($examples[$i], $array);
-		}
-				
-		$file = fopen($this->directory.$filename, 'r');
-		$value = fread($file, filesize($this->directory.$filename));
-		fclose($file);
-        return $this->render('AceEditorBundle:Default:editor.html.twig', array('code' => $value, 'project_name' => $project_name, 'filename' => $filename, 'examples' => $examples));
-    }
+		}		
+		return $examples;
+	}
 
     public function saveAction()
     {
@@ -99,6 +137,8 @@ class DefaultController extends Controller
 					$file = fopen($this->directory.$file->getFilename(), 'w');
 					fwrite($file, $mydata);
 					fclose($file);
+					if(file_exists($file."hex"))
+						unlink($file."hex");
 					$response->setContent("OK");
 					$response->setStatusCode(200);
 					$response->headers->set('Content-Type', 'text/html');
@@ -124,6 +164,7 @@ class DefaultController extends Controller
 				{
 					$extension = ".pde";
 					$filename = $file->getFilename();
+					$this->cleanCompile();
 					system("cp /var/www/aceduino/symfony/files/".$filename." /var/www/aceduino/symfony/compiler/".$filename.$extension, $success);
 					if(!$success)
 					{
@@ -160,8 +201,7 @@ class DefaultController extends Controller
 							$response->setContent(json_encode(array('success' => 0, 'text' => $output_string, 'lines' => $lines)));
 						}
 						system("cp /var/www/aceduino/symfony/compiler/".$filename.".hex /var/www/aceduino/symfony/files/", $success);
-						if(!$success)
-							system("rm /var/www/aceduino/symfony/compiler/build/".$filename."* && rm /var/www/aceduino/symfony/compiler/".$filename."*", $success);
+						$this->cleanCompile();
 						$response->setStatusCode(200);
 						$response->headers->set('Content-Type', 'text/html');
 					}
@@ -260,14 +300,35 @@ class DefaultController extends Controller
 			$mydata = $this->getRequest()->request->get('data');
 			if($mydata)
 			{
+				$fname = $mydata['firstname'];
+				$lname = $mydata['lastname'];
+				$mail  = $mydata['email'];
+				$twitter = $mydata['tweet'];
+				$oldpass = $mydata['old_pass'];
+				$newpass = $mydata['new_pass'];
+				
 				$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
 				$em = $this->getDoctrine()->getEntityManager();
 				$user = $em->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
 				
-				$user->setFirstname($mydata);
+				//update object
+				$user->setFirstname($fname);
+				$user->setLastname($lname);
+				$user->setEmail($mail);
+				$user->setTwitter($twitter);
+				
+				if($oldpass){
+					if ($user->getPassword()===$oldpass)
+					{
+						$user->setPassword($newpass);
+						$response->setContent('OK');
+					}
+					else
+						$response->setContent('OK, Password Not Updated');
+				}
+				
 				$em->flush();
-
-				$response->setContent("OK");
+							
 				$response->setStatusCode(200);
 				$response->headers->set('Content-Type', 'text/html');
 			}
@@ -282,6 +343,10 @@ class DefaultController extends Controller
 	    if ($this->getRequest()->getMethod() === 'POST')
 		{
 			$project_name = $this->getRequest()->request->get('project_name');
+			if($project_name == '')
+			{
+				return $this->redirect($this->generateUrl('AceEditorBundle_list'));
+			}
 			$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
 		    $user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
 		    if (!$user)
@@ -342,5 +407,14 @@ class DefaultController extends Controller
 	        $string .= $characters{mt_rand(0, strlen($characters)-1)};
 	    }
 	    return $string;
+	}
+	
+	private function cleanCompile()
+	{
+		system("rm /var/www/aceduino/symfony/compiler/build/*.pde");
+		system("rm /var/www/aceduino/symfony/compiler/build/*.ino");
+		system("rm /var/www/aceduino/symfony/compiler/build/*.cpp");
+		system("rm /var/www/aceduino/symfony/compiler/*.pde");
+		system("rm /var/www/aceduino/symfony/compiler/*.ino");
 	}
 }

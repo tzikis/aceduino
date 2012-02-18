@@ -14,6 +14,10 @@ AceEditorBundle_editor:
     pattern:  /edit/{project_name}
     defaults: { _controller: AceEditorBundle:Default:edit}
 
+AceEditorBundle_getdata:
+    pattern:  /get_data/{project_name}
+    defaults: { _controller: AceEditorBundle:Default:getData}
+
 AceEditorBundle_save:
     pattern:  /save
     defaults: { _controller: AceEditorBundle:Default:save }

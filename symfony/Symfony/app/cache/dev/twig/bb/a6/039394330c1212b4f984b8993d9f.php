@@ -11,6 +11,7 @@ class __TwigTemplate_bba6039394330c1212b4f984b8993d9f extends Twig_Template
             'stylesheets' => array($this, 'block_stylesheets'),
             'javascripts' => array($this, 'block_javascripts'),
             'body' => array($this, 'block_body'),
+            'examples' => array($this, 'block_examples'),
         );
     }
 
@@ -29,254 +30,394 @@ class __TwigTemplate_bba6039394330c1212b4f984b8993d9f extends Twig_Template
     {
         // line 3
         echo "  <style type=\"text/css\" media=\"screen\">
-    body
-\t{
-        overflow: hidden;
-    }
+
+html
+{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+body
+{
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+\tbox-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
     
-    #editor
-\t{ 
-        margin: 0;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 300;
-        right: 0;
-        width: 800px;
-/*        height: 400px;*/
-    }
-\t#selection
-\t{
-\t\twidth: 400px;
+#editor
+{ 
+\tposition: absolute;
+\ttop:  50px;
+\tleft: 280px;
+\tbottom:10px;
+\tright: 10px;
+\tbackground: white;
+\tpadding: 0px;
+}
+#selection
+{
+\t\twidth: 250px;
 /*\t\theight: 200px;*/
-\t}
+}
+#container
+{
+\t\tmargin-top: 10px;\t\t
+}
+#container_left
+{
+/*\t\tfloat:left;
+\t\tmargin-right: 10px;
+*/}
+#container_right
+{
+}
+#compile_output
+{
+\tposition: absolute;
+\tleft: 280px;
+\tbottom: 0px;
+\tright: 10px;
+\t/*height:120px;*/
+\tbackground: white;
+\tpadding: 0px;
+\toverflow: scroll;
+
+\theight:0px;
+
+\t/*\twidth: 280px;*/
+\twhite-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+\twhite-space: -pre-wrap;      /* Opera 4-6 */
+\twhite-space: -o-pre-wrap;    /* Opera 7 */
+\twhite-space: pre-wrap;       /* css-3 */
+\tword-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+.mybutton
+{
+\twidth:100%;
+\tmargin-bottom:10px;
+}
+.download_link
+{
+\tmargin-left:14px;
+}
+
   </style>
 ";
     }
 
-    // line 27
+    // line 81
     public function block_javascripts($context, array $blocks = array())
     {
-        // line 28
+        // line 82
         echo "<script src=";
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("src/ace.js"), "html", null, true);
         echo " type=\"text/javascript\" charset=\"utf-8\"></script>
 <script src=";
-        // line 29
+        // line 83
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("src/theme-textmate.js"), "html", null, true);
         echo " type=\"text/javascript\" charset=\"utf-8\"></script>
 <script src=";
-        // line 30
+        // line 84
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("src/mode-c_cpp.js"), "html", null, true);
         echo " type=\"text/javascript\" charset=\"utf-8\"></script>
 <script type=\"text/javascript\">
-// function editFile()
-// {
-// \talert('editting file');
-// \t// \$.get('/examples/1.Basics/Blink/Blink.ino', function(data)
-// \t// {
-// \t// \t\$('.result').html(data);
-// \t// \teditor.getSession().setValue(data);
-// \t// \talert('Load was performed.');
-// \t// });
-// }
-\t
-\t// editFile('/examples/1.Basics/Blink/Blink.ino');
-</script>
-<script type=\"text/javascript\">
-function alertMe(filename){
+function getExample(filename){
 \t// alert('editting file');
 \t\$.get(filename, function(data)
 \t{
-\t\t\$('.result').html(data);
+\t\t// \$('.result').html(data);
 \t\teditor.getSession().setValue(data);
 \t\t// alert('Load was performed.');
 \t});
 }
-function editFile(){
-alert('WTF!');
+</script>
+<script type=\"text/javascript\">
+
+
+function throwMud()
+{
+\tdirty=true;
+\t\$(\"#compile_text\").html(\" Save & Build\");
+\t\$(\"#revert\").removeClass(\"disabled\").click(function(e)
+\t{
+\t    e.preventDefault();
+\t});
+\tdisableLink(\$(\".download_link\"));
+}
+function cleanUp()
+{
+\tdirty= false;
+\t\$(\"#compile_text\").html(\" Build\");
+\tenableLink(\$(\".link_ino\"));
+\tdisableLink(\$(\".link_hex\"));
+\t\$(\"#revert\").addClass(\"disabled\").off('click');
+}
+function save()
+{
+\t\$.post(\"";
+        // line 119
+        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_save"), "html", null, true);
+        echo "\", {data: editor.getSession().getValue(), project_name:\"";
+        echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
+        echo "\"}, function(data)
+\t{
+\t\t\$(\"#save\").addClass(\"btn-success\");
+\t\t\$(\"#save_icon\").addClass(\"icon-white\");
+\t\t\$(\"#operation_output\").html(\"Saved successfuly.\");
+\t\tcleanUp();
+\t\twindow.setTimeout(function () {
+\t\t    \$(\"#save\").removeClass(\"btn-success\");
+\t\t\t\$(\"#save_icon\").removeClass(\"icon-white\");
+\t\t}, 500);
+\t\t// alert(\"Data received: \" + data);
+\t});\t
+}
+
+function revert()
+{
+\t\$.get(\"";
+        // line 135
+        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_getdata", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
+        echo "\", function(data)
+\t{
+\t\teditor.getSession().setValue(data);
+\t\t\$(\"#revert\").addClass(\"btn-success\");
+\t\t\$(\"#revert_icon\").addClass(\"icon-white\");
+\t\t\$(\"#operation_output\").html(\"Reverted successfuly.\");
+\t\tcleanUp();
+\t\twindow.setTimeout(function () {
+\t\t    \$(\"#revert\").removeClass(\"btn-success\");
+\t\t\t\$(\"#revert_icon\").removeClass(\"icon-white\");
+\t\t}, 500);
+\t\t// alert(\"Data received: \" + data);
+\t});\t
+}
+
+function build()
+{
+\t\$.post(\"";
+        // line 152
+        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_compile"), "html", null, true);
+        echo "\", { project_name:\"";
+        echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
+        echo "\"}, function(data)
+\t{
+\t\tvar obj = jQuery.parseJSON(data);
+\t\tif(obj.success == 0)
+\t\t{
+\t\t\t\$(\"#compile_output\").css('color', 'red');
+\t\t\tfor (var i=0; i<obj.lines.length; i++)
+\t\t\t{
+\t\t\t\t\$(\".ace_gutter-cell\").filter(function(index) {
+\t\t\t\t  return \$(this).html() == obj.lines[i];
+\t\t\t\t}).css(\"text-decoration\",\"underline\").css(\"color\",\"red\");
+\t\t\t}
+\t\t\t 
+\t\t\t\$(\"#editor\").css(\"bottom\",\"150px\");
+\t\t\t\$(\"#compile_output\").css(\"bottom\",\"0px\");
+\t\t\t\$(\"#compile_output\").css(\"height\",\"120px\");
+\t\t\t\$(\"#compile_output\").addClass(\"well\");
+\t\t\t\$(\"#compile\").addClass(\"btn-warning\");
+\t\t\t\$(\"#compile_icon\").addClass(\"icon-remove\");
+\t\t\t
+\t\t\t
+\t\t\t\$(\"#compile_output\").html(obj.text);
+\t\t\t\$(\"#operation_output\").html(\"Compilation failed.\")
+\t\t}
+\t\telse
+\t\t{
+\t\t\t\$(\"#compile_output\").css('color', '');
+\t\t\t\$(\".ace_gutter-cell\").css(\"text-decoration\", \"\").css(\"color\",\"\");
+\t\t\t\$(\"#editor\").css(\"bottom\",\"\");
+\t\t\t\$(\"#compile_output\").css(\"bottom\",\"\");
+\t\t\t\$(\"#compile_output\").css(\"height\",\"\");
+\t\t\t\$(\"#compile_output\").removeClass(\"well\");
+\t\t\t\$(\"#compile\").addClass(\"btn-success\");
+\t\t\t\$(\"#compile_icon\").addClass(\"icon-ok\");
+
+\t\t\t\$(\"#operation_output\").html(obj.text)
+\t\t\t\$(\"#compile_output\").html(\"\");
+\t\t\tenableLink(\$(\".link_hex\"));
+\t\t}
+\t\t\$(\"#compile_icon\").removeClass(\"icon-check\").addClass(\"icon-white\");
+
+\t\twindow.setTimeout(function () {
+\t\t    \$(\"#compile\").removeClass(\"btn-success\").removeClass(\"btn-warning\");
+\t\t\t\t\$(\"#compile_icon\").removeClass(\"icon-white\").removeClass(\"icon-remove\").removeClass(\"icon-ok\").addClass(\"icon-check\");
+\t\t}, 500);
+\t\t// alert(\"Data received: \" + data);
+\t});\t
+}
+
+function save_and_build()
+{
+\tsave();
+\t\$(document).ajaxStop(function()
+\t{
+\t\tbuild();
+\t\t\$(this).unbind('ajaxStop');
+\t});
+}
+
+function disableLink(link)
+{
+\tlink.css(\"text-decoration\",\"line-through\").click(function(e)
+\t{
+\t    e.preventDefault();
+\t});
+}
+function enableLink(link)
+{
+\tlink.css(\"text-decoration\",\"\").off('click');
 }
 </script>
 ";
     }
 
-    // line 60
+    // line 224
     public function block_body($context, array $blocks = array())
     {
-        // line 61
-        echo "\t<div id=\"selection\">
-\t\t<div id=\"accordion\">
+        // line 225
+        echo "<div class=\"container\">
+<div id=\"container\" class=\"row-fluid\">\t
+\t<div class=\"row-fluid\">
+\t<div id=\"container_left\" class=\"span2\">
+\t    <button id = \"save\" class=\"btn mybutton\" /><i id=\"save_icon\" class=\"icon-download\"></i> Save Changes</button><br />
+\t\t<button id = \"compile\" class=\"btn mybutton\"><i id=\"compile_icon\" class=\"icon-check\"></i><span id=\"compile_text\"> Build</span></button>
+\t\t<button id = \"revert\" class=\"btn mybutton disabled\"><i id=\"compile_icon\" class=\"icon-arrow-left\"></i> Revert</span></button>
+\t\t<div id=\"saves\" class=\"well\">
+\t\t\t<i class=\"icon-file\"></i>Download:<br />
+\t\t\t<a href=\"";
+        // line 234
+        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
+        echo "\" class=\"download_link link_ino\">Download .ino</a>
+\t\t\t<a href=\"";
+        // line 235
+        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"), "type" => "hex")), "html", null, true);
+        echo "\" class=\"download_link link_hex\">Download .hex</a>
+\t\t</div>
+\t\t<div id=\"operation_output\">
+\t\t</div>
+\t</div>
+\t<div id=\"container_right\">
+\t\t<pre id=\"editor\">";
+        // line 241
+        echo $this->env->getExtension('actions')->renderAction("AceEditorBundle:Default:getData", array("project_name" => $this->getContext($context, "project_name")), array());
+        echo "</pre>
+\t\t<div id=\"compile_output\">
+\t\t</div>
+\t</div>\t
+</div>
+</div>
+</div>
+
+<script>
+var editor = ace.edit(\"editor\");
+var dirty = false;
+\t
+window.onload = function()
+{
+    editor.setTheme(\"ace/theme/textmate\");
+
+    var JavaScriptMode = require(\"ace/mode/c_cpp\").Mode;
+    editor.getSession().setMode(new JavaScriptMode());
+
+\teditor.getSession().setUseSoftTabs(false);
+\teditor.getSession().on('change', function()
+\t{
+\t\tthrowMud();
+\t});
+};
+
+
+\$(document).ready(function()
+{\t
+\tdisableLink(\$(\".link_hex\"));
+\t\$(\"#save\").click(function()
+\t{
+\t\tsave();
+\t});
+\t\$(\"#revert\").click(function()
+\t{
+\t\trevert();
+\t});
+\t
+\t\$(\"#compile\").click(function() 
+\t{
+\t\tif(dirty)
+\t\t{
+\t\t\tsave_and_build();
+\t\t}
+\t\telse
+\t\t{
+\t\t\tbuild();
+\t\t}
+\t});
+\t
+});
+</script>
+\t
+
+";
+    }
+
+    // line 298
+    public function block_examples($context, array $blocks = array())
+    {
+        // line 299
+        echo "<ul class=\"nav\">
+  <li class=\"dropdown\">
+    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Examples<b class=\"caret\"></b></a>
+    <ul class=\"dropdown-menu\">
 \t\t\t";
-        // line 63
+        // line 303
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable($this->getContext($context, "examples"));
         foreach ($context['_seq'] as $context["_key"] => $context["section"]) {
-            // line 64
-            echo "\t\t    <h3><a href=\"#\">";
+            // line 304
+            echo "\t\t    <li class=\"dropdown\">
+\t\t\t<a href=\"#\">";
+            // line 305
             echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
-            echo "</a></h3>
-\t\t\t<div>
-\t\t\t<ul>
-\t\t    \t";
-            // line 67
+            echo "</a>
+\t\t\t<ul class=\"dropdown-menu\">
+\t    \t";
+            // line 307
             $context['_parent'] = (array) $context;
             $context['_seq'] = twig_ensure_traversable($this->getAttribute($this->getContext($context, "section"), 1, array(), "array"));
             foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-                // line 68
-                echo "\t\t    \t    <li onclick=\"alertMe('/examples/";
+                // line 308
+                echo "\t    \t    <li onclick=\"getExample('/examples/";
                 echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
                 echo "/";
                 echo twig_escape_filter($this->env, $this->getContext($context, "file"), "html", null, true);
                 echo "/";
                 echo twig_escape_filter($this->env, $this->getContext($context, "file"), "html", null, true);
-                echo ".ino')\">";
+                echo ".ino')\"><a href=\"#\">";
                 echo twig_escape_filter($this->env, $this->getContext($context, "file"), "html", null, true);
-                echo "</li>
-\t\t    \t";
+                echo "</a></li>
+\t    \t";
             }
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
             $context = array_merge($_parent, array_intersect_key($context, $_parent));
-            // line 70
+            // line 310
             echo "\t\t\t</ul>
-\t\t\t</div>
+\t\t\t</li>
 \t\t\t";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['section'], $context['_parent'], $context['loop']);
         $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 73
-        echo "\t\t</div>
-\t</div>
-\t<script>
-\t\$(function() {
-\t\t\$( \"#accordion\" ).accordion({ header: \"h3\", autoHeight: false, navigation: true });
-\t});
-\t</script>
-
-    <input type=\"submit\" value=\"Save Changes\" id = \"save\" /><span id='save_done'></span>
-\t<input type=\"submit\" value=\"Compile\" id = \"compile\" /><span id='compile_done'></span>
-\t<div id=\"saves\">
-\t\t<a href=\"";
-        // line 84
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
-        echo "\">Download File</a>
-\t\t<a href=\"";
-        // line 85
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"), "type" => "hex")), "html", null, true);
-        echo "\">Download Hex</a>
-\t</div>
-\t<div id=\"compile_output\">
-\t\t
-\t</div>
-\t<!-- <form action=\"";
-        // line 90
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_save"), "html", null, true);
-        echo "\" method=\"post\">
-\t<input type=\"hidden\" value = \"bla\" name=\"data\"/>
-\t<input type=\"hidden\" value = \"";
-        // line 92
-        echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
-        echo "\" name=\"project_name\">
-    <input type=\"submit\" value=\"Save Document\"/>
-\t</form> -->
-\t<!-- <form action=\"";
-        // line 95
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_compile"), "html", null, true);
-        echo "\" method=\"post\">
-\t<input type=\"hidden\" value = \"";
-        // line 96
-        echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
-        echo "\" name=\"project_name\">
-    <input type=\"submit\" value=\"Compile\"/>
-\t</form> -->
-\t</div><br />
-\t<pre id=\"editor\">";
-        // line 100
-        echo twig_escape_filter($this->env, $this->getContext($context, "code"), "html", null, true);
-        echo "</pre>\t
-\t<!-- <div id=\"editor\"> -->
-\t<!-- </div> -->
-\t<script>
-    var editor = ace.edit(\"editor\");
-\twindow.onload = function() {
-\t    editor.setTheme(\"ace/theme/textmate\");
-
-\t    var JavaScriptMode = require(\"ace/mode/c_cpp\").Mode;
-\t    editor.getSession().setMode(new JavaScriptMode());
-
-\t\teditor.getSession().setUseSoftTabs(false);
-\t};
-\t\$(document).ready(function()
-\t{\t
-\t\t\$(\"#save\").click(function() 
-\t\t{
-\t\t\t\$.post(\"";
-        // line 117
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_save"), "html", null, true);
-        echo "\", {data: editor.getSession().getValue(), project_name:\"";
-        echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
-        echo "\"}, function(data)
-\t\t\t{
-\t\t\t\t\$(\"#save_done\").html(\"√\");
-\t\t\t\twindow.setTimeout(function () {
-\t\t\t\t    \$(\"#save_done\").html(\"\");
-\t\t\t\t}, 5000);
-\t\t\t\t// alert(\"Data received: \" + data);
-\t\t\t});
-\t\t});
-\t\t\$(\"#compile\").click(function() 
-\t\t{
-\t\t\t\$.post(\"";
-        // line 128
-        echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_compile"), "html", null, true);
-        echo "\", { project_name:\"";
-        echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
-        echo "\"}, function(data)
-\t\t\t{
-\t\t\t\t\$(\"#compile_done\").html(\"√\");
-\t\t\t\tvar obj = jQuery.parseJSON(data);
-\t\t\t\tif(obj.success == 0)
-\t\t\t\t{
-\t\t\t\t\t\$(\"#compile_output\").css('color', 'red');
-\t\t\t\t\tfor (var i=0; i<obj.lines.length; i++)
-\t\t\t\t\t{
-\t\t\t\t\t\t\$(\".ace_gutter-cell\").filter(function(index) {
-\t\t\t\t\t\t  return \$(this).html() == obj.lines[i];
-\t\t\t\t\t\t}).css(\"text-decoration\",\"underline\").css(\"color\",\"red\");
-\t\t\t\t\t}
-\t\t\t\t\t 
-\t\t\t\t}
-\t\t\t\telse
-\t\t\t\t{
-\t\t\t\t\t\$(\"#compile_output\").css('color', '');
-\t\t\t\t\t\$(\".ace_gutter-cell\").css(\"text-decoration\", \"\").css(\"color\",\"\");
-\t\t\t\t}
-\t\t\t\t
-\t\t\t\t
-\t\t\t\t\$(\"#compile_output\").html(obj.text);
-\t\t\t\twindow.setTimeout(function () {
-\t\t\t\t    \$(\"#compile_done\").html(\"\");
-\t\t\t\t}, 5000);
-\t\t\t\t// alert(\"Data received: \" + data);
-\t\t\t});
-\t\t});
-\t\t
-\t});
-\t
-\tfunction editFile(filename)
-\t{
-\t\t\$.get('ajax/test.html', function(data)
-\t\t{
-\t\t\t// \$('.result').html(data);
-\t\t\teditor.getSession().setValue(data);
-\t\t\t// alert('Load was performed.');
-\t\t});
-\t\t
-\t}
-\t
-\t</script>
-\t
+        // line 313
+        echo "\t
+    </ul>
+  </li>
+</ul>
 
 ";
     }

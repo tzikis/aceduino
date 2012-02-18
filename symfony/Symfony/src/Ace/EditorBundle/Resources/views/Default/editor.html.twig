@@ -1,27 +1,81 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
   <style type="text/css" media="screen">
-    body
-	{
-        overflow: hidden;
-    }
+
+html
+{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+body
+{
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
     
-    #editor
-	{ 
-        margin: 0;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 300;
-        right: 0;
-        width: 800px;
-/*        height: 400px;*/
-    }
-	#selection
-	{
-		width: 400px;
+#editor
+{ 
+	position: absolute;
+	top:  50px;
+	left: 280px;
+	bottom:10px;
+	right: 10px;
+	background: white;
+	padding: 0px;
+}
+#selection
+{
+		width: 250px;
 /*		height: 200px;*/
-	}
+}
+#container
+{
+		margin-top: 10px;		
+}
+#container_left
+{
+/*		float:left;
+		margin-right: 10px;
+*/}
+#container_right
+{
+}
+#compile_output
+{
+	position: absolute;
+	left: 280px;
+	bottom: 0px;
+	right: 10px;
+	/*height:120px;*/
+	background: white;
+	padding: 0px;
+	overflow: scroll;
+
+	height:0px;
+
+	/*	width: 280px;*/
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* css-3 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+.mybutton
+{
+	width:100%;
+	margin-bottom:10px;
+}
+.download_link
+{
+	margin-left:14px;
+}
+
   </style>
 {% endblock %}
 {% block javascripts %}
@@ -29,146 +83,236 @@
 <script src={{ asset("src/theme-textmate.js") }} type="text/javascript" charset="utf-8"></script>
 <script src={{ asset("src/mode-c_cpp.js") }} type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-// function editFile()
-// {
-// 	alert('editting file');
-// 	// $.get('/examples/1.Basics/Blink/Blink.ino', function(data)
-// 	// {
-// 	// 	$('.result').html(data);
-// 	// 	editor.getSession().setValue(data);
-// 	// 	alert('Load was performed.');
-// 	// });
-// }
-	
-	// editFile('/examples/1.Basics/Blink/Blink.ino');
-</script>
-<script type="text/javascript">
-function alertMe(filename){
+function getExample(filename){
 	// alert('editting file');
 	$.get(filename, function(data)
 	{
-		$('.result').html(data);
+		// $('.result').html(data);
 		editor.getSession().setValue(data);
 		// alert('Load was performed.');
 	});
 }
-function editFile(){
-alert('WTF!');
+</script>
+<script type="text/javascript">
+
+
+function throwMud()
+{
+	dirty=true;
+	$("#compile_text").html(" Save & Build");
+	$("#revert").removeClass("disabled").click(function(e)
+	{
+	    e.preventDefault();
+	});
+	disableLink($(".download_link"));
+}
+function cleanUp()
+{
+	dirty= false;
+	$("#compile_text").html(" Build");
+	enableLink($(".link_ino"));
+	disableLink($(".link_hex"));
+	$("#revert").addClass("disabled").off('click');
+}
+function save()
+{
+	$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
+	{
+		$("#save").addClass("btn-success");
+		$("#save_icon").addClass("icon-white");
+		$("#operation_output").html("Saved successfuly.");
+		cleanUp();
+		window.setTimeout(function () {
+		    $("#save").removeClass("btn-success");
+			$("#save_icon").removeClass("icon-white");
+		}, 500);
+		// alert("Data received: " + data);
+	});	
+}
+
+function revert()
+{
+	$.get("{{ path('AceEditorBundle_getdata',{'project_name':project_name}) }}", function(data)
+	{
+		editor.getSession().setValue(data);
+		$("#revert").addClass("btn-success");
+		$("#revert_icon").addClass("icon-white");
+		$("#operation_output").html("Reverted successfuly.");
+		cleanUp();
+		window.setTimeout(function () {
+		    $("#revert").removeClass("btn-success");
+			$("#revert_icon").removeClass("icon-white");
+		}, 500);
+		// alert("Data received: " + data);
+	});	
+}
+
+function build()
+{
+	$.post("{{ path('AceEditorBundle_compile') }}", { project_name:"{{project_name}}"}, function(data)
+	{
+		var obj = jQuery.parseJSON(data);
+		if(obj.success == 0)
+		{
+			$("#compile_output").css('color', 'red');
+			for (var i=0; i<obj.lines.length; i++)
+			{
+				$(".ace_gutter-cell").filter(function(index) {
+				  return $(this).html() == obj.lines[i];
+				}).css("text-decoration","underline").css("color","red");
+			}
+			 
+			$("#editor").css("bottom","150px");
+			$("#compile_output").css("bottom","0px");
+			$("#compile_output").css("height","120px");
+			$("#compile_output").addClass("well");
+			$("#compile").addClass("btn-warning");
+			$("#compile_icon").addClass("icon-remove");
+			
+			
+			$("#compile_output").html(obj.text);
+			$("#operation_output").html("Compilation failed.")
+		}
+		else
+		{
+			$("#compile_output").css('color', '');
+			$(".ace_gutter-cell").css("text-decoration", "").css("color","");
+			$("#editor").css("bottom","");
+			$("#compile_output").css("bottom","");
+			$("#compile_output").css("height","");
+			$("#compile_output").removeClass("well");
+			$("#compile").addClass("btn-success");
+			$("#compile_icon").addClass("icon-ok");
+
+			$("#operation_output").html(obj.text)
+			$("#compile_output").html("");
+			enableLink($(".link_hex"));
+		}
+		$("#compile_icon").removeClass("icon-check").addClass("icon-white");
+
+		window.setTimeout(function () {
+		    $("#compile").removeClass("btn-success").removeClass("btn-warning");
+				$("#compile_icon").removeClass("icon-white").removeClass("icon-remove").removeClass("icon-ok").addClass("icon-check");
+		}, 500);
+		// alert("Data received: " + data);
+	});	
+}
+
+function save_and_build()
+{
+	save();
+	$(document).ajaxStop(function()
+	{
+		build();
+		$(this).unbind('ajaxStop');
+	});
+}
+
+function disableLink(link)
+{
+	link.css("text-decoration","line-through").click(function(e)
+	{
+	    e.preventDefault();
+	});
+}
+function enableLink(link)
+{
+	link.css("text-decoration","").off('click');
 }
 </script>
 {% endblock %}
 {% block body %}
-	<div id="selection">
-		<div id="accordion">
-			{% for section in examples %}
-		    <h3><a href="#">{{section[0]}}</a></h3>
-			<div>
-			<ul>
-		    	{% for file in section[1] %}
-		    	    <li onclick="alertMe('/examples/{{section[0]}}/{{file}}/{{file}}.ino')">{{file}}</li>
-		    	{% endfor %}
-			</ul>
-			</div>
-			{% endfor %}
+<div class="container">
+<div id="container" class="row-fluid">	
+	<div class="row-fluid">
+	<div id="container_left" class="span2">
+	    <button id = "save" class="btn mybutton" /><i id="save_icon" class="icon-download"></i> Save Changes</button><br />
+		<button id = "compile" class="btn mybutton"><i id="compile_icon" class="icon-check"></i><span id="compile_text"> Build</span></button>
+		<button id = "revert" class="btn mybutton disabled"><i id="compile_icon" class="icon-arrow-left"></i> Revert</span></button>
+		<div id="saves" class="well">
+			<i class="icon-file"></i>Download:<br />
+			<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name }) }}" class="download_link link_ino">Download .ino</a>
+			<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name, 'type' : "hex"}) }}" class="download_link link_hex">Download .hex</a>
+		</div>
+		<div id="operation_output">
 		</div>
 	</div>
-	<script>
-	$(function() {
-		$( "#accordion" ).accordion({ header: "h3", autoHeight: false, navigation: true });
-	});
-	</script>
+	<div id="container_right">
+		<pre id="editor">{% render "AceEditorBundle:Default:getData" with {'project_name': project_name} %}</pre>
+		<div id="compile_output">
+		</div>
+	</div>	
+</div>
+</div>
+</div>
 
-    <input type="submit" value="Save Changes" id = "save" /><span id='save_done'></span>
-	<input type="submit" value="Compile" id = "compile" /><span id='compile_done'></span>
-	<div id="saves">
-		<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name }) }}">Download File</a>
-		<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name, 'type' : "hex"}) }}">Download Hex</a>
-	</div>
-	<div id="compile_output">
-		
-	</div>
-	<!-- <form action="{{ path('AceEditorBundle_save') }}" method="post">
-	<input type="hidden" value = "bla" name="data"/>
-	<input type="hidden" value = "{{project_name}}" name="project_name">
-    <input type="submit" value="Save Document"/>
-	</form> -->
-	<!-- <form action="{{ path('AceEditorBundle_compile') }}" method="post">
-	<input type="hidden" value = "{{project_name}}" name="project_name">
-    <input type="submit" value="Compile"/>
-	</form> -->
-	</div><br />
-	<pre id="editor">{{ code }}</pre>	
-	<!-- <div id="editor"> -->
-	<!-- </div> -->
-	<script>
-    var editor = ace.edit("editor");
-	window.onload = function() {
-	    editor.setTheme("ace/theme/textmate");
-
-	    var JavaScriptMode = require("ace/mode/c_cpp").Mode;
-	    editor.getSession().setMode(new JavaScriptMode());
-
-		editor.getSession().setUseSoftTabs(false);
-	};
-	$(document).ready(function()
-	{	
-		$("#save").click(function() 
-		{
-			$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
-			{
-				$("#save_done").html("√");
-				window.setTimeout(function () {
-				    $("#save_done").html("");
-				}, 5000);
-				// alert("Data received: " + data);
-			});
-		});
-		$("#compile").click(function() 
-		{
-			$.post("{{ path('AceEditorBundle_compile') }}", { project_name:"{{project_name}}"}, function(data)
-			{
-				$("#compile_done").html("√");
-				var obj = jQuery.parseJSON(data);
-				if(obj.success == 0)
-				{
-					$("#compile_output").css('color', 'red');
-					for (var i=0; i<obj.lines.length; i++)
-					{
-						$(".ace_gutter-cell").filter(function(index) {
-						  return $(this).html() == obj.lines[i];
-						}).css("text-decoration","underline").css("color","red");
-					}
-					 
-				}
-				else
-				{
-					$("#compile_output").css('color', '');
-					$(".ace_gutter-cell").css("text-decoration", "").css("color","");
-				}
-				
-				
-				$("#compile_output").html(obj.text);
-				window.setTimeout(function () {
-				    $("#compile_done").html("");
-				}, 5000);
-				// alert("Data received: " + data);
-			});
-		});
-		
-	});
+<script>
+var editor = ace.edit("editor");
+var dirty = false;
 	
-	function editFile(filename)
+window.onload = function()
+{
+    editor.setTheme("ace/theme/textmate");
+
+    var JavaScriptMode = require("ace/mode/c_cpp").Mode;
+    editor.getSession().setMode(new JavaScriptMode());
+
+	editor.getSession().setUseSoftTabs(false);
+	editor.getSession().on('change', function()
 	{
-		$.get('ajax/test.html', function(data)
+		throwMud();
+	});
+};
+
+
+$(document).ready(function()
+{	
+	disableLink($(".link_hex"));
+	$("#save").click(function()
+	{
+		save();
+	});
+	$("#revert").click(function()
+	{
+		revert();
+	});
+	
+	$("#compile").click(function() 
+	{
+		if(dirty)
 		{
-			// $('.result').html(data);
-			editor.getSession().setValue(data);
-			// alert('Load was performed.');
-		});
-		
-	}
+			save_and_build();
+		}
+		else
+		{
+			build();
+		}
+	});
 	
-	</script>
+});
+</script>
 	
+
+{% endblock %}
+
+{% block examples%}
+<ul class="nav">
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+			{% for section in examples %}
+		    <li class="dropdown">
+			<a href="#">{{section[0]}}</a>
+			<ul class="dropdown-menu">
+	    	{% for file in section[1] %}
+	    	    <li onclick="getExample('/examples/{{section[0]}}/{{file}}/{{file}}.ino')"><a href="#">{{file}}</a></li>
+	    	{% endfor %}
+			</ul>
+			</li>
+			{% endfor %}
+	
+    </ul>
+  </li>
+</ul>
 
 {% endblock %}
