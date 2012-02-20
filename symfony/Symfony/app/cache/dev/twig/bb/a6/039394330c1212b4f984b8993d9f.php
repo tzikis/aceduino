@@ -156,10 +156,23 @@ function cleanUp()
 \tdisableLink(\$(\".link_hex\"));
 \t\$(\"#revert\").addClass(\"disabled\").off('click');
 }
+
+function motherInLaw()
+{
+\tif(dirty)
+\t{
+\t\tsave_and_build();
+\t}
+\telse
+\t{
+\t\tbuild();
+\t}\t
+}
+
 function save()
 {
 \t\$.post(\"";
-        // line 119
+        // line 132
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_save"), "html", null, true);
         echo "\", {data: editor.getSession().getValue(), project_name:\"";
         echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
@@ -180,7 +193,7 @@ function save()
 function revert()
 {
 \t\$.get(\"";
-        // line 135
+        // line 148
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_getdata", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
         echo "\", function(data)
 \t{
@@ -200,7 +213,7 @@ function revert()
 function build()
 {
 \t\$.post(\"";
-        // line 152
+        // line 165
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_compile"), "html", null, true);
         echo "\", { project_name:\"";
         echo twig_escape_filter($this->env, $this->getContext($context, "project_name"), "html", null, true);
@@ -278,10 +291,10 @@ function enableLink(link)
 ";
     }
 
-    // line 224
+    // line 237
     public function block_body($context, array $blocks = array())
     {
-        // line 225
+        // line 238
         echo "<div class=\"container\">
 <div id=\"container\" class=\"row-fluid\">\t
 \t<div class=\"row-fluid\">
@@ -292,20 +305,23 @@ function enableLink(link)
 \t\t<div id=\"saves\" class=\"well\">
 \t\t\t<i class=\"icon-file\"></i>Download:<br />
 \t\t\t<a href=\"";
-        // line 234
+        // line 247
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
         echo "\" class=\"download_link link_ino\">Download .ino</a>
 \t\t\t<a href=\"";
-        // line 235
+        // line 248
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"), "type" => "hex")), "html", null, true);
         echo "\" class=\"download_link link_hex\">Download .hex</a>
+\t\t</div>
+\t\t<div>
+\t\t\tTotal Number of lines: <span id=\"line_count\">0</span>
 \t\t</div>
 \t\t<div id=\"operation_output\">
 \t\t</div>
 \t</div>
 \t<div id=\"container_right\">
 \t\t<pre id=\"editor\">";
-        // line 241
+        // line 257
         echo $this->env->getExtension('actions')->renderAction("AceEditorBundle:Default:getData", array("project_name" => $this->getContext($context, "project_name")), array());
         echo "</pre>
 \t\t<div id=\"compile_output\">
@@ -330,12 +346,77 @@ window.onload = function()
 \teditor.getSession().on('change', function()
 \t{
 \t\tthrowMud();
+\t\t\$(\"#line_count\").html(editor.getSession().getValue().split(\"\\n\").length);
 \t});
+\t
+\teditor.commands.addCommand({
+\t    name: 'saveFile',
+\t    bindKey: {
+\t        win: 'Ctrl-S',
+\t        mac: 'Command-S',
+\t        sender: 'editor|cli'
+\t    },
+\t    exec: function(env, args, request) {
+\t        save();
+\t    }
+\t});
+\t\t
+\teditor.commands.addCommand({
+\t    name: 'buildFile',
+\t    bindKey: {
+\t        win: 'Ctrl-R',
+\t        mac: 'Command-R',
+\t        sender: 'editor|cli'
+\t    },
+\t    exec: function(env, args, request) {
+\t        motherInLaw();
+\t    }
+\t});
+\t
+\teditor.commands.addCommand({
+\t    name: 'uploadFile',
+\t    bindKey: {
+\t        win: 'Ctrl-U',
+\t        mac: 'Command-U',
+\t        sender: 'editor|cli'
+\t    },
+\t    exec: function(env, args, request) {
+\t        alert(\"Y U NO Upload?\");
+\t    }
+\t});
+\t
+\teditor.commands.addCommand({
+\t    name: 'CheckWord',
+\t    bindKey: {
+\t        win: 'Ctrl-Space',
+\t        mac: 'Ctrl-Space',
+\t        sender: 'editor|cli'
+\t    },
+\t    exec: function(env, args, request) {
+\t\t\tvar selection = editor.getSession().doc.getTextRange(editor.getSelectionRange());
+\t\t\twindow.open('http://www.google.com/search?q='+selection+'+inurl:arduino.cc/en/Reference&btnI');
+\t    }
+\t});
+\t
+\teditor.commands.addCommand({
+\t    name: 'MyComments',
+\t    bindKey: {
+\t        win: 'Ctrl-/',
+\t        mac: 'Command-/',
+\t        sender: 'editor|cli'
+\t    },
+\t    exec: function(env, args, request)
+\t\t{
+\t\t\teditor.toggleCommentLines();
+\t    }
+\t});
+\t
 };
 
 
 \$(document).ready(function()
 {\t
+\t\$(\"#line_count\").html(editor.getSession().getValue().split(\"\\n\").length);
 \tdisableLink(\$(\".link_hex\"));
 \t\$(\"#save\").click(function()
 \t{
@@ -348,14 +429,7 @@ window.onload = function()
 \t
 \t\$(\"#compile\").click(function() 
 \t{
-\t\tif(dirty)
-\t\t{
-\t\t\tsave_and_build();
-\t\t}
-\t\telse
-\t\t{
-\t\t\tbuild();
-\t\t}
+\t\tmotherInLaw();
 \t});
 \t
 });
@@ -365,32 +439,32 @@ window.onload = function()
 ";
     }
 
-    // line 298
+    // line 372
     public function block_examples($context, array $blocks = array())
     {
-        // line 299
+        // line 373
         echo "<ul class=\"nav\">
   <li class=\"dropdown\">
     <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Examples<b class=\"caret\"></b></a>
     <ul class=\"dropdown-menu\">
 \t\t\t";
-        // line 303
+        // line 377
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable($this->getContext($context, "examples"));
         foreach ($context['_seq'] as $context["_key"] => $context["section"]) {
-            // line 304
+            // line 378
             echo "\t\t    <li class=\"dropdown\">
 \t\t\t<a href=\"#\">";
-            // line 305
+            // line 379
             echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
             echo "</a>
 \t\t\t<ul class=\"dropdown-menu\">
 \t    \t";
-            // line 307
+            // line 381
             $context['_parent'] = (array) $context;
             $context['_seq'] = twig_ensure_traversable($this->getAttribute($this->getContext($context, "section"), 1, array(), "array"));
             foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-                // line 308
+                // line 382
                 echo "\t    \t    <li onclick=\"getExample('/examples/";
                 echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
                 echo "/";
@@ -405,7 +479,7 @@ window.onload = function()
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
             $context = array_merge($_parent, array_intersect_key($context, $_parent));
-            // line 310
+            // line 384
             echo "\t\t\t</ul>
 \t\t\t</li>
 \t\t\t";
@@ -413,7 +487,7 @@ window.onload = function()
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['section'], $context['_parent'], $context['loop']);
         $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 313
+        // line 387
         echo "\t
     </ul>
   </li>

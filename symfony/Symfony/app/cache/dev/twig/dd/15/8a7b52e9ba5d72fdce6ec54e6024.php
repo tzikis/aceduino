@@ -40,47 +40,8 @@ class __TwigTemplate_dd158a7b52e9ba5d72fdce6ec54e6024 extends Twig_Template
     public function block_mainspan($context, array $blocks = array())
     {
         // line 9
-        echo "<div class=\"hero-unit\">
-  <h1>Hello, world!</h1>
-  <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-  <p><a class=\"btn btn-primary btn-large\">Learn more &raquo;</a></p>
-</div>
-<div class=\"row-fluid\">
-  <div class=\"span4\">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
-  </div><!--/span-->
-  <div class=\"span4\">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
-  </div><!--/span-->
-  <div class=\"span4\">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
-  </div><!--/span-->
-</div><!--/row-->
-<div class=\"row-fluid\">
-  <div class=\"span4\">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
-  </div><!--/span-->
-  <div class=\"span4\">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
-  </div><!--/span-->
-  <div class=\"span4\">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>
-  </div><!--/span-->
-</div><!--/row-->
-
-";
+        echo "\t";
+        $this->env->loadTemplate("AceEditorBundle:Default:hero.html.twig")->display($context);
     }
 
     public function getTemplateName()
