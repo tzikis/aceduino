@@ -114,6 +114,19 @@ function cleanUp()
 	disableLink($(".link_hex"));
 	$("#revert").addClass("disabled").off('click');
 }
+
+function motherInLaw()
+{
+	if(dirty)
+	{
+		save_and_build();
+	}
+	else
+	{
+		build();
+	}	
+}
+
 function save()
 {
 	$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
@@ -234,6 +247,9 @@ function enableLink(link)
 			<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name }) }}" class="download_link link_ino">Download .ino</a>
 			<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name, 'type' : "hex"}) }}" class="download_link link_hex">Download .hex</a>
 		</div>
+		<div>
+			Total Number of lines: <span id="line_count">0</span>
+		</div>
 		<div id="operation_output">
 		</div>
 	</div>
@@ -261,12 +277,77 @@ window.onload = function()
 	editor.getSession().on('change', function()
 	{
 		throwMud();
+		$("#line_count").html(editor.getSession().getValue().split("\n").length);
 	});
+	
+	editor.commands.addCommand({
+	    name: 'saveFile',
+	    bindKey: {
+	        win: 'Ctrl-S',
+	        mac: 'Command-S',
+	        sender: 'editor|cli'
+	    },
+	    exec: function(env, args, request) {
+	        save();
+	    }
+	});
+		
+	editor.commands.addCommand({
+	    name: 'buildFile',
+	    bindKey: {
+	        win: 'Ctrl-R',
+	        mac: 'Command-R',
+	        sender: 'editor|cli'
+	    },
+	    exec: function(env, args, request) {
+	        motherInLaw();
+	    }
+	});
+	
+	editor.commands.addCommand({
+	    name: 'uploadFile',
+	    bindKey: {
+	        win: 'Ctrl-U',
+	        mac: 'Command-U',
+	        sender: 'editor|cli'
+	    },
+	    exec: function(env, args, request) {
+	        alert("Y U NO Upload?");
+	    }
+	});
+	
+	editor.commands.addCommand({
+	    name: 'CheckWord',
+	    bindKey: {
+	        win: 'Ctrl-Space',
+	        mac: 'Ctrl-Space',
+	        sender: 'editor|cli'
+	    },
+	    exec: function(env, args, request) {
+			var selection = editor.getSession().doc.getTextRange(editor.getSelectionRange());
+			window.open('http://www.google.com/search?q='+selection+'+inurl:arduino.cc/en/Reference&btnI');
+	    }
+	});
+	
+	editor.commands.addCommand({
+	    name: 'MyComments',
+	    bindKey: {
+	        win: 'Ctrl-/',
+	        mac: 'Command-/',
+	        sender: 'editor|cli'
+	    },
+	    exec: function(env, args, request)
+		{
+			editor.toggleCommentLines();
+	    }
+	});
+	
 };
 
 
 $(document).ready(function()
 {	
+	$("#line_count").html(editor.getSession().getValue().split("\n").length);
 	disableLink($(".link_hex"));
 	$("#save").click(function()
 	{
@@ -279,14 +360,7 @@ $(document).ready(function()
 	
 	$("#compile").click(function() 
 	{
-		if(dirty)
-		{
-			save_and_build();
-		}
-		else
-		{
-			build();
-		}
+		motherInLaw();
 	});
 	
 });

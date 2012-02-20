@@ -8,12 +8,12 @@ Ace\EditorBundle\Entity\EditorUser:
           generator: { strategy: AUTO }
   actAs: { Timestampable: ~ }
   fields:
-    firstname:       { type: string(255), notnull: true }
-    lastname:       { type: string(255), notnull: true }
-    username:       { type: string(255), notnull: true }
-    email:     { type: string(255), notnull: true, unique: true }
-    password:     { type: string(255), notnull: true, unique: true }
-    twitter:     { type: string(255), notnull: true, unique: true }
+    firstname: { type: string(255), notnull: true }
+    lastname: { type: string(255), notnull: true }
+    username: { type: string(255), notnull: true }
+    email: { type: string(255), notnull: true, unique: true }
+    password: { type: string(255), notnull: true, unique: true }
+    twitter: { type: string(255), notnull: true, unique: true }
     is_active: { type: boolean, notnull: true, default: 0 }    
   relations:
     EditorFileUsers:
