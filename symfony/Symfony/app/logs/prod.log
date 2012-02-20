@@ -5656,3 +5656,8 @@
 [2012-02-18 19:16:40] security.DEBUG: Username "tzikis" was reloaded from user provider. [] []
 [2012-02-18 19:16:40] request.ERROR: Symfony\Component\HttpKernel\Exception\NotFoundHttpException: No route found for "GET /lib/pilot/canon.js" (uncaught exception) at /var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/EventListener/RouterListener.php line 83 [] []
 [2012-02-18 19:16:40] security.DEBUG: Write SecurityContext in the session [] []
+[2012-02-19 06:29:19] security.DEBUG: Read SecurityContext from the session [] []
+[2012-02-19 06:29:19] security.DEBUG: Reloading user from user provider. [] []
+[2012-02-19 06:29:19] security.DEBUG: Username "user" was reloaded from user provider. [] []
+[2012-02-19 06:29:19] request.ERROR: Symfony\Component\HttpKernel\Exception\NotFoundHttpException: No route found for "GET /" (uncaught exception) at /var/www/aceduino/symfony/Symfony/app/cache/prod/classes.php line 4564 [] []
+[2012-02-19 06:29:19] security.DEBUG: Write SecurityContext in the session [] []
