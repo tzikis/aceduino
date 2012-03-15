@@ -5,6 +5,8 @@ imports:
 framework:
     #esi:             ~
     #translator:      { fallback: %locale% }
+    translator:      { fallback: en }
+    #translator:     ~
     secret:          %secret%
     charset:         UTF-8
     router:          { resource: "%kernel.root_dir%/config/routing.yml" }
@@ -13,7 +15,7 @@ framework:
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
     session:
-        default_locale: %locale%
+        default_locale: en 
         auto_start:     true
 
 # Twig Configuration
@@ -58,3 +60,11 @@ swiftmailer:
 jms_security_extra:
     secure_controllers:  true
     secure_all_services: false
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: Ace\ExperimentalUserBundle\Entity\ExperimentalUser
+    registration:
+        form:
+            type: ace_experimental_user_registration

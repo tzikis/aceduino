@@ -519,6 +519,7 @@ use Symfony\Component\Routing\RequestContext;
 class UrlMatcher implements UrlMatcherInterface
 {
     protected $context;
+    protected $allow;
 
     private $routes;
 
@@ -1091,11 +1092,10 @@ class Router implements RouterInterface
 namespace Symfony\Bundle\FrameworkBundle\Routing
 {
 
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\Matcher\RedirectableUrlMatcherInterface;
+use Symfony\Component\Routing\Matcher\RedirectableUrlMatcher as BaseMatcher;
 
 
-class RedirectableUrlMatcher extends UrlMatcher implements RedirectableUrlMatcherInterface
+class RedirectableUrlMatcher extends BaseMatcher
 {
     
     public function redirect($path, $route, $scheme = null)
@@ -8716,6 +8716,112 @@ class FingersCrossedHandler extends AbstractHandler
     }
 }
 }
+ 
+
+
+
+namespace Monolog\Handler
+{
+
+use Monolog\Logger;
+
+
+class TestHandler extends AbstractProcessingHandler
+{
+    protected $records = array();
+    protected $recordsByLevel = array();
+
+    public function getRecords()
+    {
+        return $this->records;
+    }
+
+    public function hasAlert($record)
+    {
+        return $this->hasRecord($record, Logger::ALERT);
+    }
+
+    public function hasCritical($record)
+    {
+        return $this->hasRecord($record, Logger::CRITICAL);
+    }
+
+    public function hasError($record)
+    {
+        return $this->hasRecord($record, Logger::ERROR);
+    }
+
+    public function hasWarning($record)
+    {
+        return $this->hasRecord($record, Logger::WARNING);
+    }
+
+    public function hasInfo($record)
+    {
+        return $this->hasRecord($record, Logger::INFO);
+    }
+
+    public function hasDebug($record)
+    {
+        return $this->hasRecord($record, Logger::DEBUG);
+    }
+
+    public function hasAlertRecords()
+    {
+        return isset($this->recordsByLevel[Logger::ALERT]);
+    }
+
+    public function hasCriticalRecords()
+    {
+        return isset($this->recordsByLevel[Logger::CRITICAL]);
+    }
+
+    public function hasErrorRecords()
+    {
+        return isset($this->recordsByLevel[Logger::ERROR]);
+    }
+
+    public function hasWarningRecords()
+    {
+        return isset($this->recordsByLevel[Logger::WARNING]);
+    }
+
+    public function hasInfoRecords()
+    {
+        return isset($this->recordsByLevel[Logger::INFO]);
+    }
+
+    public function hasDebugRecords()
+    {
+        return isset($this->recordsByLevel[Logger::DEBUG]);
+    }
+
+    protected function hasRecord($record, $level)
+    {
+        if (!isset($this->recordsByLevel[$level])) {
+            return false;
+        }
+
+        if (is_array($record)) {
+            $record = $record['message'];
+        }
+
+        foreach ($this->recordsByLevel[$level] as $rec) {
+            if ($rec['message'] === $record) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    
+    protected function write(array $record)
+    {
+        $this->recordsByLevel[$record['level']][] = $record;
+        $this->records[] = $record;
+    }
+}}
  
 
 

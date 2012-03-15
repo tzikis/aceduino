@@ -9,6 +9,7 @@ class __TwigTemplate_87698ff1523de09d043a0c908ef82253 extends Twig_Template
 
         $this->blocks = array(
             'body' => array($this, 'block_body'),
+            'javascripts' => array($this, 'block_javascripts'),
         );
     }
 
@@ -46,6 +47,19 @@ class __TwigTemplate_87698ff1523de09d043a0c908ef82253 extends Twig_Template
 
 \t</div><!--/.fluid-container-->\t
 </div>
+";
+    }
+
+    // line 22
+    public function block_javascripts($context, array $blocks = array())
+    {
+        // line 23
+        echo "<script type=\"text/javascript\" charset=\"utf-8\">
+\$(document).ready(function()
+{
+\t\$(\"#homepage\").addClass(\"active\");
+});
+</script>
 ";
     }
 

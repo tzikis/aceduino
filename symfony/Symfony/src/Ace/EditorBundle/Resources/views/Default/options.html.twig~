@@ -1,110 +1,308 @@
-{% extends '::base.html.twig' %}
+{% extends 'AceEditorBundle:Default:container.html.twig' %}
 {% block title "Account Options" %}
-{% block body %}
+{% block mainspan %}
 <script src={{ asset("validation/jquery.validate.js") }} type="text/javascript"></script>
 <!--<script src={{ asset("validation/jquery.validate.functions.js") }} type="text/javascript"></script>-->
-<script type="text/javascript">
+<script type="text/javascript" charset="utf-8">
             /* <![CDATA[ */
-            Query(function(){
-                jQuery("#email").validate({
+            function validat()
+            {
+                /*jQuery("#email").validate({
                     expression: "if (VAL.match(/^[^\\W][a-zA-Z0-9\\_\\-\\.]+([a-zA-Z0-9\\_\\-\\.]+)*\\@[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\.[a-zA-Z]{2,4}$/)) return true; else return false;",
                     message: "Please enter a valid Email address"
-                });
-                jQuery("#new_pass").validate({
+                });*/
+                $("#old_pass").validate({
                     expression: "if (VAL.length > 5 && VAL) return true; else return false;",
                     message: "Password must be at least 6 characters"
                 });
-                jQuery("#confirm_new_pass").validate({
+                /*jQuery("#confirm_new_pass").validate({
                     expression: "if ((VAL == jQuery('#ValidPassword').val()) && VAL) return true; else return false;",
                     message: "Passwords do not match!"
-                });
+                });*/
 				//jQuery('form#form').validated(function(){
 				//	alert("Use this call to make AJAX submissions.");
 				//});
-            });
+            };
             /* ]]> */
         </script>
 
 <h2>User Account Options</h2>
 <hr />
+<script type="text/javascript" charset="utf-8">
+//TODO: add check if passwords match when new_pass changes
+function validinput(id)
+{
+	if(id=="new_pass")
+	{
+		var len = $("#"+id).val().length;
+		if (len == 0)
+			return 2; //TODO: could use the same number for zero length input on both password fields
+		else if (len < 6 || len > 15)
+			return 3;
+		else
+		{
+			var regnum = /.*\d/;
+			var reglet = /.*[a-z]/;
+			var regcaps = /.*[A-Z]/;
+			var regpunc = /.*[@#$%\!\^\&\*\(\)\_\+\=\~]/;
+			var regexp = [regnum, reglet, regcaps, regpunc];
+	
+			var sets = 0;
+			for(var i=0 ; i < 4; i++)
+			{
+				if (regexp[i].test($("#"+id).val()))
+					sets++;
+			}
+			if (sets < 3)
+				return 4;
+			else
+				return 1;
+		}
+	}
+	else if(id=="confirm_pass")
+	{
+		if ($("#"+id).val().length > 0)
+		{
+			if($("#new_pass").val() == $("#"+id).val())
+				return 5;
+			else
+				return 6;			
+		}
+		else if($("#new_pass").val().length > 0)
+			return 7;
+		else
+			return 8;
+	}
+	else if(id=="old_pass")
+	{
+		//TODO:Ajax post request for a match;
+	}
+	else if(id=="email")
+	{
+		if ($("#"+id).val().length != 0)
+		{
+			var regmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+			if(regmail.test($("#"+id).val()))
+				return 9;
+			else
+				return 10;
+		}
+		else
+			return 9;
+	}
+	else
+	{
+		//no valid id
+	}
+	
+};
+
+function validation(inputid)
+{
+	switch(validinput(inputid))
+	{
+	case 1:
+		$(".newpassword").removeClass("error").addClass("success");
+		$(".password_signs").removeClass("icon-exclamation-sign").removeClass("icon-remove").addClass("icon-ok");
+		$(".newpass-info").html('');
+		break;
+	case 2:
+		$(".newpassword").removeClass("error").removeClass("success");
+		$(".password_signs").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");
+		$(".newpass-info").html('');						
+		break;
+	case 3:
+		$(".passwords").addClass("error").removeClass("success");
+		$(".password_signs, .password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-ok").addClass("icon-remove");
+		$(".newpass-info").html('<i>Passwords must be 6-15 characters long</i>');
+		break;
+	case 4:
+		$(".passwords").addClass("error").removeClass("success");
+		$(".password_signs, .password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-ok").addClass("icon-remove");
+		$(".newpass-info").html('<i>Password must contain characters from at least 3 of 4 characters sets([a..z][A..Z][0..9][~!@#$%^&*()_+=])</i>');
+		break;
+	case 5:
+		$(".passwords").removeClass("error").addClass("success");
+		$(".password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-remove").addClass("icon-ok");
+		$(".confirmpass-info").html('');
+		break;
+	case 6:
+		$(".confirmpassword").addClass("error").removeClass("success");
+		$(".password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-ok").addClass("icon-remove");
+		$(".confirmpass-info").html('<i>Passwords do not match!</i>');
+		break;
+	case 7:
+		$(".confirmpass-info").html('');
+		break;
+	case 8:
+		$(".confirmpassword").removeClass("error").removeClass("success");
+		$(".password_confirm").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");
+		$(".confirmpass-info").html('');
+		break;
+	case 9:
+		$(".mail").removeClass("error").addClass("success");
+		$(".mail-info").html('');
+		break;
+	case 10:
+		$(".mail").addClass("error").removeClass("success");
+		$(".mail-info").html('<i>Please enter a valid email(aaa@bbb.ccc)</i>');
+		break;
+	}
+	$(".password_signs").removeClass("password_signs").addClass("password_signs");
+	$(".password_confirm").removeClass("password_confirm").addClass("password_confirm");
+	//$(".mail").removeClass(".mail").addClass(".mail");
+	
+	/*if($("#"inputid).val() !== "")
+	{
+		if ($("#old_pass").val().length < 6)
+		{
+        	$(".oldpass").addClass("error");
+        	$(".help-inline").html('<i>Password must be at least 6 characters</i>');       	
+		}
+		else
+		{
+			var regnum = /.*\d/;
+			var reglet = /.*[a-z]/;
+			var regcaps = /.*[A-Z]/;
+			var regpunc = /.*[@#$%\!\^\&\*\(\)\_\+\=\~]/;
+			var regexp = [regnum, reglet, regcaps, regpunc];
+			sets = 0;
+			for(var i=0 ; i < 4; i++)
+			{
+				if (regexp[i].test($("#old_pass").val()))
+					sets = sets + 1;
+			}
+			if (sets < 3)
+			{
+				$(".oldpass").addClass("error");
+				$(".help-inline").html('<i>Password must contain characters from at least 3 of 4 characters sets([a..z][A..Z][0..9][~!@#$%^&*()_+=])</i>');
+			}
+			else
+			{
+				$(".oldpass").removeClass("error");
+				$(".help-inline").html('');
+			}
+		}
+	}
+	else
+	{
+		$(".oldpass").removeClass("error");
+		$(".help-inline").html('');
+	}
+*/	
+};
+
+function myfunc()
+{
+	if($("#new_pass").val() == $("#confirm_pass").val())
+	{
+		if($("#new_pass").val() == "")
+		{
+			$(".passwords").removeClass("error").removeClass("success");
+			$(".password_signs").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");						
+		}
+		else
+		{
+			$(".passwords").removeClass("error").addClass("success");
+			$(".password_signs").removeClass("icon-exclamation-sign").removeClass("icon-remove").addClass("icon-ok");			
+		}
+	}
+	else
+	{
+		$(".passwords").removeClass("success").addClass("error");			
+		$(".password_signs").removeClass("icon-exclamation-sign").removeClass("icon-ok").addClass("icon-remove");			
+	}
+	$(".password_signs").removeClass("password_signs").addClass("password_signs");			
+};
+</script>
 Change your details, then click 'save' to save your changes.<br /><br />
-<form name="form" id="form">
-<div class="control-group">
-	<label class="control-label" for="uname"><strong>Username</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">	<i class="icon-user"></i></span>
-			<input class="span2" type="text" name="username" id="uname" value="{{ username }}" disabled/>
+<form name="form" id="form" action="{{ path('AceEditorBundle_homepage') }}">
+<div class="row-fluid">
+	<div class="span4">
+		<div class="control-group">
+			<label class="control-label" for="uname"><strong>Username</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">	<i class="icon-user"></i></span>
+					<input class="input-large" type="text" name="username" id="uname" value="{{ username }}" disabled/>
+				</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="fname"><strong>Firstname</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">F</span>
+					<input class="input-large" type="text" name="firstname" id="fname" value="{{ settings.getFirstname() }}" />
+				</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="lname"><strong>Lastname</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">L</span>
+					<input class="input-large" type="text" name="lastname" id="lname" value="{{ settings.getLastname() }}" />
+				</div>
+			</div>
+		</div>
+		<div class="mail control-group">
+			<label class="control-label" for="email"><strong>E-mail</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">	<i class="icon-envelope"></i></span>
+					<input class="input-large" type="text" name="email" id="email" value="{{ settings.getEmail() }}" onchange="" /> 
+				<!-- TODO: onchange, AJAX POST to check if mail already exists in the db  -->
+					<span class="help-inline mail-info"></span>
+				</div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="tweet"><strong>Twitter</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">@</span>
+					<input class="input-large" type="text" name="tweet" id="tweet" value="{{ settings.getTwitter() }}" />
+				</div>
+			</div>
 		</div>
 	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="fname"><strong>Firstname</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">F</span>
-			<input class="span2" type="text" name="firstname" id="fname" value="{{ settings.getFirstname() }}" />
+	<div class="span4">
+		<div class="oldpass control-group">
+			<label class="control-label" for="old_pass"><strong>Old Password</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">	<i class="icon-exclamation-sign pass_valid"></i></span>
+					<input class="input-large" type="password" name="old_pass" id="old_pass" value="" />
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="lname"><strong>Lastname</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">L</span>
-			<input class="span2" type="text" name="lastname" id="lname" value="{{ settings.getLastname() }}" />
+		<div class="passwords control-group newpassword">
+			<label class="control-label" for="new_pass"><strong>New Password</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on">	<i class="icon-exclamation-sign password_signs"></i></span>
+					<input class="input-large" type="password" name="new_pass" id="new_pass" value="" onkeyup="validation(id)"/>
+					<span class="help-inline newpass-info"></span>
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="email"><strong>E-mail</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">	<i class="icon-envelope"></i></span>
-			<input class="span2" type="text" name="email" id="email" value="{{ settings.getEmail() }}" />
-		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="tweet"><strong>Twitter</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">@</span>
-			<input class="span2" type="text" name="tweet" id="tweet" value="{{ settings.getTwitter() }}" />
-		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="old_pass"><strong>Old Password</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">	<i class="icon-exclamation-sign"></i></span>
-			<input class="span2" type="password" name="old_pass" id="old_pass" value="" />
-		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="new_pass"><strong>New Password</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">	<i class="icon-exclamation-sign"></i></span>
-			<input class="span2" type="password" name="new_pass" id="new_pass" value="" onchange=""/>
-		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label" for="confirm_new_pass"><strong>Confirm New Password</strong></label>
-	<div class="controls">
-		<div class="input-prepend">
-			<span class="add-on">	<i class="icon-exclamation-sign"></i></span>
-			<input class="span2" type="password" name="confirm_new_pass" id="confirm_new_pass" value="" />
+		<div class="passwords control-group confirmpassword">
+			<label class="control-label" for="confirm_pass"><strong>Confirm New Password</strong></label>
+			<div class="controls">
+				<div class="input-prepend">
+					<span class="add-on"><i class="icon-exclamation-sign password_confirm"></i></span>
+					<input class="input-large" type="password" name="confirm_pass" id="confirm_pass" value=""  onkeyup="validation(id)" />
+					<span class="help-inline confirmpass-info"></span>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 <hr />
-<input class="btn" type="button" id="modify" value="Save Changes" />
+<input class="btn btn-primary" type="button" id="modify" value="Save Changes" />
+<input class="btn" type="submit" id="cancel" value="Cancel" />
 </form>
-<form action = "{{ path('AceEditorBundle_homepage') }}"><input class="btn" type="submit" id="cancel" value="Cancel" /></form>
 
 <script>
 $(document).ready(function()
@@ -125,6 +323,8 @@ $(document).ready(function()
 				alert("Profile Updated: " + data);
 			});
 		});
+		$("#options").addClass("active");
 	});
 </script>
+
 {% endblock %}

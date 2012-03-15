@@ -23,9 +23,9 @@ body
 { 
 	position: absolute;
 	top:  50px;
-	left: 280px;
+/*	left: 280px;*/
 	bottom:10px;
-	right: 10px;
+/*	height:1000px;*/
 	background: white;
 	padding: 0px;
 }
@@ -49,16 +49,11 @@ body
 #compile_output
 {
 	position: absolute;
-	left: 280px;
 	bottom: 0px;
-	right: 10px;
-	/*height:120px;*/
-	background: white;
-	padding: 0px;
-	overflow: scroll;
-
 	height:0px;
-
+	padding: 0px;
+	overflow-y: scroll;
+	background: white;
 	/*	width: 280px;*/
 	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
 	white-space: -pre-wrap;      /* Opera 4-6 */
@@ -75,6 +70,22 @@ body
 {
 	margin-left:14px;
 }
+
+.navbar-fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+.navbar-fixed-bottom .navbar-inner {
+  padding-left: 0;
+  padding-right: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+
 
   </style>
 {% endblock %}
@@ -100,10 +111,14 @@ function throwMud()
 {
 	dirty=true;
 	$("#compile_text").html(" Save & Build");
-	$("#revert").removeClass("disabled").click(function(e)
+	$("#revert").removeClass("disabled").off('click').click(function()
 	{
-	    e.preventDefault();
+	    revert();
 	});
+	$("#save").removeClass("disabled").off('click').click(function()
+	{
+		save();
+	})
 	disableLink($(".download_link"));
 }
 function cleanUp()
@@ -113,6 +128,7 @@ function cleanUp()
 	enableLink($(".link_ino"));
 	disableLink($(".link_hex"));
 	$("#revert").addClass("disabled").off('click');
+	$("#save").addClass("disabled").off('click');
 }
 
 function motherInLaw()
@@ -127,13 +143,28 @@ function motherInLaw()
 	}	
 }
 
+function setProgress(newprogress)
+{
+	$("#progress").show('fast');
+	$("#progress_val").width(newprogress+'%');
+	$("#operation_output").hide('fast');
+}
+
+function clearProgress(output)
+{
+	$("#progress").hide('fast');
+	$("#progress_val").width('0%');	
+	$("#operation_output").html(output).show('fast');
+}
+
 function save()
 {
+	setProgress(90);
 	$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
 	{
 		$("#save").addClass("btn-success");
 		$("#save_icon").addClass("icon-white");
-		$("#operation_output").html("Saved successfuly.");
+		clearProgress("Saved successfuly.");
 		cleanUp();
 		window.setTimeout(function () {
 		    $("#save").removeClass("btn-success");
@@ -145,12 +176,13 @@ function save()
 
 function revert()
 {
+	setProgress(90);
 	$.get("{{ path('AceEditorBundle_getdata',{'project_name':project_name}) }}", function(data)
 	{
 		editor.getSession().setValue(data);
 		$("#revert").addClass("btn-success");
 		$("#revert_icon").addClass("icon-white");
-		$("#operation_output").html("Reverted successfuly.");
+		clearProgress("Reverted successfuly.");
 		cleanUp();
 		window.setTimeout(function () {
 		    $("#revert").removeClass("btn-success");
@@ -162,6 +194,7 @@ function revert()
 
 function build()
 {
+	setProgress(90);
 	$.post("{{ path('AceEditorBundle_compile') }}", { project_name:"{{project_name}}"}, function(data)
 	{
 		var obj = jQuery.parseJSON(data);
@@ -184,7 +217,7 @@ function build()
 			
 			
 			$("#compile_output").html(obj.text);
-			$("#operation_output").html("Compilation failed.")
+			clearProgress("Compilation failed.")
 		}
 		else
 		{
@@ -197,7 +230,7 @@ function build()
 			$("#compile").addClass("btn-success");
 			$("#compile_icon").addClass("icon-ok");
 
-			$("#operation_output").html(obj.text)
+			clearProgress(obj.text)
 			$("#compile_output").html("");
 			enableLink($(".link_hex"));
 		}
@@ -233,15 +266,84 @@ function enableLink(link)
 	link.css("text-decoration","").off('click');
 }
 </script>
+
+<script type="text/javascript">
+    function scan(){
+    $('#scanning').show('slow');
+   	$('#noscanning').hide('slow');
+    getFire();
+    }
+    function connect(){
+    //alert('called connect ');
+    var applet = document.getElementById('myapplet');
+    var portslist= document.getElementById('ports');
+    var rateslist= document.getElementById('baudrates');
+    var port= portslist.options[portslist.selectedIndex].value;
+    var rate= rateslist.options[rateslist.selectedIndex].value;
+    //alert("overrideConnect('"+portslist.selectedIndex+"','"+rateslist.selectedIndex+"')");
+
+    applet.overrideConnect(portslist.selectedIndex,rateslist.selectedIndex);
+    }
+    function getFire(){
+    var applet = document.getElementById('myapplet');
+    var portslist= document.getElementById('ports');
+    var rateslist= document.getElementById('baudrates');
+    portsAvail=applet.getFire2().split(",");
+    for (var i =0 ;i< portsAvail.length ; i++){
+    portslist.options[i]=new Option(portsAvail[i],portsAvail[i],true,true);
+    }
+    ratesAvail=applet.getFireRates().split(",");
+    for (var i =0 ;i< ratesAvail.length ; i++){
+    //rateslist.options[i]=new Option(ratesAvail[i],ratesAvail[i],true,true);
+    }
+    }
+</script>
 {% endblock %}
 {% block body %}
+<!-- <div class="navbar navbar-fixed-bottom">
+	<div class="navbar-inner">
+	    <div class="container-fluid">
+		<ul class="nav">		
+          <li id="homepage"><a href="{{ path('AceEditorBundle_homepage')}}">Home</a></li>
+        </ul>
+		</div>
+	</div>
+</div> -->
+
 <div class="container">
 <div id="container" class="row-fluid">	
 	<div class="row-fluid">
 	<div id="container_left" class="span2">
-	    <button id = "save" class="btn mybutton" /><i id="save_icon" class="icon-download"></i> Save Changes</button><br />
+		<button id = "revert" class="btn mybutton disabled"><i id="revert_icon" class="icon-arrow-left"></i> Revert</span></button>
+	    <button id = "save" class="btn mybutton disabled" /><i id="save_icon" class="icon-download"></i> Save Changes</button>
 		<button id = "compile" class="btn mybutton"><i id="compile_icon" class="icon-check"></i><span id="compile_text"> Build</span></button>
-		<button id = "revert" class="btn mybutton disabled"><i id="compile_icon" class="icon-arrow-left"></i> Revert</span></button>
+		    <div id="noscanning">
+		        <button onclick='scan()' class="btn mybutton">Search for Arduino...</button>
+		    </div>
+		    <div id="scanning">
+		        <button onclick='connect()' class="btn mybutton">Connect</button>
+				<select id="ports" class="span12">
+					<option>dev</option>
+					<option>tty</option>
+					<option>36800</option>
+					<option>57600</option>
+					<option>115200</option>
+				</select><button id = "reload" class="btn mybutton" onclick="getFire()"><i id="reload_icon" class="icon-repeat"></i></button>
+				<select id="baudrates" class="span12">
+		            <option>110</option>
+		            <option>300</option>
+		            <option>600</option>
+		            <option>1200</option>
+		            <option>4800</option>
+		            <option selected="true">9600</option>
+		            <option>14400</option>
+		            <option>19200</option>
+		            <option>38400</option>
+		            <option>115200</option>
+		            <option>128000</option>
+		            <option>256000</option>
+				</select>
+	    </div>
 		<div id="saves" class="well">
 			<i class="icon-file"></i>Download:<br />
 			<a href="{{ path('AceEditorBundle_download', { 'project_name': project_name }) }}" class="download_link link_ino">Download .ino</a>
@@ -250,17 +352,28 @@ function enableLink(link)
 		<div>
 			Total Number of lines: <span id="line_count">0</span>
 		</div>
+		<div id="progress" class="progress progress-striped active">
+		    <div id="progress_val" class="bar" style="width: 40%;"></div>
+		    </div>
 		<div id="operation_output">
 		</div>
+		<applet width="1" height="1"  id="myapplet" style="visibility:hidden;"
+		        code="eu.amaxilatis.ardoserial.MyApplet.class"
+		        archive="http://students.ceid.upatras.gr/~amaxilatis/ardoserial/ardoSerial-0.1-jar-with-dependencies.jar">
+		</applet>
 	</div>
-	<div id="container_right">
-		<pre id="editor">{% render "AceEditorBundle:Default:getData" with {'project_name': project_name} %}</pre>
-		<div id="compile_output">
+	<div id="container_right" class="span10">
+		<div class="row-fluid">
+		<pre id="editor" class="span9">{% render "AceEditorBundle:Default:getData" with {'project_name': project_name} %}</pre>
+		</div>
+		<div class="row-fluid">
+		<div id="compile_output" class="span9 well"></div>
 		</div>
 	</div>	
 </div>
 </div>
 </div>
+
 
 <script>
 var editor = ace.edit("editor");
@@ -325,6 +438,17 @@ window.onload = function()
 	    },
 	    exec: function(env, args, request) {
 			var selection = editor.getSession().doc.getTextRange(editor.getSelectionRange());
+			if (selection == "")
+			{
+				var row = editor.getSession().getSelection().getCursor().row;
+				var column = editor.getSession().getSelection().getCursor().column
+				var string = editor.getSession().getLine(editor.getSession().getSelection().getCursor().row);
+				var first_half = string.substring(0,column).match(/\w+$/);
+				var second_half = string.substring(column, string.length).match(/^\w+/);
+				if (first_half == null) first_half = "";
+				if (second_half == null) second_half = "";
+				selection = first_half + second_half;
+			}
 			window.open('http://www.google.com/search?q='+selection+'+inurl:arduino.cc/en/Reference&btnI');
 	    }
 	});
@@ -349,6 +473,8 @@ $(document).ready(function()
 {	
 	$("#line_count").html(editor.getSession().getValue().split("\n").length);
 	disableLink($(".link_hex"));
+	$("#scanning").hide();
+	$("#progress").hide();
 	$("#save").click(function()
 	{
 		save();
@@ -372,14 +498,14 @@ $(document).ready(function()
 {% block examples%}
 <ul class="nav">
   <li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
+    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
     <ul class="dropdown-menu">
 			{% for section in examples %}
 		    <li class="dropdown">
-			<a href="#">{{section[0]}}</a>
+			<a href="javascript:void(0)">{{section[0]}}</a>
 			<ul class="dropdown-menu">
 	    	{% for file in section[1] %}
-	    	    <li onclick="getExample('/examples/{{section[0]}}/{{file}}/{{file}}.ino')"><a href="#">{{file}}</a></li>
+	    	    <li onclick="getExample('{{ path('AceEditorBundle_fetchexample', {'category':section[0], 'name':file})}}')"><a href="javascript:void(0)">{{file}}</a></li>
 	    	{% endfor %}
 			</ul>
 			</li>

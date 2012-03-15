@@ -40,34 +40,198 @@ class __TwigTemplate_0e49be7988dc09ec607799936e28ce1b extends Twig_Template
         // line 5
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("validation/jquery.validate.functions.js"), "html", null, true);
         echo " type=\"text/javascript\"></script>-->
-<script type=\"text/javascript\">
+<script type=\"text/javascript\" charset=\"utf-8\">
             /* <![CDATA[ */
-            Query(function(){
-                jQuery(\"#email\").validate({
+            function validat()
+            {
+                /*jQuery(\"#email\").validate({
                     expression: \"if (VAL.match(/^[^\\\\W][a-zA-Z0-9\\\\_\\\\-\\\\.]+([a-zA-Z0-9\\\\_\\\\-\\\\.]+)*\\\\@[a-zA-Z0-9_]+(\\\\.[a-zA-Z0-9_]+)*\\\\.[a-zA-Z]{2,4}\$/)) return true; else return false;\",
                     message: \"Please enter a valid Email address\"
-                });
-                jQuery(\"#new_pass\").validate({
+                });*/
+                \$(\"#old_pass\").validate({
                     expression: \"if (VAL.length > 5 && VAL) return true; else return false;\",
                     message: \"Password must be at least 6 characters\"
                 });
-                jQuery(\"#confirm_new_pass\").validate({
+                /*jQuery(\"#confirm_new_pass\").validate({
                     expression: \"if ((VAL == jQuery('#ValidPassword').val()) && VAL) return true; else return false;\",
                     message: \"Passwords do not match!\"
-                });
+                });*/
 \t\t\t\t//jQuery('form#form').validated(function(){
 \t\t\t\t//\talert(\"Use this call to make AJAX submissions.\");
 \t\t\t\t//});
-            });
+            };
             /* ]]> */
         </script>
 
 <h2>User Account Options</h2>
 <hr />
 <script type=\"text/javascript\" charset=\"utf-8\">
+//TODO: add check if passwords match when new_pass changes
+function validinput(id)
+{
+\tif(id==\"new_pass\")
+\t{
+\t\tvar len = \$(\"#\"+id).val().length;
+\t\tif (len == 0)
+\t\t\treturn 2; //TODO: could use the same number for zero length input on both password fields
+\t\telse if (len < 6 || len > 15)
+\t\t\treturn 3;
+\t\telse
+\t\t{
+\t\t\tvar regnum = /.*\\d/;
+\t\t\tvar reglet = /.*[a-z]/;
+\t\t\tvar regcaps = /.*[A-Z]/;
+\t\t\tvar regpunc = /.*[@#\$%\\!\\^\\&\\*\\(\\)\\_\\+\\=\\~]/;
+\t\t\tvar regexp = [regnum, reglet, regcaps, regpunc];
+\t
+\t\t\tvar sets = 0;
+\t\t\tfor(var i=0 ; i < 4; i++)
+\t\t\t{
+\t\t\t\tif (regexp[i].test(\$(\"#\"+id).val()))
+\t\t\t\t\tsets++;
+\t\t\t}
+\t\t\tif (sets < 3)
+\t\t\t\treturn 4;
+\t\t\telse
+\t\t\t\treturn 1;
+\t\t}
+\t}
+\telse if(id==\"confirm_pass\")
+\t{
+\t\tif (\$(\"#\"+id).val().length > 0)
+\t\t{
+\t\t\tif(\$(\"#new_pass\").val() == \$(\"#\"+id).val())
+\t\t\t\treturn 5;
+\t\t\telse
+\t\t\t\treturn 6;\t\t\t
+\t\t}
+\t\telse if(\$(\"#new_pass\").val().length > 0)
+\t\t\treturn 7;
+\t\telse
+\t\t\treturn 8;
+\t}
+\telse if(id==\"old_pass\")
+\t{
+\t\t//TODO:Ajax post request for a match;
+\t}
+\telse if(id==\"email\")
+\t{
+\t\tif (\$(\"#\"+id).val().length != 0)
+\t\t{
+\t\t\tvar regmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}\$/;
+\t\t\tif(regmail.test(\$(\"#\"+id).val()))
+\t\t\t\treturn 9;
+\t\t\telse
+\t\t\t\treturn 10;
+\t\t}
+\t\telse
+\t\t\treturn 9;
+\t}
+\telse
+\t{
+\t\t//no valid id
+\t}
+\t
+};
+
+function validation(inputid)
+{
+\tswitch(validinput(inputid))
+\t{
+\tcase 1:
+\t\t\$(\".newpassword\").removeClass(\"error\").addClass(\"success\");
+\t\t\$(\".password_signs\").removeClass(\"icon-exclamation-sign\").removeClass(\"icon-remove\").addClass(\"icon-ok\");
+\t\t\$(\".newpass-info\").html('');
+\t\tbreak;
+\tcase 2:
+\t\t\$(\".newpassword\").removeClass(\"error\").removeClass(\"success\");
+\t\t\$(\".password_signs\").removeClass(\"icon-ok\").removeClass(\"icon-remove\").addClass(\"icon-exclamation-sign\");
+\t\t\$(\".newpass-info\").html('');\t\t\t\t\t\t
+\t\tbreak;
+\tcase 3:
+\t\t\$(\".passwords\").addClass(\"error\").removeClass(\"success\");
+\t\t\$(\".password_signs, .password_confirm\").removeClass(\"icon-exclamation-sign\").removeClass(\"icon-ok\").addClass(\"icon-remove\");
+\t\t\$(\".newpass-info\").html('<i>Passwords must be 6-15 characters long</i>');
+\t\tbreak;
+\tcase 4:
+\t\t\$(\".passwords\").addClass(\"error\").removeClass(\"success\");
+\t\t\$(\".password_signs, .password_confirm\").removeClass(\"icon-exclamation-sign\").removeClass(\"icon-ok\").addClass(\"icon-remove\");
+\t\t\$(\".newpass-info\").html('<i>Password must contain characters from at least 3 of 4 characters sets([a..z][A..Z][0..9][~!@#\$%^&*()_+=])</i>');
+\t\tbreak;
+\tcase 5:
+\t\t\$(\".passwords\").removeClass(\"error\").addClass(\"success\");
+\t\t\$(\".password_confirm\").removeClass(\"icon-exclamation-sign\").removeClass(\"icon-remove\").addClass(\"icon-ok\");
+\t\t\$(\".confirmpass-info\").html('');
+\t\tbreak;
+\tcase 6:
+\t\t\$(\".confirmpassword\").addClass(\"error\").removeClass(\"success\");
+\t\t\$(\".password_confirm\").removeClass(\"icon-exclamation-sign\").removeClass(\"icon-ok\").addClass(\"icon-remove\");
+\t\t\$(\".confirmpass-info\").html('<i>Passwords do not match!</i>');
+\t\tbreak;
+\tcase 7:
+\t\t\$(\".confirmpass-info\").html('');
+\t\tbreak;
+\tcase 8:
+\t\t\$(\".confirmpassword\").removeClass(\"error\").removeClass(\"success\");
+\t\t\$(\".password_confirm\").removeClass(\"icon-ok\").removeClass(\"icon-remove\").addClass(\"icon-exclamation-sign\");
+\t\t\$(\".confirmpass-info\").html('');
+\t\tbreak;
+\tcase 9:
+\t\t\$(\".mail\").removeClass(\"error\").addClass(\"success\");
+\t\t\$(\".mail-info\").html('');
+\t\tbreak;
+\tcase 10:
+\t\t\$(\".mail\").addClass(\"error\").removeClass(\"success\");
+\t\t\$(\".mail-info\").html('<i>Please enter a valid email(aaa@bbb.ccc)</i>');
+\t\tbreak;
+\t}
+\t\$(\".password_signs\").removeClass(\"password_signs\").addClass(\"password_signs\");
+\t\$(\".password_confirm\").removeClass(\"password_confirm\").addClass(\"password_confirm\");
+\t//\$(\".mail\").removeClass(\".mail\").addClass(\".mail\");
+\t
+\t/*if(\$(\"#\"inputid).val() !== \"\")
+\t{
+\t\tif (\$(\"#old_pass\").val().length < 6)
+\t\t{
+        \t\$(\".oldpass\").addClass(\"error\");
+        \t\$(\".help-inline\").html('<i>Password must be at least 6 characters</i>');       \t
+\t\t}
+\t\telse
+\t\t{
+\t\t\tvar regnum = /.*\\d/;
+\t\t\tvar reglet = /.*[a-z]/;
+\t\t\tvar regcaps = /.*[A-Z]/;
+\t\t\tvar regpunc = /.*[@#\$%\\!\\^\\&\\*\\(\\)\\_\\+\\=\\~]/;
+\t\t\tvar regexp = [regnum, reglet, regcaps, regpunc];
+\t\t\tsets = 0;
+\t\t\tfor(var i=0 ; i < 4; i++)
+\t\t\t{
+\t\t\t\tif (regexp[i].test(\$(\"#old_pass\").val()))
+\t\t\t\t\tsets = sets + 1;
+\t\t\t}
+\t\t\tif (sets < 3)
+\t\t\t{
+\t\t\t\t\$(\".oldpass\").addClass(\"error\");
+\t\t\t\t\$(\".help-inline\").html('<i>Password must contain characters from at least 3 of 4 characters sets([a..z][A..Z][0..9][~!@#\$%^&*()_+=])</i>');
+\t\t\t}
+\t\t\telse
+\t\t\t{
+\t\t\t\t\$(\".oldpass\").removeClass(\"error\");
+\t\t\t\t\$(\".help-inline\").html('');
+\t\t\t}
+\t\t}
+\t}
+\telse
+\t{
+\t\t\$(\".oldpass\").removeClass(\"error\");
+\t\t\$(\".help-inline\").html('');
+\t}
+*/\t
+};
+
 function myfunc()
 {
-\tif(\$(\"#new_pass\").val() == \$(\"#confirm_new_pass\").val())
+\tif(\$(\"#new_pass\").val() == \$(\"#confirm_pass\").val())
 \t{
 \t\tif(\$(\"#new_pass\").val() == \"\")
 \t\t{
@@ -90,7 +254,7 @@ function myfunc()
 </script>
 Change your details, then click 'save' to save your changes.<br /><br />
 <form name=\"form\" id=\"form\" action=\"";
-        // line 55
+        // line 219
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
         echo "\">
 <div class=\"row-fluid\">
@@ -101,7 +265,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-user\"></i></span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"username\" id=\"uname\" value=\"";
-        // line 63
+        // line 227
         echo twig_escape_filter($this->env, $this->getContext($context, "username"), "html", null, true);
         echo "\" disabled/>
 \t\t\t\t</div>
@@ -113,7 +277,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">F</span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"firstname\" id=\"fname\" value=\"";
-        // line 72
+        // line 236
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getFirstname", array(), "method"), "html", null, true);
         echo "\" />
 \t\t\t\t</div>
@@ -125,21 +289,23 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">L</span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"lastname\" id=\"lname\" value=\"";
-        // line 81
+        // line 245
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getLastname", array(), "method"), "html", null, true);
         echo "\" />
 \t\t\t\t</div>
 \t\t\t</div>
 \t\t</div>
-\t\t<div class=\"control-group\">
+\t\t<div class=\"mail control-group\">
 \t\t\t<label class=\"control-label\" for=\"email\"><strong>E-mail</strong></label>
 \t\t\t<div class=\"controls\">
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-envelope\"></i></span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"email\" id=\"email\" value=\"";
-        // line 90
+        // line 254
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getEmail", array(), "method"), "html", null, true);
-        echo "\" />
+        echo "\" onchange=\"\" /> 
+\t\t\t\t<!-- TODO: onchange, AJAX POST to check if mail already exists in the db  -->
+\t\t\t\t\t<span class=\"help-inline mail-info\"></span>
 \t\t\t\t</div>
 \t\t\t</div>
 \t\t</div>
@@ -149,7 +315,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">@</span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"tweet\" id=\"tweet\" value=\"";
-        // line 99
+        // line 265
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getTwitter", array(), "method"), "html", null, true);
         echo "\" />
 \t\t\t\t</div>
@@ -157,30 +323,32 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t</div>
 \t</div>
 \t<div class=\"span4\">
-\t\t<div class=\"control-group\">
+\t\t<div class=\"oldpass control-group\">
 \t\t\t<label class=\"control-label\" for=\"old_pass\"><strong>Old Password</strong></label>
 \t\t\t<div class=\"controls\">
 \t\t\t\t<div class=\"input-prepend\">
-\t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-exclamation-sign\"></i></span>
+\t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-exclamation-sign pass_valid\"></i></span>
 \t\t\t\t\t<input class=\"input-large\" type=\"password\" name=\"old_pass\" id=\"old_pass\" value=\"\" />
 \t\t\t\t</div>
 \t\t\t</div>
 \t\t</div>
-\t\t<div class=\"passwords control-group\">
+\t\t<div class=\"passwords control-group newpassword\">
 \t\t\t<label class=\"control-label\" for=\"new_pass\"><strong>New Password</strong></label>
 \t\t\t<div class=\"controls\">
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-exclamation-sign password_signs\"></i></span>
-\t\t\t\t\t<input class=\"input-large\" type=\"password\" name=\"new_pass\" id=\"new_pass\" value=\"\" onkeyup=\"myfunc()\"/>
+\t\t\t\t\t<input class=\"input-large\" type=\"password\" name=\"new_pass\" id=\"new_pass\" value=\"\" onkeyup=\"validation(id)\"/>
+\t\t\t\t\t<span class=\"help-inline newpass-info\"></span>
 \t\t\t\t</div>
 \t\t\t</div>
 \t\t</div>
-\t\t<div class=\"passwords control-group\">
-\t\t\t<label class=\"control-label\" for=\"confirm_new_pass\"><strong>Confirm New Password</strong></label>
+\t\t<div class=\"passwords control-group confirmpassword\">
+\t\t\t<label class=\"control-label\" for=\"confirm_pass\"><strong>Confirm New Password</strong></label>
 \t\t\t<div class=\"controls\">
 \t\t\t\t<div class=\"input-prepend\">
-\t\t\t\t\t<span class=\"add-on\"><i class=\"icon-exclamation-sign password_signs\"></i></span>
-\t\t\t\t\t<input class=\"input-large\" type=\"password\" name=\"confirm_new_pass\" id=\"confirm_new_pass\" value=\"\"  onkeyup=\"myfunc()\" />
+\t\t\t\t\t<span class=\"add-on\"><i class=\"icon-exclamation-sign password_confirm\"></i></span>
+\t\t\t\t\t<input class=\"input-large\" type=\"password\" name=\"confirm_pass\" id=\"confirm_pass\" value=\"\"  onkeyup=\"validation(id)\" />
+\t\t\t\t\t<span class=\"help-inline confirmpass-info\"></span>
 \t\t\t\t</div>
 \t\t\t</div>
 \t\t</div>
@@ -205,7 +373,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t});
 
 \t\t\t\$.post(\"";
-        // line 152
+        // line 320
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_setoptions"), "html", null, true);
         echo "\", {data: items },
 \t\t\tfunction(data)
@@ -213,6 +381,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\talert(\"Profile Updated: \" + data);
 \t\t\t});
 \t\t});
+\t\t\$(\"#options\").addClass(\"active\");
 \t});
 </script>
 

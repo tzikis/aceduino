@@ -10,6 +10,7 @@ class __TwigTemplate_dd158a7b52e9ba5d72fdce6ec54e6024 extends Twig_Template
         $this->blocks = array(
             'alert' => array($this, 'block_alert'),
             'mainspan' => array($this, 'block_mainspan'),
+            'javascripts' => array($this, 'block_javascripts'),
         );
     }
 
@@ -42,6 +43,20 @@ class __TwigTemplate_dd158a7b52e9ba5d72fdce6ec54e6024 extends Twig_Template
         // line 9
         echo "\t";
         $this->env->loadTemplate("AceEditorBundle:Default:hero.html.twig")->display($context);
+    }
+
+    // line 12
+    public function block_javascripts($context, array $blocks = array())
+    {
+        // line 13
+        echo "<script type=\"text/javascript\" charset=\"utf-8\">
+\$(document).ready(function()
+{
+\t\$(\"#homepage\").addClass(\"active\");
+});
+</script>
+
+";
     }
 
     public function getTemplateName()

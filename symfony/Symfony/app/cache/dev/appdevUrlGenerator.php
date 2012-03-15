@@ -29,14 +29,26 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceEditorBundle_create' => true,
        'AceEditorBundle_editor' => true,
        'AceEditorBundle_getdata' => true,
+       'AceEditorBundle_fetchexample' => true,
        'AceEditorBundle_save' => true,
        'AceEditorBundle_compile' => true,
        'AceEditorBundle_download' => true,
        'AceEditorBundle_options' => true,
        'AceEditorBundle_setoptions' => true,
-       'login' => true,
-       'login_check' => true,
-       '_security_logout' => true,
+       'fos_user_security_login' => true,
+       'fos_user_security_check' => true,
+       'fos_user_security_logout' => true,
+       'fos_user_profile_show' => true,
+       'fos_user_profile_edit' => true,
+       'fos_user_registration_register' => true,
+       'fos_user_registration_check_email' => true,
+       'fos_user_registration_confirm' => true,
+       'fos_user_registration_confirmed' => true,
+       'fos_user_resetting_request' => true,
+       'fos_user_resetting_send_email' => true,
+       'fos_user_resetting_check_email' => true,
+       'fos_user_resetting_reset' => true,
+       'fos_user_change_password' => true,
     );
 
     /**
@@ -117,7 +129,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
 
     private function getAceEditorBundle_homepageRouteInfo()
     {
-        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/home',  ),));
+        return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/',  ),));
     }
 
     private function getAceEditorBundle_listRouteInfo()
@@ -138,6 +150,11 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getAceEditorBundle_getdataRouteInfo()
     {
         return array(array (  0 => 'project_name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::getDataAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'project_name',  ),  1 =>   array (    0 => 'text',    1 => '/get_data',  ),));
+    }
+
+    private function getAceEditorBundle_fetchexampleRouteInfo()
+    {
+        return array(array (  0 => 'category',  1 => 'name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::fetchExampleAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'name',  ),  1 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'category',  ),  2 =>   array (    0 => 'text',    1 => '/fetch/example',  ),));
     }
 
     private function getAceEditorBundle_saveRouteInfo()
@@ -165,18 +182,73 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
         return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::setoptionsAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/setoptions',  ),));
     }
 
-    private function getloginRouteInfo()
+    private function getfos_user_security_loginRouteInfo()
     {
-        return array(array (), array (  '_controller' => 'Ace\\SecurityBundle\\Controller\\SecurityController::loginAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/login',  ),));
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\SecurityController::loginAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/login',  ),));
     }
 
-    private function getlogin_checkRouteInfo()
+    private function getfos_user_security_checkRouteInfo()
     {
-        return array(array (), array (), array (), array (  0 =>   array (    0 => 'text',    1 => '/login_check',  ),));
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\SecurityController::checkAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/login_check',  ),));
     }
 
-    private function get_security_logoutRouteInfo()
+    private function getfos_user_security_logoutRouteInfo()
     {
-        return array(array (), array (), array (), array (  0 =>   array (    0 => 'text',    1 => '/logout',  ),));
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\SecurityController::logoutAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/logout',  ),));
+    }
+
+    private function getfos_user_profile_showRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ProfileController::showAction',), array (  '_method' => 'GET',), array (  0 =>   array (    0 => 'text',    1 => '/profile/',  ),));
+    }
+
+    private function getfos_user_profile_editRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ProfileController::editAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/profile/edit',  ),));
+    }
+
+    private function getfos_user_registration_registerRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\RegistrationController::registerAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/register/',  ),));
+    }
+
+    private function getfos_user_registration_check_emailRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\RegistrationController::checkEmailAction',), array (  '_method' => 'GET',), array (  0 =>   array (    0 => 'text',    1 => '/register/check-email',  ),));
+    }
+
+    private function getfos_user_registration_confirmRouteInfo()
+    {
+        return array(array (  0 => 'token',), array (  '_controller' => 'FOS\\UserBundle\\Controller\\RegistrationController::confirmAction',), array (  '_method' => 'GET',), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'token',  ),  1 =>   array (    0 => 'text',    1 => '/register/confirm',  ),));
+    }
+
+    private function getfos_user_registration_confirmedRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\RegistrationController::confirmedAction',), array (  '_method' => 'GET',), array (  0 =>   array (    0 => 'text',    1 => '/register/confirmed',  ),));
+    }
+
+    private function getfos_user_resetting_requestRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ResettingController::requestAction',), array (  '_method' => 'GET',), array (  0 =>   array (    0 => 'text',    1 => '/resetting/request',  ),));
+    }
+
+    private function getfos_user_resetting_send_emailRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ResettingController::sendEmailAction',), array (  '_method' => 'POST',), array (  0 =>   array (    0 => 'text',    1 => '/resetting/send-email',  ),));
+    }
+
+    private function getfos_user_resetting_check_emailRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ResettingController::checkEmailAction',), array (  '_method' => 'GET',), array (  0 =>   array (    0 => 'text',    1 => '/resetting/check-email',  ),));
+    }
+
+    private function getfos_user_resetting_resetRouteInfo()
+    {
+        return array(array (  0 => 'token',), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ResettingController::resetAction',), array (  '_method' => 'GET|POST',), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'token',  ),  1 =>   array (    0 => 'text',    1 => '/resetting/reset',  ),));
+    }
+
+    private function getfos_user_change_passwordRouteInfo()
+    {
+        return array(array (), array (  '_controller' => 'FOS\\UserBundle\\Controller\\ChangePasswordController::changePasswordAction',), array (  '_method' => 'GET|POST',), array (  0 =>   array (    0 => 'text',    1 => '/profile/change-password',  ),));
     }
 }

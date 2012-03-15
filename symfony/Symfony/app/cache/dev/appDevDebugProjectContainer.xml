@@ -17,9 +17,11 @@
       <parameter key="AsseticBundle">Symfony\Bundle\AsseticBundle\AsseticBundle</parameter>
       <parameter key="SensioFrameworkExtraBundle">Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle</parameter>
       <parameter key="JMSSecurityExtraBundle">JMS\SecurityExtraBundle\JMSSecurityExtraBundle</parameter>
+      <parameter key="FOSUserBundle">FOS\UserBundle\FOSUserBundle</parameter>
       <parameter key="AceEditorBundle">Ace\EditorBundle\AceEditorBundle</parameter>
       <parameter key="AceUserBundle">Ace\UserBundle\AceUserBundle</parameter>
       <parameter key="AceSecurityBundle">Ace\SecurityBundle\AceSecurityBundle</parameter>
+      <parameter key="AceExperimentalUserBundle">Ace\ExperimentalUserBundle\AceExperimentalUserBundle</parameter>
       <parameter key="WebProfilerBundle">Symfony\Bundle\WebProfilerBundle\WebProfilerBundle</parameter>
       <parameter key="SensioDistributionBundle">Sensio\Bundle\DistributionBundle\SensioDistributionBundle</parameter>
       <parameter key="SensioGeneratorBundle">Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle</parameter>
@@ -81,6 +83,7 @@
     <parameter key="validator.validator_factory.class">Symfony\Bundle\FrameworkBundle\Validator\ConstraintValidatorFactory</parameter>
     <parameter key="validator.mapping.loader.xml_files_loader.mapping_files" type="collection">
       <parameter>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Component/Form/Resources/config/validation.xml</parameter>
+      <parameter>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/config/validation.xml</parameter>
     </parameter>
     <parameter key="validator.mapping.loader.yaml_files_loader.mapping_files" type="collection"/>
     <parameter key="profiler.class">Symfony\Component\HttpKernel\Profiler\Profiler</parameter>
@@ -367,6 +370,48 @@
     <parameter key="security.extra.controller_listener.class">JMS\SecurityExtraBundle\Controller\ControllerListener</parameter>
     <parameter key="security.access.iddqd_voter.class">JMS\SecurityExtraBundle\Security\Authorization\Voter\IddqdVoter</parameter>
     <parameter key="security.extra.secure_all_services">false</parameter>
+    <parameter key="fos_user.validator.password.class">FOS\UserBundle\Validator\PasswordValidator</parameter>
+    <parameter key="fos_user.validator.unique.class">FOS\UserBundle\Validator\UniqueValidator</parameter>
+    <parameter key="fos_user.security.interactive_login_listener.class">FOS\UserBundle\Security\InteractiveLoginListener</parameter>
+    <parameter key="fos_user.resetting.email.template">FOSUserBundle:Resetting:email.txt.twig</parameter>
+    <parameter key="fos_user.registration.confirmation.template">FOSUserBundle:Registration:email.txt.twig</parameter>
+    <parameter key="fos_user.firewall_name">main</parameter>
+    <parameter key="fos_user.model_manager_name">null</parameter>
+    <parameter key="fos_user.model.user.class">Ace\ExperimentalUserBundle\Entity\ExperimentalUser</parameter>
+    <parameter key="fos_user.template.engine">twig</parameter>
+    <parameter key="fos_user.template.theme">FOSUserBundle::form.html.twig</parameter>
+    <parameter key="fos_user.profile.form.type">fos_user_profile</parameter>
+    <parameter key="fos_user.profile.form.name">fos_user_profile_form</parameter>
+    <parameter key="fos_user.profile.form.validation_groups" type="collection">
+      <parameter>Profile</parameter>
+      <parameter>Default</parameter>
+    </parameter>
+    <parameter key="fos_user.registration.confirmation.from_email" type="collection">
+      <parameter key="webmaster@example.com">webmaster</parameter>
+    </parameter>
+    <parameter key="fos_user.registration.confirmation.enabled">false</parameter>
+    <parameter key="fos_user.registration.form.type">ace_experimental_user_registration</parameter>
+    <parameter key="fos_user.registration.form.name">fos_user_registration_form</parameter>
+    <parameter key="fos_user.registration.form.validation_groups" type="collection">
+      <parameter>Registration</parameter>
+      <parameter>Default</parameter>
+    </parameter>
+    <parameter key="fos_user.change_password.form.type">fos_user_change_password</parameter>
+    <parameter key="fos_user.change_password.form.name">fos_user_change_password_form</parameter>
+    <parameter key="fos_user.change_password.form.validation_groups" type="collection">
+      <parameter>ChangePassword</parameter>
+      <parameter>Default</parameter>
+    </parameter>
+    <parameter key="fos_user.resetting.email.from_email" type="collection">
+      <parameter key="webmaster@example.com">webmaster</parameter>
+    </parameter>
+    <parameter key="fos_user.resetting.token_ttl">86400</parameter>
+    <parameter key="fos_user.resetting.form.type">fos_user_resetting</parameter>
+    <parameter key="fos_user.resetting.form.name">fos_user_resetting_form</parameter>
+    <parameter key="fos_user.resetting.form.validation_groups" type="collection">
+      <parameter>ResetPassword</parameter>
+      <parameter>Default</parameter>
+    </parameter>
     <parameter key="web_profiler.debug_toolbar.class">Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener</parameter>
     <parameter key="web_profiler.debug_toolbar.intercept_redirects">false</parameter>
     <parameter key="web_profiler.debug_toolbar.mode">1</parameter>
@@ -589,6 +634,14 @@
         <argument>-255</argument>
       </call>
       <call method="addListenerService">
+        <argument>security.interactive_login</argument>
+        <argument type="collection">
+          <argument>fos_user.security.interactive_login_listener</argument>
+          <argument>onSecurityInteractiveLogin</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListenerService">
         <argument>kernel.response</argument>
         <argument type="collection">
           <argument>web_profiler.debug_toolbar</argument>
@@ -667,7 +720,9 @@
     </service>
     <service id="translator.default" class="Symfony\Bundle\FrameworkBundle\Translation\Translator">
       <argument type="service" id="service_container"/>
-      <argument type="service" id="translator.selector"/>
+      <argument type="service">
+        <service class="Symfony\Component\Translation\MessageSelector" public="false"/>
+      </argument>
       <argument type="collection">
         <argument key="translation.loader.php">php</argument>
         <argument key="translation.loader.yml">yml</argument>
@@ -678,11 +733,406 @@
         <argument key="debug">true</argument>
       </argument>
       <argument type="service" id="session"/>
+      <call method="setFallbackLocale">
+        <argument>en</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.et.xliff</argument>
+        <argument>et</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.sv.xliff</argument>
+        <argument>sv</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.hy.xliff</argument>
+        <argument>hy</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.ro.xliff</argument>
+        <argument>ro</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.eu.xliff</argument>
+        <argument>eu</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.ua.xliff</argument>
+        <argument>ua</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.fi.xliff</argument>
+        <argument>fi</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.ca.xliff</argument>
+        <argument>ca</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.id.xliff</argument>
+        <argument>id</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.pl.xliff</argument>
+        <argument>pl</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.lt.xliff</argument>
+        <argument>lt</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.ru.xliff</argument>
+        <argument>ru</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.pt_BR.xliff</argument>
+        <argument>pt_BR</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.sr.xliff</argument>
+        <argument>sr</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.fr.xliff</argument>
+        <argument>fr</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.nl.xliff</argument>
+        <argument>nl</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.pt_PT.xliff</argument>
+        <argument>pt_PT</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.fa.xliff</argument>
+        <argument>fa</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.sk.xliff</argument>
+        <argument>sk</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.cs.xliff</argument>
+        <argument>cs</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.it.xliff</argument>
+        <argument>it</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.sl.xliff</argument>
+        <argument>sl</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.es.xliff</argument>
+        <argument>es</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.mn.xliff</argument>
+        <argument>mn</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.ja.xliff</argument>
+        <argument>ja</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.zh_CN.xliff</argument>
+        <argument>zh_CN</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.de.xliff</argument>
+        <argument>de</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.da.xliff</argument>
+        <argument>da</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.lb.xliff</argument>
+        <argument>lb</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.he.xliff</argument>
+        <argument>he</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/translations/validators.hu.xliff</argument>
+        <argument>hu</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.fr.yml</argument>
+        <argument>fr</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.sv.yml</argument>
+        <argument>sv</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.pt_BR.yml</argument>
+        <argument>pt_BR</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.ru.yml</argument>
+        <argument>ru</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.ro.yml</argument>
+        <argument>ro</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.pt_PT.yml</argument>
+        <argument>pt_PT</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.es.yml</argument>
+        <argument>es</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.ru.yml</argument>
+        <argument>ru</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.pt_BR.yml</argument>
+        <argument>pt_BR</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.en.yml</argument>
+        <argument>en</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.sl.yml</argument>
+        <argument>sl</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.it.yml</argument>
+        <argument>it</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.es.yml</argument>
+        <argument>es</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.cs.yml</argument>
+        <argument>cs</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.it.yml</argument>
+        <argument>it</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.en.yml</argument>
+        <argument>en</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.pl.yml</argument>
+        <argument>pl</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.sl.yml</argument>
+        <argument>sl</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.da.yml</argument>
+        <argument>da</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.lb.yml</argument>
+        <argument>lb</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.nl.yml</argument>
+        <argument>nl</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.hu.yml</argument>
+        <argument>hu</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.ja.yml</argument>
+        <argument>ja</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.ca.yml</argument>
+        <argument>ca</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.sk.yml</argument>
+        <argument>sk</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.nl.yml</argument>
+        <argument>nl</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.ja.yml</argument>
+        <argument>ja</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.de.yml</argument>
+        <argument>de</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/validators.pl.yml</argument>
+        <argument>pl</argument>
+        <argument>validators</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.fr.yml</argument>
+        <argument>fr</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.de.yml</argument>
+        <argument>de</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/translations/FOSUserBundle.et.yml</argument>
+        <argument>et</argument>
+        <argument>FOSUserBundle</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/src/Ace/UserBundle/Resources/translations/messages.fr.xliff</argument>
+        <argument>fr</argument>
+        <argument>messages</argument>
+      </call>
+      <call method="addResource">
+        <argument>xliff</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/src/Ace/SecurityBundle/Resources/translations/messages.fr.xliff</argument>
+        <argument>fr</argument>
+        <argument>messages</argument>
+      </call>
+      <call method="addResource">
+        <argument>yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/src/Ace/ExperimentalUserBundle/Resources/translations/messages.en.yml</argument>
+        <argument>en</argument>
+        <argument>messages</argument>
+      </call>
     </service>
-    <service id="translator" class="Symfony\Component\Translation\IdentityTranslator">
-      <argument type="service" id="translator.selector"/>
-    </service>
-    <service id="translator.selector" class="Symfony\Component\Translation\MessageSelector" public="false"/>
     <service id="translation.loader.php" class="Symfony\Component\Translation\Loader\PhpFileLoader">
       <tag name="translation.loader" alias="php"/>
     </service>
@@ -736,6 +1186,12 @@
               <argument key="url">form.type.url</argument>
               <argument key="csrf">form.type.csrf</argument>
               <argument key="entity">form.type.entity</argument>
+              <argument key="fos_user_username">fos_user.username_form_type</argument>
+              <argument key="fos_user_profile">fos_user.profile.form.type</argument>
+              <argument key="fos_user_registration">fos_user.registration.form.type</argument>
+              <argument key="fos_user_change_password">fos_user.change_password.form.type</argument>
+              <argument key="fos_user_resetting">fos_user.resetting.form.type</argument>
+              <argument key="ace_experimental_user_registration">ace_experimental_user.registration.form.type</argument>
             </argument>
             <argument type="collection">
               <argument key="field" type="collection">
@@ -863,6 +1319,8 @@
           <argument type="service" id="service_container"/>
           <argument type="collection">
             <argument key="doctrine.orm.validator.unique">doctrine.orm.validator.unique</argument>
+            <argument key="fos_user.validator.unique">fos_user.validator.unique</argument>
+            <argument key="fos_user.validator.password">fos_user.validator.password</argument>
           </argument>
         </service>
       </argument>
@@ -886,6 +1344,7 @@
               <service class="Symfony\Component\Validator\Mapping\Loader\XmlFilesLoader" public="false">
                 <argument type="collection">
                   <argument>/var/www/aceduino/symfony/Symfony/vendor/symfony/src/Symfony/Component/Form/Resources/config/validation.xml</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/config/validation.xml</argument>
                 </argument>
               </service>
             </argument>
@@ -1127,7 +1586,7 @@
     </service>
     <service id="templating.helper.translator" class="Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper">
       <tag name="templating.helper" alias="translator"/>
-      <argument type="service" id="translator"/>
+      <argument type="service" id="translator.default"/>
     </service>
     <service id="templating.helper.form" class="Symfony\Bundle\FrameworkBundle\Templating\Helper\FormHelper">
       <tag name="templating.helper" alias="form"/>
@@ -1173,18 +1632,16 @@
       <argument type="collection">
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider" public="false">
-            <argument type="service" id="security.user.provider.concrete.in_memory"/>
-            <argument type="service">
-              <service class="Symfony\Component\Security\Core\User\UserChecker" public="false"/>
-            </argument>
-            <argument>secured_area</argument>
+            <argument type="service" id="ace_experimental_user.experimental_provider"/>
+            <argument type="service" id="fos_user.user_checker"/>
+            <argument>main</argument>
             <argument type="service" id="security.encoder_factory"/>
             <argument>true</argument>
           </service>
         </argument>
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
-            <argument>4f4283bf80ed3</argument>
+            <argument>4f5be192b4e95</argument>
           </service>
         </argument>
       </argument>
@@ -1241,9 +1698,9 @@
                 <argument>^/demo/secured/login$</argument>
               </service>
             </argument>
-            <argument key="security.firewall.map.context.secured_area" type="service">
+            <argument key="security.firewall.map.context.main" type="service">
               <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-                <argument>^/*</argument>
+                <argument>^/</argument>
               </service>
             </argument>
           </argument>
@@ -1258,41 +1715,6 @@
       <tag name="templating.helper" alias="security"/>
       <argument type="service" id="security.context"/>
     </service>
-    <service id="security.user.provider.concrete.in_memory" class="Symfony\Component\Security\Core\User\InMemoryUserProvider" public="false">
-      <call method="createUser">
-        <argument type="service">
-          <service class="Symfony\Component\Security\Core\User\User" public="false">
-            <argument>user</argument>
-            <argument>userpass</argument>
-            <argument type="collection">
-              <argument>ROLE_USER</argument>
-            </argument>
-          </service>
-        </argument>
-      </call>
-      <call method="createUser">
-        <argument type="service">
-          <service class="Symfony\Component\Security\Core\User\User" public="false">
-            <argument>tzikis</argument>
-            <argument>qwerty</argument>
-            <argument type="collection">
-              <argument>ROLE_USER</argument>
-            </argument>
-          </service>
-        </argument>
-      </call>
-      <call method="createUser">
-        <argument type="service">
-          <service class="Symfony\Component\Security\Core\User\User" public="false">
-            <argument>admin</argument>
-            <argument>adminpass</argument>
-            <argument type="collection">
-              <argument>ROLE_ADMIN</argument>
-            </argument>
-          </service>
-        </argument>
-      </call>
-    </service>
     <service id="security.firewall.map.context.dev" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
       <argument type="collection"/>
       <argument>null</argument>
@@ -1301,13 +1723,46 @@
       <argument type="collection"/>
       <argument>null</argument>
     </service>
-    <service id="security.firewall.map.context.secured_area" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
+    <service id="security.firewall.map.context.main" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
       <argument type="collection">
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\ChannelListener" public="false">
             <tag name="monolog.logger" channel="security"/>
             <argument type="service">
               <service class="Symfony\Component\Security\Http\AccessMap" public="false">
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/login$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/register</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/resetting</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
                 <call method="add">
                   <argument type="service">
                     <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
@@ -1355,7 +1810,7 @@
                 <call method="add">
                   <argument type="service">
                     <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-                      <argument>^/admin</argument>
+                      <argument>^/admin/</argument>
                     </service>
                   </argument>
                   <argument type="collection">
@@ -1375,9 +1830,9 @@
           <service class="Symfony\Component\Security\Http\Firewall\ContextListener" public="false">
             <argument type="service" id="security.context"/>
             <argument type="collection">
-              <argument type="service" id="security.user.provider.concrete.in_memory"/>
+              <argument type="service" id="ace_experimental_user.experimental_provider"/>
             </argument>
-            <argument>secured_area</argument>
+            <argument>main</argument>
             <argument type="service" id="monolog.logger.security"/>
             <argument type="service" id="event_dispatcher"/>
           </service>
@@ -1391,7 +1846,7 @@
               </service>
             </argument>
             <argument>/logout</argument>
-            <argument>/home</argument>
+            <argument>/</argument>
             <argument>null</argument>
             <call method="addHandler">
               <argument type="service">
@@ -1402,7 +1857,7 @@
         </argument>
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener" public="false">
-            <tag name="security.remember_me_aware" id="secured_area" provider="security.user.provider.concrete.in_memory"/>
+            <tag name="security.remember_me_aware" id="main" provider="security.user.provider.concrete.custom"/>
             <argument type="service" id="security.context"/>
             <argument type="service" id="security.authentication.manager"/>
             <argument type="service">
@@ -1415,7 +1870,7 @@
                 <argument type="service" id="router"/>
               </service>
             </argument>
-            <argument>secured_area</argument>
+            <argument>main</argument>
             <argument type="collection">
               <argument key="check_path">/login_check</argument>
               <argument key="login_path">/login</argument>
@@ -1436,12 +1891,13 @@
             <argument>null</argument>
             <argument type="service" id="monolog.logger.security"/>
             <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="form.csrf_provider"/>
           </service>
         </argument>
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
             <argument type="service" id="security.context"/>
-            <argument>4f4283bf80ed3</argument>
+            <argument>4f5be192b4e95</argument>
             <argument type="service" id="monolog.logger.security"/>
           </service>
         </argument>
@@ -1452,6 +1908,39 @@
             <argument type="service" id="security.access.decision_manager"/>
             <argument type="service">
               <service class="Symfony\Component\Security\Http\AccessMap" public="false">
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/login$</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/register</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
+                <call method="add">
+                  <argument type="service">
+                    <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+                      <argument>^/resetting</argument>
+                    </service>
+                  </argument>
+                  <argument type="collection">
+                    <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+                  </argument>
+                  <argument>null</argument>
+                </call>
                 <call method="add">
                   <argument type="service">
                     <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
@@ -1499,7 +1988,7 @@
                 <call method="add">
                   <argument type="service">
                     <service class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-                      <argument>^/admin</argument>
+                      <argument>^/admin/</argument>
                     </service>
                   </argument>
                   <argument type="collection">
@@ -1562,7 +2051,7 @@
         <argument type="service">
           <service class="Symfony\Bridge\Twig\Extension\TranslationExtension" public="false">
             <tag name="twig.extension"/>
-            <argument type="service" id="translator"/>
+            <argument type="service" id="translator.default"/>
           </service>
         </argument>
       </call>
@@ -1698,6 +2187,14 @@
               </service>
             </argument>
           </call>
+          <call method="addEventSubscriber">
+            <argument type="service">
+              <service class="FOS\UserBundle\Entity\UserListener" public="false">
+                <tag name="doctrine.event_subscriber"/>
+                <argument type="service" id="service_container"/>
+              </service>
+            </argument>
+          </call>
         </service>
       </argument>
       <argument type="collection"/>
@@ -1724,7 +2221,9 @@
         <service class="Doctrine\ORM\Configuration" public="false">
           <call method="setEntityNamespaces">
             <argument type="collection">
+              <argument key="FOSUserBundle">FOS\UserBundle\Entity</argument>
               <argument key="AceEditorBundle">Ace\EditorBundle\Entity</argument>
+              <argument key="AceExperimentalUserBundle">Ace\ExperimentalUserBundle\Entity</argument>
             </argument>
           </call>
           <call method="setMetadataCacheImpl">
@@ -1759,6 +2258,24 @@
               <service class="Doctrine\ORM\Mapping\Driver\DriverChain" public="false">
                 <call method="addDriver">
                   <argument type="service">
+                    <service class="Symfony\Bridge\Doctrine\Mapping\Driver\XmlDriver" public="false">
+                      <argument type="collection">
+                        <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/config/doctrine</argument>
+                      </argument>
+                      <call method="setNamespacePrefixes">
+                        <argument type="collection">
+                          <argument key="/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/config/doctrine">FOS\UserBundle\Entity</argument>
+                        </argument>
+                      </call>
+                      <call method="setGlobalBasename">
+                        <argument>mapping</argument>
+                      </call>
+                    </service>
+                  </argument>
+                  <argument>FOS\UserBundle\Entity</argument>
+                </call>
+                <call method="addDriver">
+                  <argument type="service">
                     <service class="Symfony\Bridge\Doctrine\Mapping\Driver\YamlDriver" public="false">
                       <argument type="collection">
                         <argument>/var/www/aceduino/symfony/Symfony/src/Ace/EditorBundle/Resources/config/doctrine</argument>
@@ -1774,6 +2291,21 @@
                     </service>
                   </argument>
                   <argument>Ace\EditorBundle\Entity</argument>
+                </call>
+                <call method="addDriver">
+                  <argument type="service">
+                    <service class="Doctrine\ORM\Mapping\Driver\AnnotationDriver" public="false">
+                      <argument type="service">
+                        <service class="Symfony\Bridge\Doctrine\Annotations\IndexedReader" public="false">
+                          <argument type="service" id="annotation_reader"/>
+                        </service>
+                      </argument>
+                      <argument type="collection">
+                        <argument>/var/www/aceduino/symfony/Symfony/src/Ace/ExperimentalUserBundle/Entity</argument>
+                      </argument>
+                    </service>
+                  </argument>
+                  <argument>Ace\ExperimentalUserBundle\Entity</argument>
                 </call>
               </service>
             </argument>
@@ -2073,6 +2605,33 @@
               <argument type="service">
                 <service class="%assetic.directory_resource.class%" public="false">
                   <argument type="service" id="templating.loader"/>
+                  <argument>FOSUserBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/app/Resources/FOSUserBundle/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>FOSUserBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/vendor/bundles/FOS/UserBundle/Resources/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+            </argument>
+          </service>
+        </argument>
+        <argument>twig</argument>
+      </call>
+      <call method="addResource">
+        <argument type="service">
+          <service class="Symfony\Bundle\AsseticBundle\Factory\Resource\CoalescingDirectoryResource" public="false">
+            <tag name="assetic.templating.twig"/>
+            <tag name="assetic.formula_resource" loader="twig"/>
+            <argument type="collection">
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
                   <argument>AceEditorBundle</argument>
                   <argument>/var/www/aceduino/symfony/Symfony/app/Resources/AceEditorBundle/views</argument>
                   <argument>/^[^.]+\.[^.]+\.twig$/</argument>
@@ -2137,6 +2696,33 @@
                   <argument type="service" id="templating.loader"/>
                   <argument>AceSecurityBundle</argument>
                   <argument>/var/www/aceduino/symfony/Symfony/src/Ace/SecurityBundle/Resources/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+            </argument>
+          </service>
+        </argument>
+        <argument>twig</argument>
+      </call>
+      <call method="addResource">
+        <argument type="service">
+          <service class="Symfony\Bundle\AsseticBundle\Factory\Resource\CoalescingDirectoryResource" public="false">
+            <tag name="assetic.templating.twig"/>
+            <tag name="assetic.formula_resource" loader="twig"/>
+            <argument type="collection">
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>AceExperimentalUserBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/app/Resources/AceExperimentalUserBundle/views</argument>
+                  <argument>/^[^.]+\.[^.]+\.twig$/</argument>
+                </service>
+              </argument>
+              <argument type="service">
+                <service class="%assetic.directory_resource.class%" public="false">
+                  <argument type="service" id="templating.loader"/>
+                  <argument>AceExperimentalUserBundle</argument>
+                  <argument>/var/www/aceduino/symfony/Symfony/src/Ace/ExperimentalUserBundle/Resources/views</argument>
                   <argument>/^[^.]+\.[^.]+\.twig$/</argument>
                 </service>
               </argument>
@@ -2324,6 +2910,101 @@
       <argument type="service" id="service_container"/>
       <argument type="service" id="annotation_reader"/>
     </service>
+    <service id="fos_user.validator.unique" class="FOS\UserBundle\Validator\UniqueValidator">
+      <tag name="validator.constraint_validator" alias="fos_user.validator.unique"/>
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
+    <service id="fos_user.validator.password" class="FOS\UserBundle\Validator\PasswordValidator">
+      <tag name="validator.constraint_validator" alias="fos_user.validator.password"/>
+      <call method="setEncoderFactory">
+        <argument type="service" id="security.encoder_factory"/>
+      </call>
+    </service>
+    <service id="fos_user.security.interactive_login_listener" class="FOS\UserBundle\Security\InteractiveLoginListener">
+      <tag name="kernel.event_listener" event="security.interactive_login" method="onSecurityInteractiveLogin"/>
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
+    <service id="fos_user.util.user_manipulator" class="FOS\UserBundle\Util\UserManipulator">
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
+    <service id="fos_user.username_form_type" class="FOS\UserBundle\Form\Type\UsernameFormType">
+      <tag name="form.type" alias="fos_user_username"/>
+      <argument type="service">
+        <service class="FOS\UserBundle\Form\DataTransformer\UserToUsernameTransformer" public="false">
+          <argument type="service" id="fos_user.user_manager"/>
+        </service>
+      </argument>
+    </service>
+    <service id="fos_user.profile.form" class="Symfony\Component\Form\Form" factory-method="createNamed" factory-service="form.factory">
+      <argument>fos_user_profile</argument>
+      <argument>fos_user_profile_form</argument>
+      <argument></argument>
+      <argument type="collection">
+        <argument key="validation_groups" type="collection">
+          <argument>Profile</argument>
+          <argument>Default</argument>
+        </argument>
+      </argument>
+    </service>
+    <service id="fos_user.profile.form.type" class="FOS\UserBundle\Form\Type\ProfileFormType">
+      <tag name="form.type" alias="fos_user_profile"/>
+      <argument>Ace\ExperimentalUserBundle\Entity\ExperimentalUser</argument>
+    </service>
+    <service id="fos_user.registration.form" class="Symfony\Component\Form\Form" factory-method="createNamed" factory-service="form.factory">
+      <argument>ace_experimental_user_registration</argument>
+      <argument>fos_user_registration_form</argument>
+      <argument></argument>
+      <argument type="collection">
+        <argument key="validation_groups" type="collection">
+          <argument>Registration</argument>
+          <argument>Default</argument>
+        </argument>
+      </argument>
+    </service>
+    <service id="fos_user.registration.form.type" class="FOS\UserBundle\Form\Type\RegistrationFormType">
+      <tag name="form.type" alias="fos_user_registration"/>
+      <argument>Ace\ExperimentalUserBundle\Entity\ExperimentalUser</argument>
+    </service>
+    <service id="fos_user.change_password.form" class="Symfony\Component\Form\Form" factory-method="createNamed" factory-service="form.factory">
+      <argument>fos_user_change_password</argument>
+      <argument>fos_user_change_password_form</argument>
+      <argument></argument>
+      <argument type="collection">
+        <argument key="validation_groups" type="collection">
+          <argument>ChangePassword</argument>
+          <argument>Default</argument>
+        </argument>
+      </argument>
+    </service>
+    <service id="fos_user.change_password.form.type" class="FOS\UserBundle\Form\Type\ChangePasswordFormType">
+      <tag name="form.type" alias="fos_user_change_password"/>
+    </service>
+    <service id="fos_user.change_password.form.handler.default" class="FOS\UserBundle\Form\Handler\ChangePasswordFormHandler" scope="request">
+      <argument type="service" id="fos_user.change_password.form"/>
+      <argument type="service" id="request"/>
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
+    <service id="fos_user.resetting.form" class="Symfony\Component\Form\Form" factory-method="createNamed" factory-service="form.factory">
+      <argument>fos_user_resetting</argument>
+      <argument>fos_user_resetting_form</argument>
+      <argument></argument>
+      <argument type="collection">
+        <argument key="validation_groups" type="collection">
+          <argument>ResetPassword</argument>
+          <argument>Default</argument>
+        </argument>
+      </argument>
+    </service>
+    <service id="fos_user.resetting.form.type" class="FOS\UserBundle\Form\Type\ResettingFormType">
+      <tag name="form.type" alias="fos_user_resetting"/>
+    </service>
+    <service id="ace_experimental_user.experimental_provider" class="Ace\ExperimentalUserBundle\Security\Provider\ExperimentalProvider" public="false">
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
+    <service id="ace_experimental_user.registration.form.type" class="Ace\ExperimentalUserBundle\Form\Type\RegistrationFormType">
+      <tag name="form.type" alias="ace_experimental_user_registration"/>
+      <argument>Ace\ExperimentalUserBundle\Entity\ExperimentalUser</argument>
+    </service>
     <service id="web_profiler.debug_toolbar" class="Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener">
       <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="-128"/>
       <argument type="service" id="templating"/>
@@ -2457,10 +3138,12 @@
     </service>
     <service id="security.encoder_factory" class="Symfony\Component\Security\Core\Encoder\EncoderFactory">
       <argument type="collection">
-        <argument key="Symfony\Component\Security\Core\User\User" type="collection">
-          <argument key="class">%security.encoder.plain.class%</argument>
+        <argument key="FOS\UserBundle\Model\UserInterface" type="collection">
+          <argument key="class">%security.encoder.digest.class%</argument>
           <argument key="arguments" type="collection">
-            <argument>false</argument>
+            <argument>sha512</argument>
+            <argument>true</argument>
+            <argument>5000</argument>
           </argument>
         </argument>
       </argument>
@@ -2530,8 +3213,57 @@
     <service id="mailer" class="Swift_Mailer">
       <argument type="service" id="swiftmailer.transport"/>
     </service>
+    <service id="fos_user.user_checker" class="Symfony\Component\Security\Core\User\UserChecker"/>
+    <service id="fos_user.mailer" class="FOS\UserBundle\Mailer\Mailer">
+      <argument type="service" id="mailer"/>
+      <argument type="service" id="router"/>
+      <argument type="service" id="templating"/>
+      <argument type="collection">
+        <argument key="confirmation.template">FOSUserBundle:Registration:email.txt.twig</argument>
+        <argument key="resetting.template">FOSUserBundle:Resetting:email.txt.twig</argument>
+        <argument key="from_email" type="collection">
+          <argument key="confirmation" type="collection">
+            <argument key="webmaster@example.com">webmaster</argument>
+          </argument>
+          <argument key="resetting" type="collection">
+            <argument key="webmaster@example.com">webmaster</argument>
+          </argument>
+        </argument>
+      </argument>
+    </service>
+    <service id="fos_user.util.email_canonicalizer" class="FOS\UserBundle\Util\Canonicalizer"/>
+    <service id="fos_user.user_manager" class="FOS\UserBundle\Entity\UserManager">
+      <argument type="service" id="security.encoder_factory"/>
+      <argument type="service" id="fos_user.util.email_canonicalizer"/>
+      <argument type="service" id="fos_user.util.email_canonicalizer"/>
+      <argument type="service">
+        <service class="Doctrine\ORM\EntityManager" factory-method="getEntityManager" factory-service="doctrine" public="false">
+          <argument>null</argument>
+        </service>
+      </argument>
+      <argument>Ace\ExperimentalUserBundle\Entity\ExperimentalUser</argument>
+    </service>
+    <service id="fos_user.profile.form.handler" class="FOS\UserBundle\Form\Handler\ProfileFormHandler" scope="request">
+      <argument type="service" id="fos_user.profile.form"/>
+      <argument type="service" id="request"/>
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
+    <service id="fos_user.registration.form.handler" class="FOS\UserBundle\Form\Handler\RegistrationFormHandler" scope="request">
+      <argument type="service" id="fos_user.registration.form"/>
+      <argument type="service" id="request"/>
+      <argument type="service" id="fos_user.user_manager"/>
+      <argument type="service" id="fos_user.mailer"/>
+    </service>
+    <service id="fos_user.resetting.form.handler" class="FOS\UserBundle\Form\Handler\ResettingFormHandler" scope="request">
+      <argument type="service" id="fos_user.resetting.form"/>
+      <argument type="service" id="request"/>
+      <argument type="service" id="fos_user.user_manager"/>
+    </service>
     <service id="debug.event_dispatcher" alias="event_dispatcher"/>
+    <service id="translator" alias="translator.default"/>
     <service id="database_connection" alias="doctrine.dbal.default_connection"/>
     <service id="doctrine.orm.entity_manager" alias="doctrine.orm.default_entity_manager"/>
+    <service id="fos_user.util.username_canonicalizer" alias="fos_user.util.email_canonicalizer"/>
+    <service id="fos_user.change_password.form.handler" alias="fos_user.change_password.form.handler.default"/>
   </services>
 </container>

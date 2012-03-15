@@ -8,3 +8,13 @@
 {% block mainspan %}
 	{% include 'AceEditorBundle:Default:hero.html.twig' %}
 {% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function()
+{
+	$("#homepage").addClass("active");
+});
+</script>
+
+{% endblock %}

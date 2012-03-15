@@ -24,7 +24,7 @@
         }
         if (options['live']) {
             if (jQuery(this).find('input').length > 0) {
-                jQuery(this).find('input').bind('blur', function(){
+                jQuery(this).find('input').bind('keyup', function(){
                     if (validate_field("#" + SelfID, options)) {
                         if (options.callback_success) 
                             options.callback_success(this);
@@ -34,16 +34,16 @@
                             options.callback_failure(this);
                     }
                 });
-                jQuery(this).find('input').bind('focus keypress click', function(){
+                jQuery(this).find('input').bind('keyup focus click', function(){
                     jQuery("#" + SelfID).next('.' + options['error_class']).remove();
                     jQuery("#" + SelfID).removeClass(options['error_field_class']);
                 });
             }
             else {
-                jQuery(this).bind('blur', function(){
+                jQuery(this).bind('keyup', function(){
                     validate_field(this);
                 });
-                jQuery(this).bind('focus keypress', function(){
+                jQuery(this).bind('keyup', function(){
                     jQuery(this).next('.' + options['error_class']).fadeOut("fast", function(){
                         jQuery(this).remove();
                     });

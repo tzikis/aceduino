@@ -1,5 +1,5 @@
 AceEditorBundle_homepage:
-    pattern:  /home
+    pattern:  /
     defaults: { _controller: AceEditorBundle:Default:index }
 
 AceEditorBundle_list:
@@ -17,6 +17,10 @@ AceEditorBundle_editor:
 AceEditorBundle_getdata:
     pattern:  /get_data/{project_name}
     defaults: { _controller: AceEditorBundle:Default:getData}
+
+AceEditorBundle_fetchexample:
+    pattern:  /fetch/example/{category}/{name}
+    defaults: { _controller: AceEditorBundle:Default:fetchExample}
 
 AceEditorBundle_save:
     pattern:  /save

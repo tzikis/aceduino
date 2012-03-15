@@ -28,8 +28,15 @@ class DefaultController extends Controller
 
     public function listAction()
     {
+		if (!$this->get('security.context')->isGranted('ROLE_USER'))
+		{
+	        // Load user content here
+			return $this->redirect($this->generateUrl('AceEditorBundle_homepage'));
+	    }
+
+
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-	    $user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+	    $user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 
 	    if (!$user) {
 	        throw $this->createNotFoundException('No user found with id '.$name);
@@ -42,7 +49,7 @@ class DefaultController extends Controller
     public function sidebarAction()
     {
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-	    $user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+	    $user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 
 	    if (!$user) {
 	        throw $this->createNotFoundException('No user found with id '.$name);
@@ -57,7 +64,7 @@ class DefaultController extends Controller
     public function editAction($project_name)
     {		
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+		$user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 		$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneByName($project_name);
 		
 		if(!$user)
@@ -88,7 +95,7 @@ class DefaultController extends Controller
 	public function getDataAction($project_name)
 	{
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+		$user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 		$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneByName($project_name);
 		
 		if(!$user || !$file || ($user->getId() != $file->getOwner()))
@@ -129,7 +136,7 @@ class DefaultController extends Controller
 			if($project_name && $mydata)
 			{
 				$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-				$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+				$user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 				$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneBy(array('name' => $project_name, 'owner' => $user->getId()));
 				// $directory = "/var/www/aceduino/symfony/files/";
 				if(file_exists($this->directory.$file->getFilename()))
@@ -157,7 +164,7 @@ class DefaultController extends Controller
 			if($project_name)
 			{
 				$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-				$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+				$user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 				$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneBy(array('name' => $project_name, 'owner' => $user->getId()));
 				// $directory = "/var/www/aceduino/symfony/files/";
 				if(file_exists($this->directory.$file->getFilename()))
@@ -216,7 +223,7 @@ class DefaultController extends Controller
 		$examples_directory = "/var/www/aceduino/symfony/examples/";
 		
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-		$user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+		$user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 		$file = $this->getDoctrine()->getRepository('AceEditorBundle:EditorFile')->findOneByName($project_name);
 		
 		if(!$user)
@@ -279,7 +286,7 @@ class DefaultController extends Controller
 	public function optionsAction()
     {
 		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-	    $user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+	    $user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 
 	    if (!$user) {
 	        throw $this->createNotFoundException('No user found with username '.$name);
@@ -289,7 +296,7 @@ class DefaultController extends Controller
 		//$fname= $product->getFirstname();
 		//$lname= $product->getLastname();
 		        
-		return $this->render('AceEditorBundle:Default:options.html.twig', array('username' =>$name, 'settings' => $user));
+		return $this->render('AceEditorBundle:Default:options.html.twig', array('username' => $name, 'settings' => $user));
     }
     
     public function setoptionsAction()
@@ -309,7 +316,7 @@ class DefaultController extends Controller
 				
 				$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
 				$em = $this->getDoctrine()->getEntityManager();
-				$user = $em->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+				$user = $em->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 				
 				//update object
 				$user->setFirstname($fname);
@@ -348,7 +355,7 @@ class DefaultController extends Controller
 				return $this->redirect($this->generateUrl('AceEditorBundle_list'));
 			}
 			$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
-		    $user = $this->getDoctrine()->getRepository('AceEditorBundle:EditorUser')->findOneByUsername($name);
+		    $user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
 		    if (!$user)
 			{
 		        throw $this->createNotFoundException('No user found with username '.$name);
@@ -397,6 +404,35 @@ class DefaultController extends Controller
 	        throw $this->createNotFoundException('No POST data!');		
 	}
 	
+	public function imageAction()
+	{
+		$name = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+		$user = $this->getDoctrine()->getRepository('AceExperimentalUserBundle:ExperimentalUser')->findOneByUsername($name);
+		if (!$user)
+		{
+			throw $this->createNotFoundException('No user found with id '.$name);
+		}
+		$image = $this->get_gravatar($user->getEmail());
+	
+		return $this->render('AceEditorBundle:Default:image.html.twig', array('user' => $user->getUsername(),'image' => $image));
+	}
+	
+	public function fetchExampleAction($category, $name)
+	{
+		$response = new Response('404 Not Found!', 404, array('content-type' => 'text/plain'));
+		$file_path = $this->examples_directory.$category."/".$name."/".$name.".ino";
+		if(file_exists($file_path))
+		{
+			$file = fopen($file_path, 'r');
+			$value = fread($file, filesize($file_path));
+			fclose($file);			
+			$response->setContent($value);
+			$response->setStatusCode(200);
+			$response->headers->set('Content-Type', 'text/html');
+		}
+		return $response;
+	}
+	
 	private function genRandomString($length)
 	{
 	    // $length = 10;
@@ -416,5 +452,30 @@ class DefaultController extends Controller
 		system("rm /var/www/aceduino/symfony/compiler/build/*.cpp");
 		system("rm /var/www/aceduino/symfony/compiler/*.pde");
 		system("rm /var/www/aceduino/symfony/compiler/*.ino");
+	}
+	
+	/**
+	 * Get either a Gravatar URL or complete image tag for a specified email address.
+	 *
+	 * @param string $email The email address
+	 * @param string $s Size in pixels, defaults to 80px [ 1 - 512 ]
+	 * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+	 * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
+	 * @param boole $img True to return a complete IMG tag False for just the URL
+	 * @param array $atts Optional, additional key/value attributes to include in the IMG tag
+	 * @return String containing either just a URL or a complete image tag
+	 * @source http://gravatar.com/site/implement/images/php/
+	 */
+	private function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
+		$url = 'http://www.gravatar.com/avatar/';
+		$url .= md5( strtolower( trim( $email ) ) );
+		$url .= "?s=$s&d=$d&r=$r";
+		if ( $img ) {
+			$url = '<img src="' . $url . '"';
+			foreach ( $atts as $key => $val )
+				$url .= ' ' . $key . '="' . $val . '"';
+			$url .= ' />';
+		}
+		return $url;
 	}
 }

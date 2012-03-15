@@ -40,10 +40,10 @@
                 });
             }
             else {
-                jQuery(this).bind('blur', function(){
+                jQuery(this).bind('keyup', function(){
                     validate_field(this);
                 });
-                jQuery(this).bind('focus keypress', function(){
+                jQuery(this).bind('focus blur', function(){
                     jQuery(this).next('.' + options['error_class']).fadeOut("fast", function(){
                         jQuery(this).remove();
                     });
@@ -61,7 +61,7 @@
             var self = jQuery(id).attr("id");
             var expression = 'function Validate(){' + options['expression'].replace(/VAL/g, 'jQuery(\'#' + self + '\').val()') + '} Validate()';
             var validation_state = eval(expression);
-            if (!validation_state) {
+            if (!validation_state) { 
                 if (jQuery(id).next('.' + options['error_class']).length == 0) {
                     jQuery(id).after('<span class="' + options['error_class'] + '">' + options['message'] + '</span>');
                     jQuery(id).addClass(options['error_field_class']);

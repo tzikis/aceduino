@@ -93,8 +93,11 @@ button.btn
 \t  <hr>
 
 \t  <footer>
-\t    <p>&copy; clouduino 2012</p>
-\t  </footer>
+\t\t";
+        // line 47
+        $this->env->loadTemplate("AceEditorBundle:Default:footer.html.twig")->display($context);
+        // line 48
+        echo "\t  </footer>
 
 \t</div><!--/.fluid-container-->\t
 </div>
