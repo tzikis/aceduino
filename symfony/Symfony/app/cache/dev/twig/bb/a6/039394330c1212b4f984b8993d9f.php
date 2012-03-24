@@ -242,7 +242,15 @@ window.onload = function()
 \$(document).ready(function()
 {\t
 \t\$(\"#line_count\").html(editor.getSession().getValue().split(\"\\n\").length);
-\tdisableLink(\$(\".link_hex\"));
+\t";
+        // line 184
+        if (($this->getContext($context, "hex_exists") == false)) {
+            // line 185
+            echo "\t\tdisableLink(\$(\".link_hex\"));
+\t";
+        }
+        // line 187
+        echo "\t
 \t\$(\"#scanning\").hide();
 \t\$(\"#progress\").hide();
 \t\$(\"#save\").click(function()
@@ -270,32 +278,32 @@ window.onload = function()
 ";
     }
 
-    // line 211
+    // line 214
     public function block_examples($context, array $blocks = array())
     {
-        // line 212
+        // line 215
         echo "<ul class=\"nav\">
   <li class=\"dropdown\">
     <a href=\"javascript:void(0)\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Examples<b class=\"caret\"></b></a>
     <ul class=\"dropdown-menu\">
 \t\t\t";
-        // line 216
+        // line 219
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable($this->getContext($context, "examples"));
         foreach ($context['_seq'] as $context["_key"] => $context["section"]) {
-            // line 217
+            // line 220
             echo "\t\t    <li class=\"dropdown\">
 \t\t\t<a href=\"javascript:void(0)\">";
-            // line 218
+            // line 221
             echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
             echo "</a>
 \t\t\t<ul class=\"dropdown-menu\">
 \t    \t";
-            // line 220
+            // line 223
             $context['_parent'] = (array) $context;
             $context['_seq'] = twig_ensure_traversable($this->getAttribute($this->getContext($context, "section"), 1, array(), "array"));
             foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-                // line 221
+                // line 224
                 echo "\t    \t    <li onclick=\"getExample('";
                 echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_fetchexample", array("category" => $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "name" => $this->getContext($context, "file"))), "html", null, true);
                 echo "')\"><a href=\"javascript:void(0)\">";
@@ -306,7 +314,7 @@ window.onload = function()
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
             $context = array_merge($_parent, array_intersect_key($context, $_parent));
-            // line 223
+            // line 226
             echo "\t\t\t</ul>
 \t\t\t</li>
 \t\t\t";
@@ -314,7 +322,7 @@ window.onload = function()
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['section'], $context['_parent'], $context['loop']);
         $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 226
+        // line 229
         echo "\t
     </ul>
   </li>

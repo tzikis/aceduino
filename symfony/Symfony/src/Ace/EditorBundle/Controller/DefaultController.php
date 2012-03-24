@@ -86,10 +86,13 @@ class DefaultController extends Controller
 		if(!file_exists($this->directory.$filename))
 			return $this->redirect($this->generateUrl('AceEditorBundle_list'));
 
+		$hex_exists = false;
+		if(file_exists($this->directory.$filename.".hex"))
+			$hex_exists = true;
 		// $filename = getcwd();
 		$examples = $this->getExamplesAction();
-				
-        return $this->render('AceEditorBundle:Default:editor.html.twig', array('project_name' => $project_name, 'filename' => $filename, 'examples' => $examples));
+			
+        return $this->render('AceEditorBundle:Default:editor.html.twig', array('project_name' => $project_name, 'filename' => $filename, 'examples' => $examples, 'hex_exists' => $hex_exists));
     }
 
 	public function getDataAction($project_name)
@@ -141,11 +144,11 @@ class DefaultController extends Controller
 				// $directory = "/var/www/aceduino/symfony/files/";
 				if(file_exists($this->directory.$file->getFilename()))
 				{
-					$file = fopen($this->directory.$file->getFilename(), 'w');
-					fwrite($file, $mydata);
-					fclose($file);
-					if(file_exists($file."hex"))
-						unlink($file."hex");
+					$blob = fopen($this->directory.$file->getFilename(), 'w');
+					fwrite($blob, $mydata);
+					fclose($blob);
+					if(file_exists($this->directory.$file->getFilename().".hex"))
+						unlink($this->directory.$file->getFilename().".hex");
 					$response->setContent("OK");
 					$response->setStatusCode(200);
 					$response->headers->set('Content-Type', 'text/html');

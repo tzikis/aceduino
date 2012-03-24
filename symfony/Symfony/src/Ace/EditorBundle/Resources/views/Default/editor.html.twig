@@ -181,7 +181,10 @@ window.onload = function()
 $(document).ready(function()
 {	
 	$("#line_count").html(editor.getSession().getValue().split("\n").length);
-	disableLink($(".link_hex"));
+	{% if hex_exists == false %}
+		disableLink($(".link_hex"));
+	{% endif %}
+	
 	$("#scanning").hide();
 	$("#progress").hide();
 	$("#save").click(function()

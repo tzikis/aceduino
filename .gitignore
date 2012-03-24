@@ -1,3 +1,4 @@
 symfony/Symfony/app/cache
 symfony/Symfony/app/logs
+files/
 *~
