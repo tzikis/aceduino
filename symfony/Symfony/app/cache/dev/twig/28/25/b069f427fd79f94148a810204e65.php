@@ -65,19 +65,48 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t\tmargin: -3px 5px 0 0;
 \t\t\tborder-radius: 3px;
 \t\t}
+\t\t.nav li.dropdown ul.dropdown-menu li:HOVER ul {
+\t\tdisplay:block; 
+\t\tposition:absolute; 
+\t\tleft:100%;
+\t\t-webkit-border-radius: 3px;
+\t\t-moz-border-radius: 3px;
+\t\tborder-radius: 3px;
+\t\t}
+\t\t.nav li.dropdown ul.dropdown-menu ul {
+\t\tdisplay: none;
+\t\tfloat:right;
+\t\tposition: relative;
+\t\ttop: auto;
+\t\tmargin-top: -22px;
+\t\t}
+
+
+\t\t.nav li.dropdown ul.dropdown-menu ul::after
+\t\t{
+\t\t\tborder-left:0px;
+\t\t\tborder-right:0px;
+\t\t}
+
+\t\t.nav li.dropdown ul.dropdown-menu ul::before
+\t\t{
+\t\t\tborder-left:0px;
+\t\t\tborder-right:0px;
+\t\t}
+\t\t
 \t\t</style>
 \t\t<script src=";
-        // line 28
+        // line 57
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/js/jquery-1.7.1.min.js"), "html", null, true);
         echo " type=\"text/javascript\"></script>
 \t\t<script src=";
-        // line 29
+        // line 58
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/js/jquery-ui-1.8.17.custom.min.js"), "html", null, true);
         echo " type=\"text/javascript\"></script>
 \t    ";
-        // line 30
+        // line 59
         $this->displayBlock('javascripts', $context, $blocks);
-        // line 31
+        // line 60
         echo "    </head>
     <body>
 \t\t<div class=\"navbar navbar-fixed-top\">
@@ -89,7 +118,7 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t        <span class=\"icon-bar\"></span>
 \t\t      </a>
 \t\t      <a class=\"brand\" href=\"";
-        // line 41
+        // line 70
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
         echo "\">";
         echo twig_escape_filter($this->env, $this->getContext($context, "site_name"), "html", null, true);
@@ -97,23 +126,23 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t      <div class=\"nav-collapse\">
 \t\t        <ul class=\"nav\">\t\t
 \t\t          <li id=\"homepage\"><a href=\"";
-        // line 44
+        // line 73
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
         echo "\">Home</a></li>
 
 \t\t\t\t\t";
-        // line 46
+        // line 75
         if ($this->env->getExtension('security')->isGranted("ROLE_USER")) {
             echo "\t\t      
 \t\t\t          <li id=\"options\"><a href=\"";
-            // line 47
+            // line 76
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_options"), "html", null, true);
             echo "\">Options</a></li>
 \t\t\t\t      ";
-            // line 49
+            // line 78
             echo "\t\t\t\t\t";
         }
-        // line 50
+        // line 79
         echo "\t\t\t\t\t<li><form class=\"navbar-search pull-left\" action=\"";
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
         echo "\">
@@ -122,55 +151,55 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t\t\t\t</li>
 \t\t        </ul>
 \t\t\t\t";
-        // line 55
+        // line 84
         $this->displayBlock('examples', $context, $blocks);
-        // line 57
+        // line 86
         echo "\t\t\t\t
 \t\t\t\t";
-        // line 58
+        // line 87
         if ((!$this->env->getExtension('security')->isGranted("ROLE_USER"))) {
-            // line 59
+            // line 88
             echo "\t\t        <ul class=\"nav pull-right\">
 \t\t\t\t\t<li id=\"register\">
 \t\t\t\t      \t<a href=\"";
-            // line 61
+            // line 90
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("fos_user_registration_register"), "html", null, true);
             echo "\">Register</a>
 \t\t\t\t\t</li>
 \t\t\t\t\t<li id=\"login\">
 \t\t\t\t      \t<a href=\"";
-            // line 64
+            // line 93
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("fos_user_security_login"), "html", null, true);
             echo "\">Log In</a>
 \t\t\t\t\t</li>
 \t\t\t\t</ul>
 \t\t\t\t";
         }
-        // line 67
+        // line 96
         echo "\t\t
 \t\t\t\t";
-        // line 68
+        // line 97
         if ($this->env->getExtension('security')->isGranted("ROLE_USER")) {
-            // line 69
+            // line 98
             echo "\t\t\t\t<ul class=\"nav pull-right\">
 \t\t\t\t    <li><a href=\"";
-            // line 70
+            // line 99
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("fos_user_security_logout"), "html", null, true);
             echo "\" id=\"logout\">Log Out</a></li>
 \t\t\t\t\t";
-            // line 71
+            // line 100
             echo $this->env->getExtension('actions')->renderAction("AceEditorBundle:Default:image", array(), array());
-            // line 72
+            // line 101
             echo "\t\t\t\t</ul>
 \t\t\t\t<p class=\"navbar-text pull-right\">
 \t\t\t\t\tLogged in as <a href=\"javascript:void(0)\">";
-            // line 74
+            // line 103
             echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute($this->getContext($context, "app"), "user"), "username"), "html", null, true);
             echo "</a>
 \t\t\t\t</p>
 \t\t\t\t";
         }
-        // line 77
+        // line 106
         echo "\t\t      </div><!--/.nav-collapse -->
 \t\t    </div>
 \t\t  </div>
@@ -180,7 +209,7 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t<!-- Placed at the end of the document so the pages load faster -->
 \t\t
 \t\t<script src=\"";
-        // line 85
+        // line 114
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bootstrap/js/bootstrap.js"), "html", null, true);
         echo "\"></script>
 \t\t<!-- <script src=\"../assets/js/bootstrap-transition.js\"></script>
@@ -208,9 +237,9 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t      </div> -->
 \t
         ";
-        // line 110
+        // line 139
         $this->displayBlock('body', $context, $blocks);
-        // line 111
+        // line 140
         echo "    </body>
 </html>
 ";
@@ -227,19 +256,19 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
     {
     }
 
-    // line 30
+    // line 59
     public function block_javascripts($context, array $blocks = array())
     {
     }
 
-    // line 55
+    // line 84
     public function block_examples($context, array $blocks = array())
     {
-        // line 56
+        // line 85
         echo "\t\t\t\t";
     }
 
-    // line 110
+    // line 139
     public function block_body($context, array $blocks = array())
     {
     }

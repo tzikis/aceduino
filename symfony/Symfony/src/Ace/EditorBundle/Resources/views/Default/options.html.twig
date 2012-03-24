@@ -39,15 +39,10 @@ function validinput(id)
 		else
 			var other="new_pass";
 		
-		if($("#"+id).val() == $("#"+other).val())
-		{
-			var len = $("#"+id).val().length;
-			if (len == 0)
-				return 2; //zero length pass
-				
-		}
-		else if (len < 6 || len > 15)
-			return 3; //out of range of min/max characters
+		var len = $("#new_pass").val().length;
+		
+		if(len < 6 || len > 15)
+			return 3;	
 		else
 		{
 			var regnum = /.*\d/;
@@ -59,13 +54,21 @@ function validinput(id)
 			var sets = 0;
 			for(var i=0 ; i < 4; i++)
 			{
-				if (regexp[i].test($("#"+id).val()))
+				if (regexp[i].test($("#new_pass").val()))
 					sets++;
 			}
 			if (sets < 3)
 				return 4; //less than 3 charsets in pass
 			else
-				return 1; //valid pass
+			{
+				if($("#"+id).val() == $("#"+other).val())
+				{
+					if ($("#"+id).val() == '')
+						return 2; //zero length pass
+					else
+						return 1; //valid pass
+				}
+			}
 		}
 	}
 	/*
@@ -115,25 +118,28 @@ function validation(inputid)
 	switch(validinput(inputid))
 	{
 	case 1:
-		$(".newpassword").removeClass("error").addClass("success");
-		$(".password_signs").removeClass("icon-exclamation-sign").removeClass("icon-remove").addClass("icon-ok");
-		$(".newpass-info").html('');
+		$(".passwords").removeClass("error").addClass("success");
+		$(".password_signs, .password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-remove").addClass("icon-ok");
+		$(".newpass-info, .confirmpass-info").html('');
 		break;
 	case 2:
 		$(".passwords").removeClass("error").removeClass("success");
-		$(".password_signs , .password_confirm").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");			
+		$(".password_signs , .password_confirm").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");
 		$(".newpass-info, .confirmpass-info").html('');
 		break;
 	case 3:
 		$(".passwords").addClass("error").removeClass("success");
 		$(".password_signs, .password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-ok").addClass("icon-remove");
 		$(".newpass-info").html('<i>Passwords must be 6-15 characters long</i>');
+		$(".confirmpass-info").html('');
 		break;
 	case 4:
 		$(".passwords").addClass("error").removeClass("success");
 		$(".password_signs, .password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-ok").addClass("icon-remove");
 		$(".newpass-info").html('<i>Password must contain characters from at least 3 of 4 characters sets([a..z][A..Z][0..9][~!@#$%^&*()_+=])</i>');
+		$(".confirmpass-info").html('');
 		break;
+	/*
 	case 5:
 		$(".passwords").removeClass("error").addClass("success");
 		$(".password_confirm").removeClass("icon-exclamation-sign").removeClass("icon-remove").addClass("icon-ok");
@@ -160,6 +166,7 @@ function validation(inputid)
 		$(".mail").addClass("error").removeClass("success");
 		$(".mail-info").html('<i>Please enter a valid email(aaa@bbb.ccc)</i>');
 		break;
+	*/
 	}
 	$(".password_signs").removeClass("password_signs").addClass("password_signs");
 	$(".password_confirm").removeClass("password_confirm").addClass("password_confirm");

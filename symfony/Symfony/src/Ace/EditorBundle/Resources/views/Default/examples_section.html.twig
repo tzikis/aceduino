@@ -1,0 +1,10 @@
+{% for section in examples %}
+<li class="dropdown">
+<a href="javascript:void(0)">{{section[0]}}</a>
+<ul class="dropdown-menu">
+{% for file in section[1] %}
+    <li onclick="getExample('{{ path('AceEditorBundle_fetchexample', {'type' : type, 'category':section[0], 'name':file})}}')"><a href="javascript:void(0)">{{file}}</a></li>
+{% endfor %}
+</ul>
+</li>
+{% endfor %}

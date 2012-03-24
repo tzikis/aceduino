@@ -155,7 +155,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
 
     private function getAceEditorBundle_fetchexampleRouteInfo()
     {
-        return array(array (  0 => 'category',  1 => 'name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::fetchExampleAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'name',  ),  1 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'category',  ),  2 =>   array (    0 => 'text',    1 => '/fetch/example',  ),));
+        return array(array (  0 => 'type',  1 => 'category',  2 => 'name',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::fetchExampleAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'name',  ),  1 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'category',  ),  2 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'type',  ),  3 =>   array (    0 => 'text',    1 => '/fetch/example',  ),));
     }
 
     private function getAceEditorBundle_saveRouteInfo()

@@ -286,44 +286,18 @@ window.onload = function()
   <li class=\"dropdown\">
     <a href=\"javascript:void(0)\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Examples<b class=\"caret\"></b></a>
     <ul class=\"dropdown-menu\">
-\t\t\t";
+\t\t";
         // line 219
-        $context['_parent'] = (array) $context;
-        $context['_seq'] = twig_ensure_traversable($this->getContext($context, "examples"));
-        foreach ($context['_seq'] as $context["_key"] => $context["section"]) {
-            // line 220
-            echo "\t\t    <li class=\"dropdown\">
-\t\t\t<a href=\"javascript:void(0)\">";
-            // line 221
-            echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "html", null, true);
-            echo "</a>
-\t\t\t<ul class=\"dropdown-menu\">
-\t    \t";
-            // line 223
-            $context['_parent'] = (array) $context;
-            $context['_seq'] = twig_ensure_traversable($this->getAttribute($this->getContext($context, "section"), 1, array(), "array"));
-            foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-                // line 224
-                echo "\t    \t    <li onclick=\"getExample('";
-                echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_fetchexample", array("category" => $this->getAttribute($this->getContext($context, "section"), 0, array(), "array"), "name" => $this->getContext($context, "file"))), "html", null, true);
-                echo "')\"><a href=\"javascript:void(0)\">";
-                echo twig_escape_filter($this->env, $this->getContext($context, "file"), "html", null, true);
-                echo "</a></li>
-\t    \t";
-            }
-            $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['file'], $context['_parent'], $context['loop']);
-            $context = array_merge($_parent, array_intersect_key($context, $_parent));
-            // line 226
-            echo "\t\t\t</ul>
-\t\t\t</li>
-\t\t\t";
-        }
-        $_parent = $context['_parent'];
-        unset($context['_seq'], $context['_iterated'], $context['_key'], $context['section'], $context['_parent'], $context['loop']);
-        $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 229
-        echo "\t
+        $this->env->loadTemplate("AceEditorBundle:Default:examples_section.html.twig")->display(array("examples" => $this->getContext($context, "examples"), "type" => 1));
+        // line 220
+        echo "\t\t<li class=\"divider\"></li>
+\t\t<li class=\"nav-header\">Libraries</li>
+\t\t";
+        // line 222
+        $this->env->loadTemplate("AceEditorBundle:Default:examples_section.html.twig")->display(array("examples" => $this->getContext($context, "lib_examples"), "type" => 2));
+        // line 223
+        echo "\t\t<li class=\"divider\"></li>
+\t
     </ul>
   </li>
 </ul>

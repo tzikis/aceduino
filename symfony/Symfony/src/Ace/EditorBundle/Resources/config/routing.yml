@@ -19,7 +19,7 @@ AceEditorBundle_getdata:
     defaults: { _controller: AceEditorBundle:Default:getData}
 
 AceEditorBundle_fetchexample:
-    pattern:  /fetch/example/{category}/{name}
+    pattern:  /fetch/example/{type}/{category}/{name}
     defaults: { _controller: AceEditorBundle:Default:fetchExample}
 
 AceEditorBundle_save:

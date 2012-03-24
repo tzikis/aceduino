@@ -118,7 +118,7 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         // AceEditorBundle_fetchexample
-        if (0 === strpos($pathinfo, '/fetch/example') && preg_match('#^/fetch/example/(?P<category>[^/]+?)/(?P<name>[^/]+?)$#xs', $pathinfo, $matches)) {
+        if (0 === strpos($pathinfo, '/fetch/example') && preg_match('#^/fetch/example/(?P<type>[^/]+?)/(?P<category>[^/]+?)/(?P<name>[^/]+?)$#xs', $pathinfo, $matches)) {
             return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::fetchExampleAction',)), array('_route' => 'AceEditorBundle_fetchexample'));
         }
 

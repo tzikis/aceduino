@@ -216,16 +216,11 @@ $(document).ready(function()
   <li class="dropdown">
     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
     <ul class="dropdown-menu">
-			{% for section in examples %}
-		    <li class="dropdown">
-			<a href="javascript:void(0)">{{section[0]}}</a>
-			<ul class="dropdown-menu">
-	    	{% for file in section[1] %}
-	    	    <li onclick="getExample('{{ path('AceEditorBundle_fetchexample', {'category':section[0], 'name':file})}}')"><a href="javascript:void(0)">{{file}}</a></li>
-	    	{% endfor %}
-			</ul>
-			</li>
-			{% endfor %}
+		{% include 'AceEditorBundle:Default:examples_section.html.twig' with {'examples': examples, 'type':1} only %}
+		<li class="divider"></li>
+		<li class="nav-header">Libraries</li>
+		{% include 'AceEditorBundle:Default:examples_section.html.twig' with {'examples': lib_examples, 'type':2} only %}
+		<li class="divider"></li>
 	
     </ul>
   </li>

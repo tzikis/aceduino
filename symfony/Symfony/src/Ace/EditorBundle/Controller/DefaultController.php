@@ -12,6 +12,7 @@ class DefaultController extends Controller
     public $default_file = "default_text.txt";
 	public $directory = "/var/www/aceduino/symfony/files/";
 	public $examples_directory = "/var/www/aceduino/symfony/examples/";
+	public $libs_directory = "/var/www/aceduino/symfony/libraries/";
     public function indexAction()
     {
 		// if($name == "tzikis")
@@ -90,9 +91,10 @@ class DefaultController extends Controller
 		if(file_exists($this->directory.$filename.".hex"))
 			$hex_exists = true;
 		// $filename = getcwd();
-		$examples = $this->getExamplesAction();
+		$examples = $this->getExamplesAction($this->examples_directory,"");
+		$lib_examples = $this->getExamplesAction($this->libs_directory,"/examples");
 			
-        return $this->render('AceEditorBundle:Default:editor.html.twig', array('project_name' => $project_name, 'filename' => $filename, 'examples' => $examples, 'hex_exists' => $hex_exists));
+        return $this->render('AceEditorBundle:Default:editor.html.twig', array('project_name' => $project_name, 'filename' => $filename, 'examples' => $examples, 'lib_examples' => $lib_examples, 'hex_exists' => $hex_exists));
     }
 
 	public function getDataAction($project_name)
@@ -118,12 +120,12 @@ class DefaultController extends Controller
 		}		
 	}
 	
-	public function getExamplesAction()
+	public function getExamplesAction($mydir, $middle)
 	{
-		$examples = $this->iterate_dir($this->examples_directory);
+		$examples = $this->iterate_dir($mydir);
 		for($i = 0; $i < count($examples); $i++ )
 		{
-			$array = $this->iterate_dir($this->examples_directory.$examples[$i]);
+			$array = $this->iterate_dir($mydir.$examples[$i].$middle);
 			$examples[$i] = array($examples[$i], $array);
 		}		
 		return $examples;
@@ -420,10 +422,15 @@ class DefaultController extends Controller
 		return $this->render('AceEditorBundle:Default:image.html.twig', array('user' => $user->getUsername(),'image' => $image));
 	}
 	
-	public function fetchExampleAction($category, $name)
+	public function fetchExampleAction($type, $category, $name)
 	{
 		$response = new Response('404 Not Found!', 404, array('content-type' => 'text/plain'));
-		$file_path = $this->examples_directory.$category."/".$name."/".$name.".ino";
+		$directory = "";
+		if($type == 1)
+			$directory = $this->examples_directory;
+		else if($type == 2)
+			$directory = $this->libs_directory;
+		$file_path = $directory.$category."/".$name."/".$name.".ino";
 		if(file_exists($file_path))
 		{
 			$file = fopen($file_path, 'r');
