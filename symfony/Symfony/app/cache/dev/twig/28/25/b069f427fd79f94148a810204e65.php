@@ -27,23 +27,20 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
         // line 5
         $this->displayBlock('title', $context, $blocks);
         echo "</title>
-        ";
+        <link rel=\"shortcut icon\" href=\"";
         // line 6
-        $this->displayBlock('stylesheets', $context, $blocks);
-        // line 7
-        echo "        <link rel=\"shortcut icon\" href=\"";
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("favicon.ico"), "html", null, true);
         echo "\" />
 \t\t<link type=\"text/css\" href=";
-        // line 8
+        // line 7
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css"), "html", null, true);
         echo " rel=\"stylesheet\" />\t
 \t\t<link href=\"";
-        // line 9
+        // line 8
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bootstrap/css/bootstrap.css"), "html", null, true);
         echo "\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />
 \t    <link href=\"";
-        // line 10
+        // line 9
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bootstrap/css/bootstrap-responsive.css"), "html", null, true);
         echo "\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />
 \t\t
@@ -51,7 +48,7 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\tbody
 \t\t{
 \t\t\tbackground: url(";
-        // line 15
+        // line 14
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("blizzard.png"), "html", null, true);
         echo ");
 \t\t\tpadding-top: 40px;
@@ -95,8 +92,11 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t}
 \t\t
 \t\t</style>
-\t\t<script src=";
+        ";
+        // line 56
+        $this->displayBlock('stylesheets', $context, $blocks);
         // line 57
+        echo "\t\t<script src=";
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("jquery-ui/js/jquery-1.7.1.min.js"), "html", null, true);
         echo " type=\"text/javascript\"></script>
 \t\t<script src=";
@@ -251,7 +251,7 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
         echo "Welcome!";
     }
 
-    // line 6
+    // line 56
     public function block_stylesheets($context, array $blocks = array())
     {
     }

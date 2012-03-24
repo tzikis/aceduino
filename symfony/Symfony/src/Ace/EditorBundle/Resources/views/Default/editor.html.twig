@@ -61,11 +61,12 @@ body
 	white-space: pre-wrap;       /* css-3 */
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
-.mybutton
+.btn
 {
 	width:100%;
 	margin-bottom:10px;
 }
+
 .download_link
 {
 	margin-left:14px;
@@ -110,18 +111,18 @@ body
 <div id="container" class="row-fluid">	
 	<div class="row-fluid">
 	<div id="container_left" class="span2">
-		<button id = "revert" class="btn mybutton disabled"><i id="revert_icon" class="icon-arrow-left"></i> Revert</span></button>
-	    <button id = "save" class="btn mybutton disabled" /><i id="save_icon" class="icon-download"></i> Save Changes</button>
-		<button id = "compile" class="btn mybutton"><i id="compile_icon" class="icon-check"></i><span id="compile_text"> Build</span></button>
-		<button id = "upload" class="btn mybutton"><i id="upload_icon" class="icon-upload"></i><span id="upload_text"> Upload</span></button>
+		<button id = "revert" class="btn disabled"><i id="revert_icon" class="icon-arrow-left"></i> Revert</span></button>
+	    <button id = "save" class="btn disabled" /><i id="save_icon" class="icon-download"></i> Save Changes</button>
+		<button id = "compile" class="btn"><i id="compile_icon" class="icon-check"></i><span id="compile_text"> Build</span></button>
+		<button id = "upload" class="btn"><i id="upload_icon" class="icon-upload"></i><span id="upload_text"> Upload</span></button>
 		<hr>
 		    <div id="noscanning">
-		        <button onclick='scan()' class="btn mybutton">Search for Arduino...</button>
+		        <button onclick='scan()' class="btn">Search for Arduino...</button>
 		    </div>
 		    <div id="scanning">
-		        <button onclick='connect()' class="btn mybutton">Connect</button>
+		        <button onclick='connect()' class="btn">Connect</button>
 				<select id="ports" class="span12"></select>
-				{#<button id = "reload" class="btn mybutton" onclick="getFire()"><i id="reload_icon" class="icon-repeat"></i></button>#}
+				{#<button id = "reload" class="btn" onclick="getFire()"><i id="reload_icon" class="icon-repeat"></i></button>#}
 				<select id="baudrates" class="span12"></select>
 	    </div>
 		<div id="saves" class="well">

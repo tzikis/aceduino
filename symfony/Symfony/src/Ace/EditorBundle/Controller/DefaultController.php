@@ -425,12 +425,11 @@ class DefaultController extends Controller
 	public function fetchExampleAction($type, $category, $name)
 	{
 		$response = new Response('404 Not Found!', 404, array('content-type' => 'text/plain'));
-		$directory = "";
+		$file_path = "";
 		if($type == 1)
-			$directory = $this->examples_directory;
+			$file_path = $this->examples_directory.$category."/".$name."/".$name.".ino";
 		else if($type == 2)
-			$directory = $this->libs_directory;
-		$file_path = $directory.$category."/".$name."/".$name.".ino";
+			$file_path = $this->libs_directory.$category."/examples/".$name."/".$name.".ino";
 		if(file_exists($file_path))
 		{
 			$file = fopen($file_path, 'r');

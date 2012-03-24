@@ -90,11 +90,12 @@ body
 \twhite-space: pre-wrap;       /* css-3 */
 \tword-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
-.mybutton
+.btn
 {
 \twidth:100%;
 \tmargin-bottom:10px;
 }
+
 .download_link
 {
 \tmargin-left:14px;
@@ -120,36 +121,36 @@ body
 ";
     }
 
-    // line 92
+    // line 93
     public function block_javascripts($context, array $blocks = array())
     {
-        // line 93
+        // line 94
         echo "<script src=";
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("src/ace.js"), "html", null, true);
         echo " type=\"text/javascript\" charset=\"utf-8\"></script>
 <script src=";
-        // line 94
+        // line 95
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("src/theme-textmate.js"), "html", null, true);
         echo " type=\"text/javascript\" charset=\"utf-8\"></script>
 <script src=";
-        // line 95
+        // line 96
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("src/mode-c_cpp.js"), "html", null, true);
         echo " type=\"text/javascript\" charset=\"utf-8\"></script>
 ";
-        // line 96
+        // line 97
         $this->env->loadTemplate("AceEditorBundle:Default:editor_scripts.html.twig")->display($context);
     }
 
-    // line 98
+    // line 99
     public function block_body($context, array $blocks = array())
     {
-        // line 99
+        // line 100
         echo "<!-- <div class=\"navbar navbar-fixed-bottom\">
 \t<div class=\"navbar-inner\">
 \t    <div class=\"container-fluid\">
 \t\t<ul class=\"nav\">\t\t
           <li id=\"homepage\"><a href=\"";
-        // line 103
+        // line 104
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
         echo "\">Home</a></li>
         </ul>
@@ -161,29 +162,29 @@ body
 <div id=\"container\" class=\"row-fluid\">\t
 \t<div class=\"row-fluid\">
 \t<div id=\"container_left\" class=\"span2\">
-\t\t<button id = \"revert\" class=\"btn mybutton disabled\"><i id=\"revert_icon\" class=\"icon-arrow-left\"></i> Revert</span></button>
-\t    <button id = \"save\" class=\"btn mybutton disabled\" /><i id=\"save_icon\" class=\"icon-download\"></i> Save Changes</button>
-\t\t<button id = \"compile\" class=\"btn mybutton\"><i id=\"compile_icon\" class=\"icon-check\"></i><span id=\"compile_text\"> Build</span></button>
-\t\t<button id = \"upload\" class=\"btn mybutton\"><i id=\"upload_icon\" class=\"icon-upload\"></i><span id=\"upload_text\"> Upload</span></button>
+\t\t<button id = \"revert\" class=\"btn disabled\"><i id=\"revert_icon\" class=\"icon-arrow-left\"></i> Revert</span></button>
+\t    <button id = \"save\" class=\"btn disabled\" /><i id=\"save_icon\" class=\"icon-download\"></i> Save Changes</button>
+\t\t<button id = \"compile\" class=\"btn\"><i id=\"compile_icon\" class=\"icon-check\"></i><span id=\"compile_text\"> Build</span></button>
+\t\t<button id = \"upload\" class=\"btn\"><i id=\"upload_icon\" class=\"icon-upload\"></i><span id=\"upload_text\"> Upload</span></button>
 \t\t<hr>
 \t\t    <div id=\"noscanning\">
-\t\t        <button onclick='scan()' class=\"btn mybutton\">Search for Arduino...</button>
+\t\t        <button onclick='scan()' class=\"btn\">Search for Arduino...</button>
 \t\t    </div>
 \t\t    <div id=\"scanning\">
-\t\t        <button onclick='connect()' class=\"btn mybutton\">Connect</button>
+\t\t        <button onclick='connect()' class=\"btn\">Connect</button>
 \t\t\t\t<select id=\"ports\" class=\"span12\"></select>
 \t\t\t\t";
-        // line 125
+        // line 126
         echo "\t\t\t\t<select id=\"baudrates\" class=\"span12\"></select>
 \t    </div>
 \t\t<div id=\"saves\" class=\"well\">
 \t\t\t<i class=\"icon-file\"></i>Download:<br />
 \t\t\t<a href=\"";
-        // line 129
+        // line 130
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"))), "html", null, true);
         echo "\" class=\"download_link link_ino\">Download .ino</a>
 \t\t\t<a href=\"";
-        // line 130
+        // line 131
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_download", array("project_name" => $this->getContext($context, "project_name"), "type" => "hex")), "html", null, true);
         echo "\" class=\"download_link link_hex\">Download .hex</a>
 \t\t</div>
@@ -203,7 +204,7 @@ body
 \t<div id=\"container_right\" class=\"span10\">
 \t\t<div class=\"row-fluid\">
 \t\t<pre id=\"editor\" class=\"span9\">";
-        // line 147
+        // line 148
         echo $this->env->getExtension('actions')->renderAction("AceEditorBundle:Default:getData", array("project_name" => $this->getContext($context, "project_name")), array());
         echo "</pre>
 \t\t</div>
@@ -243,13 +244,13 @@ window.onload = function()
 {\t
 \t\$(\"#line_count\").html(editor.getSession().getValue().split(\"\\n\").length);
 \t";
-        // line 184
+        // line 185
         if (($this->getContext($context, "hex_exists") == false)) {
-            // line 185
+            // line 186
             echo "\t\tdisableLink(\$(\".link_hex\"));
 \t";
         }
-        // line 187
+        // line 188
         echo "\t
 \t\$(\"#scanning\").hide();
 \t\$(\"#progress\").hide();
@@ -278,24 +279,24 @@ window.onload = function()
 ";
     }
 
-    // line 214
+    // line 215
     public function block_examples($context, array $blocks = array())
     {
-        // line 215
+        // line 216
         echo "<ul class=\"nav\">
   <li class=\"dropdown\">
     <a href=\"javascript:void(0)\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Examples<b class=\"caret\"></b></a>
     <ul class=\"dropdown-menu\">
 \t\t";
-        // line 219
-        $this->env->loadTemplate("AceEditorBundle:Default:examples_section.html.twig")->display(array("examples" => $this->getContext($context, "examples"), "type" => 1));
         // line 220
+        $this->env->loadTemplate("AceEditorBundle:Default:examples_section.html.twig")->display(array("examples" => $this->getContext($context, "examples"), "type" => 1));
+        // line 221
         echo "\t\t<li class=\"divider\"></li>
 \t\t<li class=\"nav-header\">Libraries</li>
 \t\t";
-        // line 222
-        $this->env->loadTemplate("AceEditorBundle:Default:examples_section.html.twig")->display(array("examples" => $this->getContext($context, "lib_examples"), "type" => 2));
         // line 223
+        $this->env->loadTemplate("AceEditorBundle:Default:examples_section.html.twig")->display(array("examples" => $this->getContext($context, "lib_examples"), "type" => 2));
+        // line 224
         echo "\t\t<li class=\"divider\"></li>
 \t
     </ul>
