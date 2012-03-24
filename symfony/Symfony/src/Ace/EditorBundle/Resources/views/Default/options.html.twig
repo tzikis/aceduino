@@ -32,13 +32,22 @@
 //TODO: add check if passwords match when new_pass changes
 function validinput(id)
 {
-	if(id=="new_pass")
+	if(id=="new_pass" || id=="confirm_pass")
 	{
-		var len = $("#"+id).val().length;
-		if (len == 0)
-			return 2; //TODO: could use the same number for zero length input on both password fields
+		if(id=="new_pass")
+			var other="confirm_pass";
+		else
+			var other="new_pass";
+		
+		if($("#"+id).val() == $("#"+other).val())
+		{
+			var len = $("#"+id).val().length;
+			if (len == 0)
+				return 2; //zero length pass
+				
+		}
 		else if (len < 6 || len > 15)
-			return 3;
+			return 3; //out of range of min/max characters
 		else
 		{
 			var regnum = /.*\d/;
@@ -54,11 +63,12 @@ function validinput(id)
 					sets++;
 			}
 			if (sets < 3)
-				return 4;
+				return 4; //less than 3 charsets in pass
 			else
-				return 1;
+				return 1; //valid pass
 		}
 	}
+	/*
 	else if(id=="confirm_pass")
 	{
 		if ($("#"+id).val().length > 0)
@@ -73,11 +83,13 @@ function validinput(id)
 		else
 			return 8;
 	}
+	*/
 	else if(id=="old_pass")
 	{
 		//TODO:Ajax post request for a match;
 	}
-	else if(id=="email")
+	/*
+	else if(id=="email") //using type="email" instead
 	{
 		if ($("#"+id).val().length != 0)
 		{
@@ -90,6 +102,7 @@ function validinput(id)
 		else
 			return 9;
 	}
+	*/
 	else
 	{
 		//no valid id
@@ -107,9 +120,9 @@ function validation(inputid)
 		$(".newpass-info").html('');
 		break;
 	case 2:
-		$(".newpassword").removeClass("error").removeClass("success");
-		$(".password_signs").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");
-		$(".newpass-info").html('');						
+		$(".passwords").removeClass("error").removeClass("success");
+		$(".password_signs , .password_confirm").removeClass("icon-ok").removeClass("icon-remove").addClass("icon-exclamation-sign");			
+		$(".newpass-info, .confirmpass-info").html('');
 		break;
 	case 3:
 		$(".passwords").addClass("error").removeClass("success");

@@ -91,7 +91,9 @@ class __TwigTemplate_2825b069f427fd79f94148a810204e65 extends Twig_Template
 \t\t      <a class=\"brand\" href=\"";
         // line 41
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
-        echo "\">clouduino</a>
+        echo "\">";
+        echo twig_escape_filter($this->env, $this->getContext($context, "site_name"), "html", null, true);
+        echo "</a>
 \t\t      <div class=\"nav-collapse\">
 \t\t        <ul class=\"nav\">\t\t
 \t\t          <li id=\"homepage\"><a href=\"";

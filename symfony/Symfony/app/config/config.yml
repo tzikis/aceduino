@@ -22,7 +22,8 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
-
+    globals:
+        site_name: "d3vflugenhagen232ster-uino"
 # Assetic Configuration
 assetic:
     debug:          %kernel.debug%

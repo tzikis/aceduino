@@ -69,13 +69,22 @@ class __TwigTemplate_0e49be7988dc09ec607799936e28ce1b extends Twig_Template
 //TODO: add check if passwords match when new_pass changes
 function validinput(id)
 {
-\tif(id==\"new_pass\")
+\tif(id==\"new_pass\" || id==\"confirm_pass\")
 \t{
-\t\tvar len = \$(\"#\"+id).val().length;
-\t\tif (len == 0)
-\t\t\treturn 2; //TODO: could use the same number for zero length input on both password fields
+\t\tif(id==\"new_pass\")
+\t\t\tvar other=\"confirm_pass\";
+\t\telse
+\t\t\tvar other=\"new_pass\";
+\t\t
+\t\tif(\$(\"#\"+id).val() == \$(\"#\"+other).val())
+\t\t{
+\t\t\tvar len = \$(\"#\"+id).val().length;
+\t\t\tif (len == 0)
+\t\t\t\treturn 2; //zero length pass
+\t\t\t\t
+\t\t}
 \t\telse if (len < 6 || len > 15)
-\t\t\treturn 3;
+\t\t\treturn 3; //out of range of min/max characters
 \t\telse
 \t\t{
 \t\t\tvar regnum = /.*\\d/;
@@ -91,11 +100,12 @@ function validinput(id)
 \t\t\t\t\tsets++;
 \t\t\t}
 \t\t\tif (sets < 3)
-\t\t\t\treturn 4;
+\t\t\t\treturn 4; //less than 3 charsets in pass
 \t\t\telse
-\t\t\t\treturn 1;
+\t\t\t\treturn 1; //valid pass
 \t\t}
 \t}
+\t/*
 \telse if(id==\"confirm_pass\")
 \t{
 \t\tif (\$(\"#\"+id).val().length > 0)
@@ -110,11 +120,13 @@ function validinput(id)
 \t\telse
 \t\t\treturn 8;
 \t}
+\t*/
 \telse if(id==\"old_pass\")
 \t{
 \t\t//TODO:Ajax post request for a match;
 \t}
-\telse if(id==\"email\")
+\t/*
+\telse if(id==\"email\") //using type=\"email\" instead
 \t{
 \t\tif (\$(\"#\"+id).val().length != 0)
 \t\t{
@@ -127,6 +139,7 @@ function validinput(id)
 \t\telse
 \t\t\treturn 9;
 \t}
+\t*/
 \telse
 \t{
 \t\t//no valid id
@@ -144,9 +157,9 @@ function validation(inputid)
 \t\t\$(\".newpass-info\").html('');
 \t\tbreak;
 \tcase 2:
-\t\t\$(\".newpassword\").removeClass(\"error\").removeClass(\"success\");
-\t\t\$(\".password_signs\").removeClass(\"icon-ok\").removeClass(\"icon-remove\").addClass(\"icon-exclamation-sign\");
-\t\t\$(\".newpass-info\").html('');\t\t\t\t\t\t
+\t\t\$(\".passwords\").removeClass(\"error\").removeClass(\"success\");
+\t\t\$(\".password_signs , .password_confirm\").removeClass(\"icon-ok\").removeClass(\"icon-remove\").addClass(\"icon-exclamation-sign\");\t\t\t
+\t\t\$(\".newpass-info, .confirmpass-info\").html('');
 \t\tbreak;
 \tcase 3:
 \t\t\$(\".passwords\").addClass(\"error\").removeClass(\"success\");
@@ -254,7 +267,7 @@ function myfunc()
 </script>
 Change your details, then click 'save' to save your changes.<br /><br />
 <form name=\"form\" id=\"form\" action=\"";
-        // line 219
+        // line 232
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_homepage"), "html", null, true);
         echo "\">
 <div class=\"row-fluid\">
@@ -265,7 +278,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-user\"></i></span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"username\" id=\"uname\" value=\"";
-        // line 227
+        // line 240
         echo twig_escape_filter($this->env, $this->getContext($context, "username"), "html", null, true);
         echo "\" disabled/>
 \t\t\t\t</div>
@@ -277,7 +290,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">F</span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"firstname\" id=\"fname\" value=\"";
-        // line 236
+        // line 249
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getFirstname", array(), "method"), "html", null, true);
         echo "\" />
 \t\t\t\t</div>
@@ -289,7 +302,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">L</span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"lastname\" id=\"lname\" value=\"";
-        // line 245
+        // line 258
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getLastname", array(), "method"), "html", null, true);
         echo "\" />
 \t\t\t\t</div>
@@ -301,7 +314,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-envelope\"></i></span>
 \t\t\t\t\t<input class=\"input-large\" type=\"email\" name=\"email\" id=\"email\" value=\"";
-        // line 254
+        // line 267
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getEmail", array(), "method"), "html", null, true);
         echo "\" required/> 
 \t\t\t\t<!-- TODO: onchange, AJAX POST to check if mail already exists in the db  -->
@@ -315,7 +328,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">@</span>
 \t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"tweet\" id=\"tweet\" value=\"";
-        // line 265
+        // line 278
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getTwitter", array(), "method"), "html", null, true);
         echo "\" />
 \t\t\t\t</div>
@@ -373,7 +386,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t});
 
 \t\t\t\$.post(\"";
-        // line 320
+        // line 333
         echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("AceEditorBundle_setoptions"), "html", null, true);
         echo "\", {data: items },
 \t\t\tfunction(data)
