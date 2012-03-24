@@ -93,211 +93,7 @@ body
 <script src={{ asset("src/ace.js") }} type="text/javascript" charset="utf-8"></script>
 <script src={{ asset("src/theme-textmate.js") }} type="text/javascript" charset="utf-8"></script>
 <script src={{ asset("src/mode-c_cpp.js") }} type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript">
-function getExample(filename){
-	// alert('editting file');
-	$.get(filename, function(data)
-	{
-		// $('.result').html(data);
-		editor.getSession().setValue(data);
-		// alert('Load was performed.');
-	});
-}
-</script>
-<script type="text/javascript">
-
-
-function throwMud()
-{
-	dirty=true;
-	$("#compile_text").html(" Save & Build");
-	$("#revert").removeClass("disabled").off('click').click(function()
-	{
-	    revert();
-	});
-	$("#save").removeClass("disabled").off('click').click(function()
-	{
-		save();
-	})
-	disableLink($(".download_link"));
-}
-function cleanUp()
-{
-	dirty= false;
-	$("#compile_text").html(" Build");
-	enableLink($(".link_ino"));
-	disableLink($(".link_hex"));
-	$("#revert").addClass("disabled").off('click');
-	$("#save").addClass("disabled").off('click');
-}
-
-function motherInLaw()
-{
-	if(dirty)
-	{
-		save_and_build();
-	}
-	else
-	{
-		build();
-	}	
-}
-
-function setProgress(newprogress)
-{
-	$("#progress").show('fast');
-	$("#progress_val").width(newprogress+'%');
-	$("#operation_output").hide('fast');
-}
-
-function clearProgress(output)
-{
-	$("#progress").hide('fast');
-	$("#progress_val").width('0%');	
-	$("#operation_output").html(output).show('fast');
-}
-
-function save()
-{
-	setProgress(90);
-	$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
-	{
-		$("#save").addClass("btn-success");
-		$("#save_icon").addClass("icon-white");
-		clearProgress("Saved successfuly.");
-		cleanUp();
-		window.setTimeout(function () {
-		    $("#save").removeClass("btn-success");
-			$("#save_icon").removeClass("icon-white");
-		}, 500);
-		// alert("Data received: " + data);
-	});	
-}
-
-function revert()
-{
-	setProgress(90);
-	$.get("{{ path('AceEditorBundle_getdata',{'project_name':project_name}) }}", function(data)
-	{
-		editor.getSession().setValue(data);
-		$("#revert").addClass("btn-success");
-		$("#revert_icon").addClass("icon-white");
-		clearProgress("Reverted successfuly.");
-		cleanUp();
-		window.setTimeout(function () {
-		    $("#revert").removeClass("btn-success");
-			$("#revert_icon").removeClass("icon-white");
-		}, 500);
-		// alert("Data received: " + data);
-	});	
-}
-
-function build()
-{
-	setProgress(90);
-	$.post("{{ path('AceEditorBundle_compile') }}", { project_name:"{{project_name}}"}, function(data)
-	{
-		var obj = jQuery.parseJSON(data);
-		if(obj.success == 0)
-		{
-			$("#compile_output").css('color', 'red');
-			for (var i=0; i<obj.lines.length; i++)
-			{
-				$(".ace_gutter-cell").filter(function(index) {
-				  return $(this).html() == obj.lines[i];
-				}).css("text-decoration","underline").css("color","red");
-			}
-			 
-			$("#editor").css("bottom","150px");
-			$("#compile_output").css("bottom","0px");
-			$("#compile_output").css("height","120px");
-			$("#compile_output").addClass("well");
-			$("#compile").addClass("btn-warning");
-			$("#compile_icon").addClass("icon-remove");
-			
-			
-			$("#compile_output").html(obj.text);
-			clearProgress("Compilation failed.")
-		}
-		else
-		{
-			$("#compile_output").css('color', '');
-			$(".ace_gutter-cell").css("text-decoration", "").css("color","");
-			$("#editor").css("bottom","");
-			$("#compile_output").css("bottom","");
-			$("#compile_output").css("height","");
-			$("#compile_output").removeClass("well");
-			$("#compile").addClass("btn-success");
-			$("#compile_icon").addClass("icon-ok");
-
-			clearProgress(obj.text)
-			$("#compile_output").html("");
-			enableLink($(".link_hex"));
-		}
-		$("#compile_icon").removeClass("icon-check").addClass("icon-white");
-
-		window.setTimeout(function () {
-		    $("#compile").removeClass("btn-success").removeClass("btn-warning");
-				$("#compile_icon").removeClass("icon-white").removeClass("icon-remove").removeClass("icon-ok").addClass("icon-check");
-		}, 500);
-		// alert("Data received: " + data);
-	});	
-}
-
-function save_and_build()
-{
-	save();
-	$(document).ajaxStop(function()
-	{
-		build();
-		$(this).unbind('ajaxStop');
-	});
-}
-
-function disableLink(link)
-{
-	link.css("text-decoration","line-through").click(function(e)
-	{
-	    e.preventDefault();
-	});
-}
-function enableLink(link)
-{
-	link.css("text-decoration","").off('click');
-}
-</script>
-
-<script type="text/javascript">
-    function scan(){
-    $('#scanning').show('slow');
-   	$('#noscanning').hide('slow');
-    getFire();
-    }
-    function connect(){
-    //alert('called connect ');
-    var applet = document.getElementById('myapplet');
-    var portslist= document.getElementById('ports');
-    var rateslist= document.getElementById('baudrates');
-    var port= portslist.options[portslist.selectedIndex].value;
-    var rate= rateslist.options[rateslist.selectedIndex].value;
-    //alert("overrideConnect('"+portslist.selectedIndex+"','"+rateslist.selectedIndex+"')");
-
-    applet.overrideConnect(portslist.selectedIndex,rateslist.selectedIndex);
-    }
-    function getFire(){
-    var applet = document.getElementById('myapplet');
-    var portslist= document.getElementById('ports');
-    var rateslist= document.getElementById('baudrates');
-    portsAvail=applet.getFire2().split(",");
-    for (var i =0 ;i< portsAvail.length ; i++){
-    portslist.options[i]=new Option(portsAvail[i],portsAvail[i],true,true);
-    }
-    ratesAvail=applet.getFireRates().split(",");
-    for (var i =0 ;i< ratesAvail.length ; i++){
-    //rateslist.options[i]=new Option(ratesAvail[i],ratesAvail[i],true,true);
-    }
-    }
-</script>
+{% include 'AceEditorBundle:Default:editor_scripts.html.twig' %}
 {% endblock %}
 {% block body %}
 <!-- <div class="navbar navbar-fixed-bottom">
@@ -317,32 +113,16 @@ function enableLink(link)
 		<button id = "revert" class="btn mybutton disabled"><i id="revert_icon" class="icon-arrow-left"></i> Revert</span></button>
 	    <button id = "save" class="btn mybutton disabled" /><i id="save_icon" class="icon-download"></i> Save Changes</button>
 		<button id = "compile" class="btn mybutton"><i id="compile_icon" class="icon-check"></i><span id="compile_text"> Build</span></button>
+		<button id = "upload" class="btn mybutton"><i id="upload_icon" class="icon-upload"></i><span id="upload_text"> Upload</span></button>
+		<hr>
 		    <div id="noscanning">
 		        <button onclick='scan()' class="btn mybutton">Search for Arduino...</button>
 		    </div>
 		    <div id="scanning">
 		        <button onclick='connect()' class="btn mybutton">Connect</button>
-				<select id="ports" class="span12">
-					<option>dev</option>
-					<option>tty</option>
-					<option>36800</option>
-					<option>57600</option>
-					<option>115200</option>
-				</select><button id = "reload" class="btn mybutton" onclick="getFire()"><i id="reload_icon" class="icon-repeat"></i></button>
-				<select id="baudrates" class="span12">
-		            <option>110</option>
-		            <option>300</option>
-		            <option>600</option>
-		            <option>1200</option>
-		            <option>4800</option>
-		            <option selected="true">9600</option>
-		            <option>14400</option>
-		            <option>19200</option>
-		            <option>38400</option>
-		            <option>115200</option>
-		            <option>128000</option>
-		            <option>256000</option>
-				</select>
+				<select id="ports" class="span12"></select>
+				{#<button id = "reload" class="btn mybutton" onclick="getFire()"><i id="reload_icon" class="icon-repeat"></i></button>#}
+				<select id="baudrates" class="span12"></select>
 	    </div>
 		<div id="saves" class="well">
 			<i class="icon-file"></i>Download:<br />
@@ -393,79 +173,8 @@ window.onload = function()
 		$("#line_count").html(editor.getSession().getValue().split("\n").length);
 	});
 	
-	editor.commands.addCommand({
-	    name: 'saveFile',
-	    bindKey: {
-	        win: 'Ctrl-S',
-	        mac: 'Command-S',
-	        sender: 'editor|cli'
-	    },
-	    exec: function(env, args, request) {
-	        save();
-	    }
-	});
-		
-	editor.commands.addCommand({
-	    name: 'buildFile',
-	    bindKey: {
-	        win: 'Ctrl-R',
-	        mac: 'Command-R',
-	        sender: 'editor|cli'
-	    },
-	    exec: function(env, args, request) {
-	        motherInLaw();
-	    }
-	});
-	
-	editor.commands.addCommand({
-	    name: 'uploadFile',
-	    bindKey: {
-	        win: 'Ctrl-U',
-	        mac: 'Command-U',
-	        sender: 'editor|cli'
-	    },
-	    exec: function(env, args, request) {
-	        alert("Y U NO Upload?");
-	    }
-	});
-	
-	editor.commands.addCommand({
-	    name: 'CheckWord',
-	    bindKey: {
-	        win: 'Ctrl-Space',
-	        mac: 'Ctrl-Space',
-	        sender: 'editor|cli'
-	    },
-	    exec: function(env, args, request) {
-			var selection = editor.getSession().doc.getTextRange(editor.getSelectionRange());
-			if (selection == "")
-			{
-				var row = editor.getSession().getSelection().getCursor().row;
-				var column = editor.getSession().getSelection().getCursor().column
-				var string = editor.getSession().getLine(editor.getSession().getSelection().getCursor().row);
-				var first_half = string.substring(0,column).match(/\w+$/);
-				var second_half = string.substring(column, string.length).match(/^\w+/);
-				if (first_half == null) first_half = "";
-				if (second_half == null) second_half = "";
-				selection = first_half + second_half;
-			}
-			window.open('http://www.google.com/search?q='+selection+'+inurl:arduino.cc/en/Reference&btnI');
-	    }
-	});
-	
-	editor.commands.addCommand({
-	    name: 'MyComments',
-	    bindKey: {
-	        win: 'Ctrl-/',
-	        mac: 'Command-/',
-	        sender: 'editor|cli'
-	    },
-	    exec: function(env, args, request)
-		{
-			editor.toggleCommentLines();
-	    }
-	});
-	
+	addCommands();
+	getIds();	
 };
 
 
@@ -489,6 +198,10 @@ $(document).ready(function()
 		motherInLaw();
 	});
 	
+	$("#upload").click(function() 
+	{
+		upload();
+	});
 });
 </script>
 	

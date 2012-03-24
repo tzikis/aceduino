@@ -147,6 +147,11 @@ class appdevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::setoptionsAction',  '_route' => 'AceEditorBundle_setoptions',);
         }
 
+        // AceEditorBundle_user
+        if (0 === strpos($pathinfo, '/user') && preg_match('#^/user/(?P<user>[^/]+?)$#xs', $pathinfo, $matches)) {
+            return array_merge($this->mergeDefaults($matches, array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',)), array('_route' => 'AceEditorBundle_user'));
+        }
+
         // fos_user_security_login
         if ($pathinfo === '/login') {
             return array (  '_controller' => 'FOS\\UserBundle\\Controller\\SecurityController::loginAction',  '_route' => 'fos_user_security_login',);

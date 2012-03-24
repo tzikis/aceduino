@@ -251,7 +251,7 @@ Change your details, then click 'save' to save your changes.<br /><br />
 			<div class="controls">
 				<div class="input-prepend">
 					<span class="add-on">	<i class="icon-envelope"></i></span>
-					<input class="input-large" type="text" name="email" id="email" value="{{ settings.getEmail() }}" onchange="" /> 
+					<input class="input-large" type="email" name="email" id="email" value="{{ settings.getEmail() }}" required/> 
 				<!-- TODO: onchange, AJAX POST to check if mail already exists in the db  -->
 					<span class="help-inline mail-info"></span>
 				</div>

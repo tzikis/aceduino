@@ -300,10 +300,10 @@ Change your details, then click 'save' to save your changes.<br /><br />
 \t\t\t<div class=\"controls\">
 \t\t\t\t<div class=\"input-prepend\">
 \t\t\t\t\t<span class=\"add-on\">\t<i class=\"icon-envelope\"></i></span>
-\t\t\t\t\t<input class=\"input-large\" type=\"text\" name=\"email\" id=\"email\" value=\"";
+\t\t\t\t\t<input class=\"input-large\" type=\"email\" name=\"email\" id=\"email\" value=\"";
         // line 254
         echo twig_escape_filter($this->env, $this->getAttribute($this->getContext($context, "settings"), "getEmail", array(), "method"), "html", null, true);
-        echo "\" onchange=\"\" /> 
+        echo "\" required/> 
 \t\t\t\t<!-- TODO: onchange, AJAX POST to check if mail already exists in the db  -->
 \t\t\t\t\t<span class=\"help-inline mail-info\"></span>
 \t\t\t\t</div>

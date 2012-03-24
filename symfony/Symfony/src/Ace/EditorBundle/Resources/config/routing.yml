@@ -41,3 +41,7 @@ AceEditorBundle_options:
 AceEditorBundle_setoptions:
     pattern:  /setoptions
     defaults: { _controller: AceEditorBundle:Default:setoptions }
+    
+AceEditorBundle_user:
+    pattern:  /user/{user}
+    defaults: { _controller: AceEditorBundle:Default:index }

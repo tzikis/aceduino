@@ -1128,9 +1128,9 @@
       </call>
       <call method="addResource">
         <argument>yml</argument>
-        <argument>/var/www/aceduino/symfony/Symfony/src/Ace/ExperimentalUserBundle/Resources/translations/messages.en.yml</argument>
+        <argument>/var/www/aceduino/symfony/Symfony/app/Resources/translations/FOSUserBundle.en.yml</argument>
         <argument>en</argument>
-        <argument>messages</argument>
+        <argument>FOSUserBundle</argument>
       </call>
     </service>
     <service id="translation.loader.php" class="Symfony\Component\Translation\Loader\PhpFileLoader">
@@ -1641,7 +1641,7 @@
         </argument>
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
-            <argument>4f5be192b4e95</argument>
+            <argument>4f6df79f8630f</argument>
           </service>
         </argument>
       </argument>
@@ -1897,7 +1897,7 @@
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
             <argument type="service" id="security.context"/>
-            <argument>4f5be192b4e95</argument>
+            <argument>4f6df79f8630f</argument>
             <argument type="service" id="monolog.logger.security"/>
           </service>
         </argument>

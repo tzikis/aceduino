@@ -35,6 +35,7 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
        'AceEditorBundle_download' => true,
        'AceEditorBundle_options' => true,
        'AceEditorBundle_setoptions' => true,
+       'AceEditorBundle_user' => true,
        'fos_user_security_login' => true,
        'fos_user_security_check' => true,
        'fos_user_security_logout' => true,
@@ -180,6 +181,11 @@ class appdevUrlGenerator extends Symfony\Component\Routing\Generator\UrlGenerato
     private function getAceEditorBundle_setoptionsRouteInfo()
     {
         return array(array (), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::setoptionsAction',), array (), array (  0 =>   array (    0 => 'text',    1 => '/setoptions',  ),));
+    }
+
+    private function getAceEditorBundle_userRouteInfo()
+    {
+        return array(array (  0 => 'user',), array (  '_controller' => 'Ace\\EditorBundle\\Controller\\DefaultController::indexAction',), array (), array (  0 =>   array (    0 => 'variable',    1 => '/',    2 => '[^/]+?',    3 => 'user',  ),  1 =>   array (    0 => 'text',    1 => '/user',  ),));
     }
 
     private function getfos_user_security_loginRouteInfo()
