@@ -40,9 +40,9 @@ assetic:
 doctrine:
     dbal:
         driver:   %database_driver%
-        host:     %database_host%
+        host:     %database.host%
         port:     %database_port%
-        dbname:   %database_name%
+        dbname:   %database.name%
         user:     %database_user%
         password: %database_password%
         charset:  UTF8
