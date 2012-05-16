@@ -23,7 +23,7 @@ twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
     globals:
-        site_name: "d3vflugenhagen232ster-uino"
+        site_name: "codebender"
 # Assetic Configuration
 assetic:
     debug:          %kernel.debug%
@@ -52,11 +52,24 @@ doctrine:
         auto_mapping: true
 
 # Swiftmailer Configuration
-swiftmailer:
-    transport: %mailer_transport%
-    host:      %mailer_host%
-    username:  %mailer_user%
-    password:  %mailer_password%
+#swiftmailer:
+#    transport:	smtp
+#    host:	localhost
+#    username:	~
+#    password:	~
+#    port:	465
+#    encryption:	tls
+    #auth_mode:	~
+    #spool:
+        #type:                 file
+        #path:                 %kernel.cache_dir%/swiftmailer/spool
+    #sender_address:       ~
+    #antiflood:
+        #threshold:            99
+        #sleep:                0
+    #delivery_address:     ~
+    #disable_delivery:     ~
+    #logging:              %kernel.debug%
 
 jms_security_extra:
     secure_controllers:  true
@@ -66,6 +79,36 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: Ace\ExperimentalUserBundle\Entity\ExperimentalUser
+#    service:
+#        mailer: fos_user.mailer.twig_swift
+#    from_email:
+#        address:        girder@codebender.cc
+#        sender_name:    Codebender Support
     registration:
+#        confirmation:
+#            enabled: true
+#            email:
+#               template: AceExperimentalUserBundle:User:resetting.email.twig
         form:
             type: ace_experimental_user_registration
+#    resetting:
+#        email:
+#            template: AceExperimentalUserBundle:User:resetting.email.twig
+
+doctrine_mongodb:
+    connections:
+        default:
+            server:   mongodb://codebender:CODEb3nd3r!@ds031847.mongolab.com:31847/codebender
+            options:
+                connect: true
+    default_database: codebender
+    document_managers:
+        default:
+            auto_mapping: true
+
+# my.foo.service:
+#     class: Ace\FileBundle\Controller\ServiceController
+#     arguments:
+#         container: "@service_container"
+
+

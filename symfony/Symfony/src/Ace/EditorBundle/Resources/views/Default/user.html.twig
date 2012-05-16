@@ -1,0 +1,45 @@
+{% extends 'AceEditorBundle:Default:container.html.twig' %}
+{% block title "User Info" %}
+{% block mainspan %}
+<script src="http://platform.twitter.com/anywhere.js?id=YOUR_API_KEY&v=1" type="text/javascript"></script>
+<script type="text/javascript">
+    twttr.anywhere(function (T) {
+		T.linkifyUsers();
+	});
+</script>
+
+<div class="page-header">
+	<h1><img id="user_avatar" src="{{image}}" alt="avatar of user"/>
+	{{ user.getUsername() }} ({{user.getLastname()}} {{user.getFirstname()}})</h1>
+</div>
+
+<div id="user_info" class="row-fluid">
+	<div class="span6">
+		<div><i class="icon-envelope"></i>
+			<a href="mailto:{{user.getEmail()}}">{{user.getEmail()}}</a> 
+		</div>
+		<div><img src="https://si0.twimg.com/images/dev/cms/intents/bird/bird_blue/bird_16_blue.png"/>
+			@{{user.getTwitter()}}
+		</div>
+	</div>
+	<div class="span6 offset6">
+		<em style="font-weight:bold;text-align:center">latest tweet from {{user.getTwitter()}}</em>
+		<div class="well">
+			{{lastTweet}}
+		</div>
+	</div>
+</div>
+
+<div id="user_projects">
+	<table class="table table-bordered">
+		<thead><tr><th>Projects</th></tr></thead>
+		{% if files %}
+		<tbody>
+			{% for file in files %}
+			<tr><td>{{file.name}}</td></tr>
+			{% endfor %}
+		</tbody>
+		{% endif %}
+	</table>
+</div>
+{% endblock %}

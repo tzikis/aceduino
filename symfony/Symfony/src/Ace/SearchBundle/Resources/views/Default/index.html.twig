@@ -1,0 +1,54 @@
+{% extends 'AceEditorBundle:Default:container.html.twig' %}
+{% block title "Search Results" %}
+{% block mainspan %}
+<h3>Search results for: {{ query }}</h3>
+<br />
+{% if files %}
+	<h2>Projects</h2>
+	<table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+	<th>Project Name</th>
+	<th>User</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for file in files %}
+		<tr>
+		<td>{{file.name}}</td>
+		<td>{{owners[file.owner]}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+{% endif %}
+{% if users %}
+	<h2>Users</h2>
+	<table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+	<th>Username</th>
+	<th>Full Name</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for user in users %}
+		<tr>
+		<td>{{user.username}}</td>
+		<td>{{user.firstname}} {{user.lastname}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+{% endif %}
+
+{% if users == null and files == null %}
+<h2>No results found :(</h2>
+{% endif %}
+
+{% endblock %}
+
+{# {% extends '::base.html.twig' %} #}
+{# {% block body %} #}
+{# Searched for {{ query }}! #}
+{# {% endblock %} #}

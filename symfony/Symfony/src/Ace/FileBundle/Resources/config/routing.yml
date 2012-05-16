@@ -1,0 +1,27 @@
+AceFileBundle_create:
+    pattern:  /create
+    defaults: { _controller: AceFileBundle:Default:create }
+
+AceFileBundle_getTimestamp:
+    pattern: /get_timestamp/{project_name}/{type}
+    defaults: { _controller: AceFileBundle:Default:getTimestamp }
+
+AceFileBundle_getCode:
+    pattern:  /get_code/{project_name}
+    defaults: { _controller: AceFileBundle:Default:getCode}
+
+AceFileBundle_saveCode:
+    pattern:  /save_code
+    defaults: { _controller: AceFileBundle:Default:saveCode }
+
+AceFileBundle_getHex:
+    pattern:  /get_hex/{project_name}
+    defaults: { _controller: AceFileBundle:Default:getHex}
+
+# AceFileBundle_saveHex:
+#     pattern:  /save_hex
+#     defaults: { _controller: AceFileBundle:Default:saveHex }
+
+AceFileBundle_saveHex:
+    pattern:  /save_hex/{project_name}/{data}
+    defaults: { _controller: AceFileBundle:Default:saveHex }

@@ -76,8 +76,8 @@
 			          <li id="options"><a href="{{ path('AceEditorBundle_options')}}">Options</a></li>
 				      {# <li><a href="{{ path('_security_logout')}}" id="logout">Log Out</a></li> #}
 					{% endif %}
-					<li><form class="navbar-search pull-left" action="{{ path('AceEditorBundle_homepage')}}">
-					  <input type="text" class="search-query" placeholder="Search">
+					<li><form class="navbar-search pull-left" action="{{ path('AceSearchBundle_search')}}" method="get">
+					  <input type="text" name="query" class="search-query" placeholder="Search">
 					</form>
 					</li>
 		        </ul>
@@ -107,6 +107,7 @@
 		    </div>
 		  </div>
 		</div>		
+        {% block body %}{% endblock %}
 		<!-- Le javascript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
@@ -123,19 +124,6 @@
 		<script src="../assets/js/bootstrap-button.js"></script>
 		<script src="../assets/js/bootstrap-collapse.js"></script>
 		<script src="../assets/js/bootstrap-carousel.js"></script>
-		<script src="../assets/js/bootstrap-typeahead.js"></script> -->
-	
-	<!-- 		      <div id="header" class="true clearfix">
-			        <div class="container clearfix">
-			  <div id="userbox">
-			    <div id="user">
-			      <a id="help" href="http://help">Help</a>
-			    </div>
-			  </div>
-
-	        </div>
-	      </div> -->
-	
-        {% block body %}{% endblock %}
+		<script src="../assets/js/bootstrap-typeahead.js"></script> -->	
     </body>
 </html>

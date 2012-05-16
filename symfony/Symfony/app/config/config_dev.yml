@@ -6,8 +6,10 @@ framework:
     profiler: { only_exceptions: false }
 
 web_profiler:
-    # toolbar: true
-    toolbar: false
+    toolbar: true
+    # toolbar: false
+    # display secondary information, disable to make the toolbar shorter
+    verbose:             true
     intercept_redirects: false
 
 monolog:
@@ -22,3 +24,17 @@ monolog:
 
 assetic:
     use_controller: true
+
+twig:
+    debug: 1
+
+services:
+    debug.twig.extension:
+        class: Twig_Extensions_Extension_Debug
+        tags: [{ name: 'twig.extension' }]
+
+    acme_hello.twig.extension.debug:
+        class:        Twig_Extension_Debug
+        tags:
+             - { name: 'twig.extension' }
+        

@@ -1,3 +1,11 @@
+AceFileBundle:
+    resource: "@AceFileBundle/Resources/config/routing.yml"
+    prefix:   /
+
+AceSearchBundle:
+    resource: "@AceSearchBundle/Resources/config/routing.yml"
+    prefix:   /
+
 # AceExperimentalUserBundle:
 #     resource: "@AceExperimentalUserBundle/Resources/config/routing.yml"
 #     prefix:   /

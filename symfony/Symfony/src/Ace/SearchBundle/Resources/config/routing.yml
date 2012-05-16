@@ -1,0 +1,3 @@
+AceSearchBundle_search:
+    pattern:  /search/
+    defaults: { _controller: AceSearchBundle:Default:index }
