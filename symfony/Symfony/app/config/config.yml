@@ -44,7 +44,7 @@ doctrine:
         port:     %database_port%
         dbname:   %database.name%
         user:     %database.user%
-        password: %database_password%
+        password: %database.pass%
         charset:  UTF8
 
     orm:
