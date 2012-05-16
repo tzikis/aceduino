@@ -13,7 +13,6 @@ body
 {
     overflow: hidden;
     margin: 0;
-    padding: 0;
     height: 100%;
     width: 100%;
 	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
@@ -71,23 +70,6 @@ body
 {
 	margin-left:14px;
 }
-
-.navbar-fixed-bottom {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 1030;
-}
-.navbar-fixed-bottom .navbar-inner {
-  padding-left: 0;
-  padding-right: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
-}
-
-
   </style>
 {% endblock %}
 {% block javascripts %}
@@ -97,16 +79,6 @@ body
 {% include 'AceEditorBundle:Default:editor_scripts.html.twig' %}
 {% endblock %}
 {% block body %}
-<!-- <div class="navbar navbar-fixed-bottom">
-	<div class="navbar-inner">
-	    <div class="container-fluid">
-		<ul class="nav">		
-          <li id="homepage"><a href="{{ path('AceEditorBundle_homepage')}}">Home</a></li>
-        </ul>
-		</div>
-	</div>
-</div> -->
-
 <div class="container">
 <div id="container" class="row-fluid">	
 	<div class="row-fluid">
@@ -114,16 +86,16 @@ body
 		<button id = "revert" class="btn disabled"><i id="revert_icon" class="icon-arrow-left"></i> Revert</span></button>
 	    <button id = "save" class="btn disabled" /><i id="save_icon" class="icon-download"></i> Save Changes</button>
 		<button id = "compile" class="btn"><i id="compile_icon" class="icon-check"></i><span id="compile_text"> Build</span></button>
-		<button id = "upload" class="btn"><i id="upload_icon" class="icon-upload"></i><span id="upload_text"> Upload</span></button>
+		<select id="boards" class="span2">
+			<option>Arduino Uno</option>
+			<option>Arduino Duemilanove</option>
+		</select>
 		<hr>
-		    <div id="noscanning">
-		        <button onclick='scan()' class="btn">Search for Arduino...</button>
-		    </div>
 		    <div id="scanning">
-		        <button onclick='connect()' class="btn">Connect</button>
-				<select id="ports" class="span12"></select>
-				{#<button id = "reload" class="btn" onclick="getFire()"><i id="reload_icon" class="icon-repeat"></i></button>#}
-				<select id="baudrates" class="span12"></select>
+				<button id = "upload" class="btn disabled"><i id="upload_icon" class="icon-upload"></i><span id="upload_text"> Upload</span></button>
+		        <button id="connect" class="btn disabled"><i id="connect_icon" class="icon-asterisk"></i> Serial Monitor</button>
+				<select id="ports" class="span2"></select>
+				<select id="baudrates" class="span2"></select>
 	    </div>
 		<div id="saves" class="well">
 			<i class="icon-file"></i>Download:<br />
@@ -139,16 +111,16 @@ body
 		<div id="operation_output">
 		</div>
 		<applet width="1" height="1"  id="myapplet" style="visibility:hidden;"
-		        code="eu.amaxilatis.ardoserial.MyApplet.class"
+		        code="eu.amaxilatis.codebender.CodeBenderApplet"
 		        archive="http://students.ceid.upatras.gr/~amaxilatis/ardoserial/ardoSerial-0.1-jar-with-dependencies.jar">
 		</applet>
 	</div>
 	<div id="container_right" class="span10">
 		<div class="row-fluid">
-		<pre id="editor" class="span9">{% render "AceEditorBundle:Default:getData" with {'project_name': project_name} %}</pre>
+		<pre id="editor" class="span9">{% render "AceFileBundle:Default:getCode" with {'project_name': project_name} %}</pre>
 		</div>
 		<div class="row-fluid">
-		<div id="compile_output" class="span9 well"></div>
+		<div id="compile_output" class="span9"></div>
 		</div>
 	</div>	
 </div>
@@ -176,35 +148,23 @@ window.onload = function()
 	
 	addCommands();
 	getIds();	
+	scan();
 };
 
 
 $(document).ready(function()
 {	
+	$("#progress").hide();
+	$("#scanning").hide();
+
 	$("#line_count").html(editor.getSession().getValue().split("\n").length);
 	{% if hex_exists == false %}
 		disableLink($(".link_hex"));
-	{% endif %}
-	
-	$("#scanning").hide();
-	$("#progress").hide();
-	$("#save").click(function()
-	{
-		save();
-	});
-	$("#revert").click(function()
-	{
-		revert();
-	});
+	{% endif %}	
 	
 	$("#compile").click(function() 
 	{
 		motherInLaw();
-	});
-	
-	$("#upload").click(function() 
-	{
-		upload();
 	});
 });
 </script>
@@ -215,13 +175,14 @@ $(document).ready(function()
 {% block examples%}
 <ul class="nav">
   <li class="dropdown">
-    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Examples<b class="caret"></b></a>
+    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Load Example<b class="caret"></b></a>
     <ul class="dropdown-menu">
 		{% include 'AceEditorBundle:Default:examples_section.html.twig' with {'examples': examples, 'type':1} only %}
 		<li class="divider"></li>
 		<li class="nav-header">Libraries</li>
 		{% include 'AceEditorBundle:Default:examples_section.html.twig' with {'examples': lib_examples, 'type':2} only %}
 		<li class="divider"></li>
+		<li class="nav-header">External Libraries</li>
 	
     </ul>
   </li>

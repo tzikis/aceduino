@@ -65,7 +65,7 @@ function clearProgress(output)
 function save()
 {
 	setProgress(90);
-	$.post("{{ path('AceEditorBundle_save') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
+	$.post("{{ path('AceFileBundle_saveCode') }}", {data: editor.getSession().getValue(), project_name:"{{project_name}}"}, function(data)
 	{
 		$("#save").addClass("btn-success");
 		$("#save_icon").addClass("icon-white");
@@ -82,7 +82,7 @@ function save()
 function revert()
 {
 	setProgress(90);
-	$.get("{{ path('AceEditorBundle_getdata',{'project_name':project_name}) }}", function(data)
+	$.get("{{ path('AceFileBundle_getCode',{'project_name':project_name}) }}", function(data)
 	{
 		editor.getSession().setValue(data);
 		$("#revert").addClass("btn-success");
@@ -151,21 +151,36 @@ function build()
 
 function upload()
 {
-	setProgress(90);
-	$.get("{{ path('AceEditorBundle_download', { 'project_name': project_name, 'type' : 'hex'}) }}", function(data)
+	if($("#ports").val() != null && $("#ports").val() != "")
 	{
-		$("#upload").addClass("btn-success");
-		$("#upload_icon").addClass("icon-white");
-		clearProgress("Uploaded successfuly.");
-		// cleanUp();
-		window.setTimeout(function () {
-		    $("#upload").removeClass("btn-success");
-			$("#upload_icon").removeClass("icon-white");
-		}, 500);
-		window.hex = data;
-		applet.flash(portslist.selectedIndex, hex+'\0');
-		// alert("Data received: " + data);
-	});	
+		setProgress(90);
+		$.get("{{ path('AceEditorBundle_download', { 'project_name': project_name, 'type' : 'hex'}) }}", function(data)
+		{
+			$("#upload").addClass("btn-success");
+			$("#upload_icon").addClass("icon-white");
+			clearProgress("Uploaded successfuly.");
+			// cleanUp();
+			window.setTimeout(function () {
+			    $("#upload").removeClass("btn-success");
+				$("#upload_icon").removeClass("icon-white");
+			}, 500);
+			window.hex = data;
+			
+			var baudrate;
+			
+			if($("select[id='boards'] option:selected").html() == "Arduino Uno")
+				baudrate = "115200";
+			else if($("select[id='boards'] option:selected").html() == "Arduino Duemilanove")
+				baudrate = "57600";
+				
+			applet.flash(portslist.selectedIndex, hex+'\0', baudrate+'\0');
+			// alert("Data received: " + data);
+		});		
+	}
+	else
+	{
+		clearProgress("Please select a valid port or enable the Java Applet!!");		
+	}
 }
 
 
@@ -177,6 +192,7 @@ function save_and_build()
 		build();
 		$(this).unbind('ajaxStop');
 	});
+	// build();
 }
 
 function disableLink(link)
@@ -227,7 +243,6 @@ function addCommands()
 	        sender: 'editor|cli'
 	    },
 	    exec: function(env, args, request) {
-	        alert("Y U NO Upload?");
 			upload();
 	    }
 	});
@@ -278,10 +293,7 @@ function addCommands()
 	    },
 	    exec: function(env, args, request)
 		{
-			if($("#scanning").is(":visible"))
-		        connect();
-			else
-				clearProgress("Please select a valid port!!");
+	        connect();
 	    }
 	});
 	
@@ -300,27 +312,52 @@ function addCommands()
 	
     function scan()
 	{
-	    $('#scanning').show('slow');
-	   	$('#noscanning').hide('slow');
-		ratesAvail=applet.getFireRates().split(",");
-		for (var i =0 ;i <ratesAvail.length;i++)
+		if(typeof applet.isActive === "function")
 		{
-			rateslist.options[i]=new Option(ratesAvail[i],ratesAvail[i],true,false);
+			$("#scanning").toggle("blind", {}, 1000);
+			$("#connect").removeClass("disabled").off('click').click(function()
+			{
+				connect();
+			})
+			$("#upload").removeClass("disabled").off('click').click(function()
+			{
+				upload();
+			})
+
+			ratesAvail=applet.getFireRates().split(",");
+			for (var i =0 ;i <ratesAvail.length;i++)
+			{
+				rateslist.options[i]=new Option(ratesAvail[i],ratesAvail[i],true,false);
+			}
+			$("#baudrates option[value='9600']").prop("selected", true);
+		    getFire();
+			setInterval(function(){
+				getFire();
+			}, 3000);
 		}
-		$("#baudrates option[value='9600']").prop("selected", true);
-	    getFire();
-		setInterval(function(){
-			getFire();
-		}, 3000);	
+		else
+		{
+			setTimeout(function(){
+				scan();
+			}, 3000);
+		}
     }
     function connect()
 	{
-	    //alert('called connect ');
-	    var port= portslist.options[portslist.selectedIndex].value;
-	    var rate= rateslist.options[rateslist.selectedIndex].value;
-	    //alert("overrideConnect('"+portslist.selectedIndex+"','"+rateslist.selectedIndex+"')");
+		if($("#ports").val() != null && $("#ports").val() != "")
+		{
 
-	    applet.overrideConnect(portslist.selectedIndex,rateslist.selectedIndex);
+		    //alert('called connect ');
+		    var port= portslist.options[portslist.selectedIndex].value;
+		    var rate= rateslist.options[rateslist.selectedIndex].value;
+		    //alert("overrideConnect('"+portslist.selectedIndex+"','"+rateslist.selectedIndex+"')");
+
+		    applet.overrideConnect(portslist.selectedIndex,rateslist.selectedIndex);
+		}
+		else
+		{
+			clearProgress("Please select a valid port or enable the Java Applet!!");		
+		}
     }
     function getFire()
 	{

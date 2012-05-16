@@ -1,21 +1,10 @@
-{% extends '::base.html.twig' %}
-{% block body %}
-<div class="container">
-	<br />
-	<div class="container-fluid">
+{% extends 'AceEditorBundle:Default:container.html.twig' %}
+{% block fluidcontainer %}
 	  <div class="row-fluid">        	
 	    <div class="span12">
 			    {% block fos_user_content %}{% endblock %}
 	    </div><!--/span-->
 	
 	  </div><!--/row-->
-	  <hr>
-
-	  <footer>
-	    <p>&copy; clouduino 2012</p>
-	  </footer>
-
-	</div><!--/.fluid-container-->	
-</div>
 {% endblock %}
 

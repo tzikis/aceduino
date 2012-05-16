@@ -6,29 +6,21 @@ AceEditorBundle_list:
     pattern:  /list
     defaults: { _controller: AceEditorBundle:Default:list }
 
-AceEditorBundle_create:
-    pattern:  /create
-    defaults: { _controller: AceEditorBundle:Default:create }
-
 AceEditorBundle_editor:
     pattern:  /edit/{project_name}
     defaults: { _controller: AceEditorBundle:Default:edit}
-
-AceEditorBundle_getdata:
-    pattern:  /get_data/{project_name}
-    defaults: { _controller: AceEditorBundle:Default:getData}
 
 AceEditorBundle_fetchexample:
     pattern:  /fetch/example/{type}/{category}/{name}
     defaults: { _controller: AceEditorBundle:Default:fetchExample}
 
-AceEditorBundle_save:
-    pattern:  /save
-    defaults: { _controller: AceEditorBundle:Default:save }
-
 AceEditorBundle_compile:
     pattern:  /compile
     defaults: { _controller: AceEditorBundle:Default:compile }
+
+# AceEditorBundle_compile:
+#     pattern:  /compile/{filename}
+#     defaults: { _controller: AceEditorBundle:Default:compile }
 
 AceEditorBundle_download:
     pattern:  /download/{project_name}/{type}
@@ -41,7 +33,15 @@ AceEditorBundle_options:
 AceEditorBundle_setoptions:
     pattern:  /setoptions
     defaults: { _controller: AceEditorBundle:Default:setoptions }
-    
+
+AceEditorBundle_checkpass:
+    pattern:  /checkpass
+    defaults: { _controller: AceEditorBundle:Default:checkpass }
+
+AceEditorBundle_checkmail:
+    pattern:  /checkmail
+    defaults: { _controller: AceEditorBundle:Default:checkmail }
+
 AceEditorBundle_user:
     pattern:  /user/{user}
-    defaults: { _controller: AceEditorBundle:Default:index }
+    defaults: { _controller: AceEditorBundle:Default:user }

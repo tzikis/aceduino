@@ -82,7 +82,7 @@ class ExperimentalUser extends BaseUser
     {
         return $this->lastname;
     }
-
+	
     /**
      * Set twitter
      *

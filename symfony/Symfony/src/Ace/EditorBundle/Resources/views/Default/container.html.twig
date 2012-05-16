@@ -26,27 +26,31 @@ button.btn
 </style>
 
 <div class="container">
-	<br />
-	{% block alert %}
-	{% endblock %}
-
-	<div class="container-fluid">
-	  <div class="row-fluid">
-	    {% render "AceEditorBundle:Default:sidebar" %}
-        	
-	    <div class="span9">
-		{% block mainspan %}
-		
+		<br />
+		{% block alert %}
 		{% endblock %}
-	    </div><!--/span-->
+
+		<div class="container-fluid">
+		{% block fluidcontainer %}
+			<div class="row-fluid">
+				{% if is_granted('ROLE_USER') %}		      
+				    {% render "AceEditorBundle:Default:sidebar" %}        	
+				<div class="span9">
+				{% else %}
+				<div class="span12">
+				{% endif %}
+				{% block mainspan %}
+		
+				{% endblock %}
+			    </div><!--/span-->
 	
-	  </div><!--/row-->
-	  <hr>
+		  </div><!--/row-->
+		{% endblock %}
+		  <hr>
 
-	  <footer>
-		{% include 'AceEditorBundle:Default:footer.html.twig' %}
-	  </footer>
-
-	</div><!--/.fluid-container-->	
+		  <footer>
+			{% include 'AceEditorBundle:Default:footer.html.twig' %}
+		  </footer>
+		</div><!--/.fluid-container-->	
 </div>
 {% endblock %}
