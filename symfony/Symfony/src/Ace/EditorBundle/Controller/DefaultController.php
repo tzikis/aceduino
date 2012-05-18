@@ -109,43 +109,20 @@ class DefaultController extends Controller
 				$resp = $this->forward('AceFileBundle:Default:getCode', array('project_name' => $project_name));
 				$value = $resp->getContent();
 				
-				$filename = "";
-				do
-				{
-					$filename = $this->genRandomString(10);
-				}
-				while(file_exists($filename));
-				$file = fopen("/var/www/aceduino/symfony/compiler/".$filename, 'x');
-				if($file)
-				{
-					fwrite($file, $value);
-					fclose($file);
-				}
-				include("compiler.php");
-				do_compile("/var/www/aceduino/symfony/compiler", $filename, $output, $success, $error);
+				$data = "ERROR";
+				$url = fopen("http://compiler.codebender.cc?data=".urlencode($value), 'r');
+				$data = fread($url, 30000);
+				fclose($url);
 				
-				if($error)
+				$json_data = json_decode($data, true);
+				if($json_data['success'])
 				{
-			        throw $this->createNotFoundException("UNHANDLED COMPILE ERROR!");
-				}
-				
-				if($success)
-				{
-					$file = fopen("/var/www/aceduino/symfony/compiler/".$filename.".hex", 'r');
-					$value = fread($file, filesize("/var/www/aceduino/symfony/compiler/".$filename.".hex"));
-					fclose($file);
-					unlink("/var/www/aceduino/symfony/compiler/".$filename.".hex");
-					
-					$resp = $this->forward('AceFileBundle:Default:saveHex', array('project_name' => $project_name, 'data' => $value));
-					// echo "Compiled succesfully!";
-					$response->setContent(json_encode(array('success' => 1, 'text' => "Compiled succesfully!")));
-					
-				}
-				else
-				{
-					config_output($output, $filename, $lines, $output_string);
-					$response->setContent(json_encode(array('success' => 0, 'text' => $output_string, 'lines' => $lines)));
-				}
+					$resp = $this->forward('AceFileBundle:Default:saveHex', 
+						array('project_name' => $project_name, 'data' => $json_data['hex']));
+					unset($json_data['hex']);
+					$data = json_encode($json_data);
+				}				
+				$response->setContent($data);
 				$response->setStatusCode(200);
 				$response->headers->set('Content-Type', 'text/html');
 			}
@@ -419,19 +396,7 @@ class DefaultController extends Controller
 		}
 		return $response;
 	}
-	
-	private function genRandomString($length)
-	{
-	    // $length = 10;
-	    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	    $string = "";    
-	    for ($p = 0; $p < $length; $p++)
-		{
-	        $string .= $characters{mt_rand(0, strlen($characters)-1)};
-	    }
-	    return $string;
-	}
-	
+		
 	/**
 	 * Get either a Gravatar URL or complete image tag for a specified email address.
 	 *
